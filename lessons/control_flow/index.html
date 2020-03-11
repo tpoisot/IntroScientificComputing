@@ -153,10 +153,10 @@ we will use the far more dignified <em>smol</em> and <em>chonky</em>:</p><div cl
   <span class=k>end</span>
 <span class=k>end</span>
 </code></pre></div><pre><code>chonky
-chonky
 smol
-chonky
-chonky
+smol
+smol
+smol
 </code></pre><p>There is quite a lot happening here, so we will go line by line.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=o></span> <span class=o>=</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=mi>5</span><span class=p>)</span>
 </code></pre></div><p>First, we generate 5 random numbers, and put them in a variable called
 <code>random_numbers</code>. It is always a good idea to give very explicit names to
@@ -183,11 +183,11 @@ truthiness of it, will print either <em>foo</em> or <em>bar</em>.</p><h2 id=navi
 understanding what exactly is in the <code>random_numbers</code> object. Let's display it
 again:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=o></span>
 </code></pre></div><pre><code>5-element Array{Float64,1}:
- 0.7665594254635952
- 0.5912944809299892
- 0.0427207351280956
- 0.5763252073828682
- 0.8128760159590132
+ 0.7732797735483474 
+ 0.3488276810290747 
+ 0.07303911830222543
+ 0.4225653695605369 
+ 0.111038496303276
 </code></pre><p>This type of object is an <em>array</em>; it may help to think of an array as a shelf,
 in which every compartment can store one thing. You can have shelves with a
 single row, a single column, or both rows and columns. In <em>Julia</em>, arrays are by
@@ -203,31 +203,31 @@ has 5 positions in its first <em>dimension</em>, and no positions in its second
 dimension: this is a column with five rows. We can also access any <em>position</em> we
 like; this is akin to asking &ldquo;computer, give me the content of the 1st
 compartment&rdquo;:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
-</code></pre></div><pre><code>0.7665594254635952
+</code></pre></div><pre><code>0.7732797735483474
 </code></pre><p>Some languages, like <em>Julia</em>, <em>R</em>, and <em>MatLab</em>, start counting from 1, but
 <em>python</em> and <em>C</em> start counting from 0. These are conventions that each language
 adopted. Everyone thinks the other camp is wrong, and it's one of these
 surprisingly bitter (considering how utterly unimportant they are) divides in
 the computer science world.</p><p>We can *also ask what the <em>last</em> position contains:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=o></span><span class=p>[</span><span class=n>length</span><span class=o></span><span class=p>(</span><span class=n>random_numbers</span><span class=o></span><span class=p>)</span><span class=p>]</span>
-</code></pre></div><pre><code>0.8128760159590132
+</code></pre></div><pre><code>0.111038496303276
 </code></pre><p>The way to read this instruction is as follows: get me the element at position
 <code>length(random_numbers)</code>. We know that the length of <code>random_numbers</code> is <code>5</code>, so
 this will return the 5th position. <em>Julia</em> has a quite pretty way of getting the
 last element of most collections:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=o></span><span class=p>[</span><span class=k>end</span><span class=p>]</span>
-</code></pre></div><pre><code>0.8128760159590132
+</code></pre></div><pre><code>0.111038496303276
 </code></pre><p>An extra bit of <a href=https://en.wikipedia.org/wiki/Syntactic_sugar>syntactic sugar</a> in <em>Julia</em> are the two following
 functions:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>first</span><span class=o></span><span class=p>(</span><span class=n>random_numbers</span><span class=o></span><span class=p>)</span>
-</code></pre></div><pre><code>0.7665594254635952
+</code></pre></div><pre><code>0.7732797735483474
 </code></pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>last</span><span class=o></span><span class=p>(</span><span class=n>random_numbers</span><span class=o></span><span class=p>)</span>
-</code></pre></div><pre><code>0.8128760159590132
+</code></pre></div><pre><code>0.111038496303276
 </code></pre><p>Being able to access elements by their position can be very useful. Our
 <code>random_numbers</code> array has five elements, and we only want to print the
 odd-numbered ones. One way to do this would be to call then individually:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>println</span><span class=o></span><span class=p>(</span><span class=n>random_numbers</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=p>)</span>
-</code></pre></div><pre><code>0.7665594254635952
+</code></pre></div><pre><code>0.7732797735483474
 </code></pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>println</span><span class=o></span><span class=p>(</span><span class=n>random_numbers</span><span class=o></span><span class=p>[</span><span class=mi>3</span><span class=p>]</span><span class=p>)</span>
-</code></pre></div><pre><code>0.0427207351280956
+</code></pre></div><pre><code>0.07303911830222543
 </code></pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>println</span><span class=o></span><span class=p>(</span><span class=n>random_numbers</span><span class=o></span><span class=p>[</span><span class=mi>5</span><span class=p>]</span><span class=p>)</span>
-</code></pre></div><pre><code>0.8128760159590132
+</code></pre></div><pre><code>0.111038496303276
 </code></pre><p>Of course, this is only reasonable if we have a very small number of things to
 do. But what if we want to iterate over hundreds, or thousands of values? We
 need a more efficient strategy.</p><h2 id=iterating-over-values>Iterating over values</h2><p>We know that a number is even if the statement <code>x % 2 == 0</code>, where <code>%</code> is
@@ -237,9 +237,9 @@ integer division by two is <em>not</em> 0: <code>x % 2 != 0</code>.</p><p>Let's 
     <span class=n>println</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>P</span><span class=s>o</span><span class=s>s</span><span class=s>i</span><span class=s>t</span><span class=s>i</span><span class=s>o</span><span class=s>n</span><span class=s> </span><span class=si>$i</span><span class=s>:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>random_numbers</span><span class=o></span><span class=p>[</span><span class=n>i</span><span class=o></span><span class=p>]</span><span class=p>)</span>
   <span class=k>end</span>
 <span class=k>end</span>
-</code></pre></div><pre><code>Position 1:	0.7665594254635952
-Position 3:	0.0427207351280956
-Position 5:	0.8128760159590132
+</code></pre></div><pre><code>Position 1:	0.7732797735483474
+Position 3:	0.07303911830222543
+Position 5:	0.111038496303276
 </code></pre><p>We can &ldquo;read&rdquo; this snippet (a <em>snippet</em> is the affectionate name given to a
 litle chunk of code; a <em>chunk</em> is a much uglier name for &ldquo;a piece&rdquo;) as</p><pre><code>there is a variable i
 it will take every value between 1 and the length of the ranom_numbers array
@@ -300,7 +300,7 @@ run it for a while (<em>GET IT?</em>) to get a sample with an average of about 0
 <span class=k>end</span>
 
 <span class=n>println</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>μ</span><span class=s>:</span><span class=s> </span><span class=si>$</span><span class=p>(</span><span class=n>round</span><span class=o></span><span class=p>(</span><span class=n>mean</span><span class=o></span><span class=p>(</span><span class=n>my_collection</span><span class=o></span><span class=p>)</span><span class=p>;</span> <span class=n>digits</span><span class=o></span><span class=o>=</span><span class=mi>4</span><span class=p>)</span><span class=p>)</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>μ: 0.5001
+</code></pre></div><pre><code>μ: 0.5004
 </code></pre><p>The instruction just after <code>while</code>, <em>i.e.</em></p><pre><code>!(0.499 ≤ mean(my_collection) ≤ 0.501)
 </code></pre><p>is worth thinking about. It is a very compact way of running multiple tests at
 once: the mean needs to be larger than 0.499, yet smaller than 0.501, and we
