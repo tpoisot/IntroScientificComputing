@@ -13,82 +13,33 @@ containing metabolic rates of species, and then use genetic algorithm to try and
 find out the scaling exponent linking mass to the field metabolic rate. The data
 come from a meta-analysis by <a href=hudson>Lawrence N. Hudson and colleagues</a>, and
 can be downloaded as follows:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>using</span> <span class=n>DataFrames</span><span class=o></span>
-</code></pre></div><pre class=julia-error>
-ERROR: On worker 2:
-ArgumentError: Package DataFrames &#91;a93c6f00-e57d-5684-b7b6-d8193f3e46c0&#93; is required but does not seem to be installed:
- - Run &#96;Pkg.instantiate&#40;&#41;&#96; to install all recorded dependencies.
-
-_require at ./loading.jl:982
-require at ./loading.jl:911
-#2 at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/Distributed.jl:78
-#116 at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/process_messages.jl:307
-run_work_thunk at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/process_messages.jl:79
-run_work_thunk at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/process_messages.jl:88
-#102 at ./task.jl:268
-#remotecall_wait#154&#40;::Base.Iterators.Pairs&#123;Union&#123;&#125;,Union&#123;&#125;,Tuple&#123;&#125;,NamedTuple&#123;&#40;&#41;,Tuple&#123;&#125;&#125;&#125;, ::typeof&#40;Distributed.remotecall_wait&#41;, ::Function, ::Distributed.Worker&#41; at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:421
-remotecall_wait&#40;::Function, ::Distributed.Worker&#41; at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:412
-#remotecall_wait#157&#40;::Base.Iterators.Pairs&#123;Union&#123;&#125;,Union&#123;&#125;,Tuple&#123;&#125;,NamedTuple&#123;&#40;&#41;,Tuple&#123;&#125;&#125;&#125;, ::typeof&#40;Distributed.remotecall_wait&#41;, ::Function, ::Int64&#41; at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:433
-remotecall_wait at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:433 &#91;inlined&#93;
-&#40;::getfield&#40;Distributed, Symbol&#40;&quot;##1#3&quot;&#41;&#41;&#123;Base.PkgId,Int64&#125;&#41;&#40;&#41; at ./task.jl:268
-
-...and 1 more exception&#40;s&#41;.
-
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>using</span> <span class=n>Statistics</span><span class=o></span>
+<span class=k>using</span> <span class=n>Statistics</span><span class=o></span>
 <span class=k>using</span> <span class=n>StatsBase</span><span class=o></span>
 <span class=k>import</span> <span class=n>CSV</span><span class=o></span>
-</code></pre></div><pre class=julia-error>
-ERROR: On worker 2:
-ArgumentError: Package CSV &#91;336ed68f-0bac-5ca0-87d4-7b16caf5d00b&#93; is required but does not seem to be installed:
- - Run &#96;Pkg.instantiate&#40;&#41;&#96; to install all recorded dependencies.
-
-_require at ./loading.jl:982
-require at ./loading.jl:911
-#2 at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/Distributed.jl:78
-#116 at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/process_messages.jl:307
-run_work_thunk at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/process_messages.jl:79
-run_work_thunk at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/process_messages.jl:88
-#102 at ./task.jl:268
-#remotecall_wait#154&#40;::Base.Iterators.Pairs&#123;Union&#123;&#125;,Union&#123;&#125;,Tuple&#123;&#125;,NamedTuple&#123;&#40;&#41;,Tuple&#123;&#125;&#125;&#125;, ::typeof&#40;Distributed.remotecall_wait&#41;, ::Function, ::Distributed.Worker&#41; at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:421
-remotecall_wait&#40;::Function, ::Distributed.Worker&#41; at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:412
-#remotecall_wait#157&#40;::Base.Iterators.Pairs&#123;Union&#123;&#125;,Union&#123;&#125;,Tuple&#123;&#125;,NamedTuple&#123;&#40;&#41;,Tuple&#123;&#125;&#125;&#125;, ::typeof&#40;Distributed.remotecall_wait&#41;, ::Function, ::Int64&#41; at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:433
-remotecall_wait at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:433 &#91;inlined&#93;
-&#40;::getfield&#40;Distributed, Symbol&#40;&quot;##1#3&quot;&#41;&#41;&#123;Base.PkgId,Int64&#125;&#41;&#40;&#41; at ./task.jl:268
-
-...and 1 more exception&#40;s&#41;.
-
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>using</span> <span class=n>StatsPlots</span><span class=o></span>
+<span class=k>using</span> <span class=n>StatsPlots</span><span class=o></span>
 <span class=n>url</span><span class=o></span> <span class=o>=</span> <span class=s>&#34;</span><span class=s>h</span><span class=s>t</span><span class=s>t</span><span class=s>p</span><span class=s>:</span><span class=s>/</span><span class=s>/</span><span class=s>s</span><span class=s>c</span><span class=s>i</span><span class=s>e</span><span class=s>n</span><span class=s>c</span><span class=s>e</span><span class=s>c</span><span class=s>o</span><span class=s>m</span><span class=s>p</span><span class=s>u</span><span class=s>t</span><span class=s>i</span><span class=s>n</span><span class=s>g</span><span class=s>.</span><span class=s>i</span><span class=s>o</span><span class=s>/</span><span class=s>d</span><span class=s>a</span><span class=s>t</span><span class=s>a</span><span class=s>/</span><span class=s>m</span><span class=s>e</span><span class=s>t</span><span class=s>a</span><span class=s>b</span><span class=s>o</span><span class=s>l</span><span class=s>i</span><span class=s>c</span><span class=s>r</span><span class=s>a</span><span class=s>t</span><span class=s>e</span><span class=s>s</span><span class=s>.</span><span class=s>c</span><span class=s>s</span><span class=s>v</span><span class=s>&#34;</span>
 <span class=n>tmp</span><span class=o></span> <span class=o>=</span> <span class=n>download</span><span class=o></span><span class=p>(</span><span class=n>url</span><span class=o></span><span class=p>)</span>
 <span class=n>rates</span><span class=o></span> <span class=o>=</span> <span class=n>CSV</span><span class=o></span><span class=o>.</span><span class=n>read</span><span class=o></span><span class=p>(</span><span class=n>tmp</span><span class=o></span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: CSV not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><p>Let's have a look at the names of the columns:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>names</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><p>We will replace the last two names, as they are not easy to work with:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rename!</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>,</span> <span class=n>names</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>)</span><span class=p>[</span><span class=k>end</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>=</span><span class=o>&gt;</span> <span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rename!</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>,</span> <span class=n>names</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>)</span><span class=p>[</span><span class=k>end</span><span class=p>]</span> <span class=o>=</span><span class=o>&gt;</span> <span class=o>:</span><span class=n>fmr</span><span class=o></span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rates</span><span class=o></span> <span class=o>=</span> <span class=n>rates</span><span class=o></span><span class=p>[</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=o>.&lt;</span><span class=mf>1e3</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><p>Much better! Now let's try to figure out the relationship between the last two
+<span class=n>rates</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
+</code></pre></div><table class=data-frame><thead><tr><th></th><th>Class</th><th>Order</th><th>Family</th><th>Genus</th><th>Species</th><th>Study</th><th>M (kg)</th><th>FMR (kJ / day)</th></tr><tr><th></th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th><th>Float64</th><th>Float64</th></tr></thead><tbody><p>5 rows × 8 columns</p><tr><th>1</th><td>Mammalia</td><td>Carnivora</td><td>Odobenidae</td><td>Odobenus</td><td>rosmarus</td><td>Acquarone et al 2006</td><td>1370.0</td><td>345000.0</td></tr><tr><th>2</th><td>Mammalia</td><td>Carnivora</td><td>Odobenidae</td><td>Odobenus</td><td>rosmarus</td><td>Acquarone et al 2006</td><td>1250.0</td><td>417400.0</td></tr><tr><th>3</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>7.4</td><td>3100.0</td></tr><tr><th>4</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>6.95</td><td>2898.0</td></tr><tr><th>5</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>8.9</td><td>3528.0</td></tr></tbody></table><p>Let's have a look at the names of the columns:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>names</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>)</span>
+</code></pre></div><pre><code>8-element Array{Symbol,1}:
+ :Class                  
+ :Order                  
+ :Family                 
+ :Genus                  
+ :Species                
+ :Study                  
+ Symbol(&quot;M (kg)&quot;)        
+ Symbol(&quot;FMR (kJ / day)&quot;)
+</code></pre><p>We will replace the last two names, as they are not easy to work with:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rename!</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>,</span> <span class=n>names</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>)</span><span class=p>[</span><span class=k>end</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>=</span><span class=o>&gt;</span> <span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>)</span>
+<span class=n>rename!</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>,</span> <span class=n>names</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>)</span><span class=p>[</span><span class=k>end</span><span class=p>]</span> <span class=o>=</span><span class=o>&gt;</span> <span class=o>:</span><span class=n>fmr</span><span class=o></span><span class=p>)</span>
+<span class=n>rates</span><span class=o></span> <span class=o>=</span> <span class=n>rates</span><span class=o></span><span class=p>[</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=o>.&lt;</span><span class=mf>1e3</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
+<span class=n>rates</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
+</code></pre></div><table class=data-frame><thead><tr><th></th><th>Class</th><th>Order</th><th>Family</th><th>Genus</th><th>Species</th><th>Study</th><th>mass</th><th>fmr</th></tr><tr><th></th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th><th>Float64</th><th>Float64</th></tr></thead><tbody><p>5 rows × 8 columns</p><tr><th>1</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>7.4</td><td>3100.0</td></tr><tr><th>2</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>6.95</td><td>2898.0</td></tr><tr><th>3</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>8.9</td><td>3528.0</td></tr><tr><th>4</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>9.6</td><td>3881.0</td></tr><tr><th>5</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>9.4</td><td>3830.0</td></tr></tbody></table><p>Much better! Now let's try to figure out the relationship between the last two
 variables:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>scatter</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>fmr</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>teal</span><span class=o></span><span class=p>,</span> <span class=n>leg</span><span class=o></span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>msc</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>transparent</span><span class=o></span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>xaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>M</span><span class=s>a</span><span class=s>s</span><span class=s>s</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>g</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
+<span class=n>xaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>M</span><span class=s>a</span><span class=s>s</span><span class=s>s</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>g</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
 <span class=n>yaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>F</span><span class=s>i</span><span class=s>e</span><span class=s>l</span><span class=s>d</span><span class=s> </span><span class=s>M</span><span class=s>e</span><span class=s>t</span><span class=s>a</span><span class=s>b</span><span class=s>o</span><span class=s>l</span><span class=s>i</span><span class=s>c</span><span class=s> </span><span class=s>R</span><span class=s>a</span><span class=s>t</span><span class=s>e</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>j</span><span class=s> </span><span class=s>p</span><span class=s>e</span><span class=s>r</span><span class=s> </span><span class=s>d</span><span class=s>a</span><span class=s>y</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: ArgumentError: At least one finite value must be provided to formatter.
-</pre><p>Neat! This is a log-log relationship, so we can represent this problem as:</p><p>$$\text{log}{10}(\text{FMR}) \propto m\times\text{log}_{10}(\text{M})+b$$</p><p>To simplify the problem a little bit, we will average the values within species;
+</code></pre></div><figure><img src=../figures/genetic_algorithm_4_1.png><figcaption><h4>Relationship between field metabolic rate and mass - this is a neat log-log relationship, and so linear regression will give us the exponent.</h4></figcaption></figure><p>Neat! This is a log-log relationship, so we can represent this problem as:</p><p>$$\text{log}{10}(\text{FMR}) \propto m\times\text{log}_{10}(\text{M})+b$$</p><p>To simplify the problem a little bit, we will average the values within species;
 because the relation is log-log, we will average the log of the value (as
 opposed to taking the log of the averages).</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rates</span><span class=o></span> <span class=o>=</span> <span class=n>by</span><span class=o></span><span class=p>(</span>
   <span class=n>rates</span><span class=o></span><span class=p>,</span>
@@ -99,19 +50,11 @@ opposed to taking the log of the averages).</p><div class=highlight><pre class=c
     <span class=n>fmr</span><span class=o></span><span class=o>=</span><span class=n>mean</span><span class=o></span><span class=p>(</span><span class=n>log10</span><span class=o></span><span class=o>.</span><span class=p>(</span><span class=n>x</span><span class=o></span><span class=o>.</span><span class=n>fmr</span><span class=o></span><span class=p>)</span><span class=p>)</span>
     <span class=p>)</span>
   <span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: by not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><p>We can look at the simplified data:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>scatter</span><span class=o></span><span class=p>(</span><span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>fmr</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>teal</span><span class=o></span><span class=p>,</span> <span class=n>leg</span><span class=o></span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>msc</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>transparent</span><span class=o></span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>xaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>M</span><span class=s>a</span><span class=s>s</span><span class=s>s</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>g</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
+<span class=n>rates</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
+</code></pre></div><table class=data-frame><thead><tr><th></th><th>Genus</th><th>Species</th><th>mass</th><th>fmr</th></tr><tr><th></th><th>String</th><th>String</th><th>Float64</th><th>Float64</th></tr></thead><tbody><p>5 rows × 4 columns</p><tr><th>1</th><td>Diomedea</td><td>exulans</td><td>0.952967</td><td>3.35304</td></tr><tr><th>2</th><td>Arctocephalus</td><td>gazella</td><td>1.53131</td><td>4.32877</td></tr><tr><th>3</th><td>Sula</td><td>sula</td><td>0.0263231</td><td>3.07421</td></tr><tr><th>4</th><td>Macrotus</td><td>californicus</td><td>-1.88828</td><td>1.33622</td></tr><tr><th>5</th><td>Microtus</td><td>pennsylvanicus</td><td>-1.44936</td><td>1.9947</td></tr></tbody></table><p>We can look at the simplified data:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>scatter</span><span class=o></span><span class=p>(</span><span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>fmr</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>teal</span><span class=o></span><span class=p>,</span> <span class=n>leg</span><span class=o></span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>msc</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>transparent</span><span class=o></span><span class=p>)</span>
+<span class=n>xaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>M</span><span class=s>a</span><span class=s>s</span><span class=s>s</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>g</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
 <span class=n>yaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>F</span><span class=s>i</span><span class=s>e</span><span class=s>l</span><span class=s>d</span><span class=s> </span><span class=s>M</span><span class=s>e</span><span class=s>t</span><span class=s>a</span><span class=s>b</span><span class=s>o</span><span class=s>l</span><span class=s>i</span><span class=s>c</span><span class=s> </span><span class=s>R</span><span class=s>a</span><span class=s>t</span><span class=s>e</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>j</span><span class=s> </span><span class=s>p</span><span class=s>e</span><span class=s>r</span><span class=s> </span><span class=s>d</span><span class=s>a</span><span class=s>y</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: ArgumentError: At least one finite value must be provided to formatter.
-</pre><div class="callout information">In this capstone, we will try to write a very general code for genetic
+</code></pre></div><figure><img src=../figures/genetic_algorithm_6_1.png><figcaption><h4>Same data, but a little bit fewer points. In addition, aggregating by species doesn't increase the impact that well sampled species will have on the regression output.</h4></figcaption></figure><div class="callout information">In this capstone, we will try to write a very general code for genetic
 algorithms. It is possible to come up with a more specific code, but spending
 time to think about making code general is almost always wise, since it means we
 can seamlessly re-use already written code.</div><p>Genetic algorithms represent the state of the problem as &ldquo;genomes&rdquo;, which here
@@ -131,17 +74,17 @@ that will read exactly like native code would:</p><div class=highlight><pre clas
 population:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>population_size</span><span class=o></span> <span class=o>=</span> <span class=mi>1_000</span>
 <span class=n>population</span><span class=o></span> <span class=o>=</span> <span class=n>zeros</span><span class=o></span><span class=p>(</span><span class=n>Genome</span><span class=o></span><span class=p>,</span> <span class=n>population_size</span><span class=o></span><span class=p>)</span>
 <span class=n>population</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>]</span>
-</code></pre></div><pre><code>5-element Array{Main.WeaveSandBox10.Genome,1}:
- Main.WeaveSandBox10.Genome(0.0, 0.0)
- Main.WeaveSandBox10.Genome(0.0, 0.0)
- Main.WeaveSandBox10.Genome(0.0, 0.0)
- Main.WeaveSandBox10.Genome(0.0, 0.0)
- Main.WeaveSandBox10.Genome(0.0, 0.0)
+</code></pre></div><pre><code>5-element Array{Main.WeaveSandBox0.Genome,1}:
+ Main.WeaveSandBox0.Genome(0.0, 0.0)
+ Main.WeaveSandBox0.Genome(0.0, 0.0)
+ Main.WeaveSandBox0.Genome(0.0, 0.0)
+ Main.WeaveSandBox0.Genome(0.0, 0.0)
+ Main.WeaveSandBox0.Genome(0.0, 0.0)
 </code></pre><p>To have a slightly more pleasing display, we can also overload the <code>show</code>
 function:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>import</span> <span class=n>Base</span><span class=o></span><span class=o>:</span> <span class=n>show</span><span class=o></span>
 <span class=n>show</span><span class=o></span><span class=p>(</span><span class=n>io</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=kt>IO</span><span class=p>,</span> <span class=n>g</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=n>Genome</span><span class=o></span><span class=p>)</span> <span class=o>=</span> <span class=n>print</span><span class=o></span><span class=p>(</span><span class=n>io</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>y</span><span class=s>̂</span><span class=s> </span><span class=s>=</span><span class=s> </span><span class=si>$</span><span class=p>(</span><span class=n>round</span><span class=o></span><span class=p>(</span><span class=n>g</span><span class=o></span><span class=o>.</span><span class=n>m</span><span class=o></span><span class=p>;</span> <span class=n>digits</span><span class=o></span><span class=o>=</span><span class=mi>3</span><span class=p>)</span><span class=p>)</span><span class=s>×</span><span class=s>x</span><span class=s> </span><span class=s>+</span><span class=s> </span><span class=si>$</span><span class=p>(</span><span class=n>round</span><span class=o></span><span class=p>(</span><span class=n>g</span><span class=o></span><span class=o>.</span><span class=n>b</span><span class=o></span><span class=p>;</span> <span class=n>digits</span><span class=o></span><span class=o>=</span><span class=mi>3</span><span class=p>)</span><span class=p>)</span><span class=s>&#34;</span><span class=p>)</span>
 <span class=n>population</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>]</span>
-</code></pre></div><pre><code>5-element Array{Main.WeaveSandBox10.Genome,1}:
+</code></pre></div><pre><code>5-element Array{Main.WeaveSandBox0.Genome,1}:
  ŷ = 0.0×x + 0.0
  ŷ = 0.0×x + 0.0
  ŷ = 0.0×x + 0.0
@@ -162,12 +105,8 @@ things. First, we need to define a <code>fitness</code> function, which, given a
 (here, a <code>Genome</code>), will return its &ldquo;score&rdquo;. Second, we need to define a
 <code>mutation!</code> function, which will <em>modify</em> a genome.</p><p>The fitness function can be defined as follows (note that we have already taken
 the log10 of the mass and FMR earlier):</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=kd>const</span> <span class=n>log10fmr</span><span class=o></span> <span class=o>=</span> <span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>fmr</span><span class=o></span><span class=p>]</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=kd>const</span> <span class=n>log10M</span><span class=o></span> <span class=o>=</span> <span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia>
+<span class=kd>const</span> <span class=n>log10M</span><span class=o></span> <span class=o>=</span> <span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span>
+
 <span class=n>ŷ</span><span class=o></span><span class=p>(</span><span class=n>g</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=n>Genome</span><span class=o></span><span class=p>,</span> <span class=n>x</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Float64</span><span class=p>}</span><span class=p>)</span><span class=o>=</span>  <span class=n>g</span><span class=o></span><span class=o>.</span><span class=n>m</span><span class=o></span> <span class=o>.*</span> <span class=n>x</span><span class=o></span> <span class=o>.+</span> <span class=n>g</span><span class=o></span><span class=o>.</span><span class=n>b</span><span class=o></span>
 
 <span class=k>function</span> <span class=n>fmr_fitness</span><span class=o></span><span class=p>(</span><span class=n>g</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=n>Genome</span><span class=o></span><span class=p>)</span>
@@ -182,9 +121,8 @@ and does the linear prediction. You may notice that this function uses elements
 from &ldquo;the outside&rdquo;, which have not been passed as arguments, and this may not be
 ideal - this is why the <code>log10...</code> variables have been declared as <code>const</code>: they
 will raise a warning if they are changed.</p><p>We can check the score of an &ldquo;empty&rdquo; genome ($\hat y = 0$):</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>fmr_fitness</span><span class=o></span><span class=p>(</span><span class=n>zero</span><span class=o></span><span class=p>(</span><span class=n>Genome</span><span class=o></span><span class=p>)</span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: log10M not defined
-</pre><p>Now, let's define a function for mutations. Because we might want to change the
+</code></pre></div><pre><code>0.1406618826939854
+</code></pre><p>Now, let's define a function for mutations. Because we might want to change the
 rate at which parameters evolve, it would be useful to be able to generate
 multiple such functions. And so, our first task is to write a function that will
 return another function, which will itself modify the <code>Genome</code> object. Note that
@@ -204,56 +142,42 @@ existing object.</p><div class=highlight><pre class=chroma><code class=language-
 <span class=n>initial_genome</span><span class=o></span> <span class=o>=</span> <span class=n>Genome</span><span class=o></span><span class=p>(</span><span class=mf>0.2</span><span class=p>,</span> <span class=mf>0.5</span><span class=p>)</span>
 <span class=n>change_both!</span><span class=o></span><span class=p>(</span><span class=n>initial_genome</span><span class=o></span><span class=p>)</span>
 <span class=n>initial_genome</span><span class=o></span>
-</code></pre></div><pre><code>ŷ = 0.208×x + 0.498
+</code></pre></div><pre><code>ŷ = 0.2×x + 0.507
 </code></pre><p>Let's now define a function to work on the actual problem:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>very_gradual_change!</span><span class=o></span> <span class=o>=</span> <span class=n>normal_error</span><span class=o></span><span class=p>(</span><span class=mf>1e-3</span><span class=p>,</span> <span class=mf>1e-3</span><span class=p>)</span>
-</code></pre></div><pre><code>(::getfield(Main.WeaveSandBox10, Symbol(&quot;#f#4&quot;)){Float64,Float64}) (generic
- function with 1 method)
+</code></pre></div><pre><code>(::getfield(Main.WeaveSandBox0, Symbol(&quot;#f#4&quot;)){Float64,Float64}) (generic 
+function with 1 method)
 </code></pre><p>We have all of the pieces to apply our genetic algorithm. Before starting, it is
 always a good idea to try and eyeball the parameters. Judging from the plot we
 made early in the lesson, the intercept is probably just around 3, so we can
 probably draw it from $\mathcal{N}(\mu=3, \sigma=1)$; the slope seems to be
 close to one but a little bit lower, so we can get it from
 $\mathcal{N}(\mu=0.75, \sigma=0.2)$:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>population</span><span class=o></span> <span class=o>=</span> <span class=p>[</span><span class=n>Genome</span><span class=o></span><span class=p>(</span><span class=n>rand</span><span class=o></span><span class=p>(</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=mf>0.75</span><span class=p>,</span><span class=mf>0.2</span><span class=p>)</span><span class=p>)</span><span class=p>,</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=mi>3</span><span class=p>,</span><span class=mi>1</span><span class=p>)</span><span class=p>)</span><span class=p>)</span> <span class=k>for</span> <span class=n>i</span><span class=o></span> <span class=kp>in</span> <span class=mi>1</span><span class=o>:</span><span class=mi>500</span><span class=p>]</span>
-</code></pre></div><pre><code>500-element Array{Main.WeaveSandBox10.Genome,1}:
- ŷ = 0.904×x + 5.488
- ŷ = 0.754×x + 4.752
- ŷ = 1.051×x + 3.491
- ŷ = 0.882×x + 3.493
- ŷ = 0.825×x + 2.413
- ŷ = 1.166×x + 3.187
- ŷ = 1.111×x + 3.01 
- ŷ = 0.598×x + 3.989
- ŷ = 0.596×x + 3.097
- ŷ = 0.69×x + 2.449 
+</code></pre></div><pre><code>500-element Array{Main.WeaveSandBox0.Genome,1}:
+ ŷ = 0.792×x + 2.669
+ ŷ = 0.638×x + 2.196
+ ŷ = 0.981×x + 2.29 
+ ŷ = 0.599×x + 2.602
+ ŷ = 0.989×x + 2.228
+ ŷ = 0.458×x + 0.559
+ ŷ = 0.368×x + 2.626
+ ŷ = 0.6×x + 2.848  
+ ŷ = 0.999×x + 3.319
+ ŷ = 0.873×x + 3.396
  ⋮                   
- ŷ = 0.7×x + 6.087  
- ŷ = 0.611×x + 2.908
- ŷ = 0.642×x + 2.023
- ŷ = 0.875×x + 5.295
- ŷ = 0.758×x + 3.244
- ŷ = 0.75×x + 3.057 
- ŷ = 0.844×x + 2.644
- ŷ = 0.529×x + 2.624
- ŷ = 0.908×x + 1.991
+ ŷ = 0.589×x + 3.168
+ ŷ = 0.91×x + 3.137 
+ ŷ = 1.071×x + 1.863
+ ŷ = 0.696×x + 4.043
+ ŷ = 0.811×x + 2.831
+ ŷ = 0.207×x + 3.607
+ ŷ = 1.098×x + 3.051
+ ŷ = 0.384×x + 3.528
+ ŷ = 0.475×x + 3.612
 </code></pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>GA!</span><span class=o></span><span class=p>(</span><span class=n>population</span><span class=o></span><span class=p>,</span> <span class=n>fmr_fitness</span><span class=o></span><span class=p>,</span> <span class=n>very_gradual_change!</span><span class=o></span><span class=p>;</span> <span class=n>generations</span><span class=o></span><span class=o>=</span><span class=mi>10000</span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: log10M not defined
-</pre><p><strong><em>TODO</em></strong></p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>scatter</span><span class=o></span><span class=p>(</span><span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>fmr</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>teal</span><span class=o></span><span class=p>,</span> <span class=n>leg</span><span class=o></span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>msc</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>transparent</span><span class=o></span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>pred</span><span class=o></span> <span class=o>=</span> <span class=n>collect</span><span class=o></span><span class=p>(</span><span class=n>LinRange</span><span class=o></span><span class=p>(</span><span class=mf>10.0</span><span class=o>.^</span><span class=n>minimum</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>)</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>maximum</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>)</span><span class=p>,</span> <span class=mi>100</span><span class=p>)</span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: rates not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>mostfit</span><span class=o></span> <span class=o>=</span> <span class=n>fmr_fitness</span><span class=o></span><span class=o>.</span><span class=p>(</span><span class=n>population</span><span class=o></span><span class=p>)</span> <span class=o>|&gt;</span> <span class=n>findmax</span><span class=o></span> <span class=o>|&gt;</span> <span class=n>last</span><span class=o></span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: log10M not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>plot!</span><span class=o></span><span class=p>(</span><span class=n>pred</span><span class=o></span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>ŷ</span><span class=o></span><span class=p>(</span><span class=n>population</span><span class=o></span><span class=p>[</span><span class=n>mostfit</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=n>log10</span><span class=o></span><span class=o>.</span><span class=p>(</span><span class=n>pred</span><span class=o></span><span class=p>)</span><span class=p>)</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>orange</span><span class=o></span><span class=p>,</span> <span class=n>lw</span><span class=o></span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>ls</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>dash</span><span class=o></span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: UndefVarError: mostfit not defined
-</pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>xaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>M</span><span class=s>a</span><span class=s>s</span><span class=s>s</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>g</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
+</code></pre></div><p><strong><em>TODO</em></strong></p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>scatter</span><span class=o></span><span class=p>(</span><span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>fmr</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>teal</span><span class=o></span><span class=p>,</span> <span class=n>leg</span><span class=o></span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>msc</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>transparent</span><span class=o></span><span class=p>)</span>
+<span class=n>pred</span><span class=o></span> <span class=o>=</span> <span class=n>collect</span><span class=o></span><span class=p>(</span><span class=n>LinRange</span><span class=o></span><span class=p>(</span><span class=mf>10.0</span><span class=o>.^</span><span class=n>minimum</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>)</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>maximum</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>)</span><span class=p>,</span> <span class=mi>100</span><span class=p>)</span><span class=p>)</span>
+<span class=n>mostfit</span><span class=o></span> <span class=o>=</span> <span class=n>fmr_fitness</span><span class=o></span><span class=o>.</span><span class=p>(</span><span class=n>population</span><span class=o></span><span class=p>)</span> <span class=o>|&gt;</span> <span class=n>findmax</span><span class=o></span> <span class=o>|&gt;</span> <span class=n>last</span><span class=o></span>
+<span class=n>plot!</span><span class=o></span><span class=p>(</span><span class=n>pred</span><span class=o></span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>ŷ</span><span class=o></span><span class=p>(</span><span class=n>population</span><span class=o></span><span class=p>[</span><span class=n>mostfit</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=n>log10</span><span class=o></span><span class=o>.</span><span class=p>(</span><span class=n>pred</span><span class=o></span><span class=p>)</span><span class=p>)</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>orange</span><span class=o></span><span class=p>,</span> <span class=n>lw</span><span class=o></span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>ls</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>dash</span><span class=o></span><span class=p>)</span>
+<span class=n>xaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>M</span><span class=s>a</span><span class=s>s</span><span class=s>s</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>g</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
 <span class=n>yaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>F</span><span class=s>i</span><span class=s>e</span><span class=s>l</span><span class=s>d</span><span class=s> </span><span class=s>M</span><span class=s>e</span><span class=s>t</span><span class=s>a</span><span class=s>b</span><span class=s>o</span><span class=s>l</span><span class=s>i</span><span class=s>c</span><span class=s> </span><span class=s>R</span><span class=s>a</span><span class=s>t</span><span class=s>e</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>j</span><span class=s> </span><span class=s>p</span><span class=s>e</span><span class=s>r</span><span class=s> </span><span class=s>d</span><span class=s>a</span><span class=s>y</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre class=julia-error>
-ERROR: ArgumentError: At least one finite value must be provided to formatter.
-</pre><p>We can also look at the equation for the most fit genome:<pre class=julia-error>
-ERROR: UndefVarError: mostfit not defined
-</pre>.</p></section><script src=/js/ui.js></script><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
+</code></pre></div><figure><img src=../figures/genetic_algorithm_19_1.png><figcaption><h4>Relationship between field metabolic rate and mass - this is a neat log-log relationship, and so linear regression will give us the exponent.</h4></figcaption></figure><p>We can also look at the equation for the most fit genome: ŷ = 0.694×x + 2.949.</p></section><script src=/js/ui.js></script><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
