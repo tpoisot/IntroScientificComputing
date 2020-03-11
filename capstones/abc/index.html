@@ -27,14 +27,14 @@ run_work_thunk at /buildworker/worker/package_linux64/build/usr/share/julia/stdl
 diameter, in the Florida keys. Every year, for 20 years, a few biologists comb
 through the island, to figure out whether or not <em>Eurycotis floridana</em> is
 present or absent. This results in a timeseries, like this:</p><pre><code>Year 1	absent
-Year 2	absent
-Year 3	absent
+Year 2	present
+Year 3	present
 Year 4	absent
 Year 5	absent
-Year 6	absent
-Year 7	absent
+Year 6	present
+Year 7	present
 Year 8	absent
-Year 9	present
+Year 9	absent
 Year 10	absent
 </code></pre><p>To begin with, let us see how we can model the presence/absence of this species.
 We will make two assumptions. First, the biological process here can be
@@ -127,8 +127,8 @@ with parameters $(e=0.2, c=0.6, m=0.1)$, and get the summary statistics:</p><div
    <span class=p>[</span><span class=n>occupancy</span><span class=o></span><span class=p>,</span> <span class=n>transitions</span><span class=o></span><span class=p>]</span> <span class=c># list of things to measure</span>
    <span class=p>)</span>
 </code></pre></div><pre><code>2-element Array{Float64,1}:
- 0.61              
- 0.3065326633165829
+ 0.64              
+ 0.3417085427135678
 </code></pre><p>At this point, we need empirical data to feed the model. Let's say that over
 twenty years, the species has been observed from year 4 to 12, then 14 to 15,
 and finally from year 17 to 20. We can write this as:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>empirical_data</span><span class=o></span> <span class=o>=</span> <span class=n>zeros</span><span class=o></span><span class=p>(</span><span class=kt>Bool</span><span class=p>,</span> <span class=mi>20</span><span class=p>)</span>
@@ -223,7 +223,7 @@ ERROR: UndefVarError: xaxis&#33; not defined
 </pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>yaxis!</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>D</span><span class=s>e</span><span class=s>n</span><span class=s>s</span><span class=s>i</span><span class=s>t</span><span class=s>y</span><span class=s>&#34;</span><span class=p>,</span> <span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>14</span><span class=p>)</span><span class=p>)</span>
 </code></pre></div><pre class=julia-error>
 ERROR: UndefVarError: yaxis&#33; not defined
-</pre><p>To summarize, we can now extract the values of the different parameters:</p><table><thead><tr><th align=center></th><th align=left>meaning</th><th align=right>mean</th><th align=right>standard deviation</th></tr></thead><tbody><tr><td align=center>$c$</td><td align=left>Colonization rate</td><td align=right>0.553</td><td align=right>0.065</td></tr><tr><td align=center>$e$</td><td align=left>Extinction rate</td><td align=right>0.157</td><td align=right>0.042</td></tr><tr><td align=center>$m$</td><td align=left>Measurement error rate</td><td align=right>0.049</td><td align=right>0.039</td></tr></tbody></table><p>Done! One of the strength of ABC is that we can now <em>generate</em> datasets, using
+</pre><p>To summarize, we can now extract the values of the different parameters:</p><table><thead><tr><th align=center></th><th align=left>meaning</th><th align=right>mean</th><th align=right>standard deviation</th></tr></thead><tbody><tr><td align=center>$c$</td><td align=left>Colonization rate</td><td align=right>0.556</td><td align=right>0.067</td></tr><tr><td align=center>$e$</td><td align=left>Extinction rate</td><td align=right>0.154</td><td align=right>0.041</td></tr><tr><td align=center>$m$</td><td align=left>Measurement error rate</td><td align=right>0.05</td><td align=right>0.039</td></tr></tbody></table><p>Done! One of the strength of ABC is that we can now <em>generate</em> datasets, using
 our original model for simulation. And because we know the measurement error
 rate, we can also correct these datasets to describe the data <em>generation</em>
 process (the actual presence/absence of the species) as opposed to the data
