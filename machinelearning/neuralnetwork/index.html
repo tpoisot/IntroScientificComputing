@@ -4,13 +4,18 @@ ERROR: On worker 2:
 ArgumentError: Package Flux &#91;587475ba-b771-5e3f-ad9e-33799f191a9c&#93; is required but does not seem to be installed:
  - Run &#96;Pkg.instantiate&#40;&#41;&#96; to install all recorded dependencies.
 
-_require at ./loading.jl:993
-require at ./loading.jl:922
-#1 at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.3/Distributed/src/Distributed.jl:78
-#105 at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.3/Distributed/src/process_messages.jl:290
-run_work_thunk at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.3/Distributed/src/process_messages.jl:79
-run_work_thunk at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.3/Distributed/src/process_messages.jl:88
-#98 at ./task.jl:333
+_require at ./loading.jl:982
+require at ./loading.jl:911
+#2 at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/Distributed.jl:78
+#116 at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/process_messages.jl:307
+run_work_thunk at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/process_messages.jl:79
+run_work_thunk at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/process_messages.jl:88
+#102 at ./task.jl:268
+#remotecall_wait#154&#40;::Base.Iterators.Pairs&#123;Union&#123;&#125;,Union&#123;&#125;,Tuple&#123;&#125;,NamedTuple&#123;&#40;&#41;,Tuple&#123;&#125;&#125;&#125;, ::typeof&#40;Distributed.remotecall_wait&#41;, ::Function, ::Distributed.Worker&#41; at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:421
+remotecall_wait&#40;::Function, ::Distributed.Worker&#41; at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:412
+#remotecall_wait#157&#40;::Base.Iterators.Pairs&#123;Union&#123;&#125;,Union&#123;&#125;,Tuple&#123;&#125;,NamedTuple&#123;&#40;&#41;,Tuple&#123;&#125;&#125;&#125;, ::typeof&#40;Distributed.remotecall_wait&#41;, ::Function, ::Int64&#41; at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:433
+remotecall_wait at /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.2/Distributed/src/remotecall.jl:433 &#91;inlined&#93;
+&#40;::getfield&#40;Distributed, Symbol&#40;&quot;##1#3&quot;&#41;&#41;&#123;Base.PkgId,Int64&#125;&#41;&#40;&#41; at ./task.jl:268
 
 ...and 1 more exception&#40;s&#41;.
 
