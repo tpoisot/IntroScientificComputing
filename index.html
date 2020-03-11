@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html><head>
+	<meta name="generator" content="Hugo 0.53" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+  <link rel="stylesheet" href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js"></script>
+
+  <link rel="stylesheet" href="/css/normalize.css" />
+  <link rel="stylesheet" href="/css/configuration.css" />
+  <link rel="stylesheet" href="/css/index.css" />
+
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js" integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+        ]
+      });
+    });
+  </script>
+
+  <title>Index · Scientific computing</title>
+
+</head>
+<body><nav id="main" class="sidebar">
+  <div class="toggle">
+    <a class="button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <line x1="0" y1="20" x2="100" y2="20" />
+        <line x1="0" y1="50" x2="100" y2="50" />
+        <line x1="0" y1="80" x2="100" y2="80" />
+      </svg>
+    </a>
+  </div>
+  <div class="header">
+    <h1><a href="/">Scientific computing</a></h1>
+    <h2>(for the rest of us)</h2>
+  </div>
+  <ul class="nav">
+    
+    
+    <li class="lessons"><i class="fas fa-fw fa-graduation-cap"></i><a class="sidebar-nav-item " href="/lessons/" title="">Lessons</a></li>
+    
+    <li class="primers"><i class="fas fa-fw fa-bolt"></i><a class="sidebar-nav-item " href="/primers/" title="">Primers</a></li>
+    
+    <li class="capstones"><i class="fas fa-fw fa-star"></i><a class="sidebar-nav-item " href="/capstones/" title="">Capstones</a></li>
+    
+    <li class="ml"><i class="fas fa-fw fa-brain"></i><a class="sidebar-nav-item " href="/machinelearning/" title="">Machine Learning</a></li>
+    
+  </ul>
+</nav>
+<section id="content">
+  
+
+<p><strong>One specific challenge, when writing code as a scientist, is that we care <em>a
+lot</em> about getting the <em>right</em> answer; but of course, the <em>right</em> answer is not
+always obvious. So we should be very careful with the code we write. A piece of
+code that crashes is annoying; but a piece of code that runs, and give you the
+wrong answer can compromise your science and your career. This guide will help
+you adopt practices that make it less likely to introduce mistakes in your code,
+and more likely to catch them. Hopefully, this will let all of us write code we
+can trust more.</strong></p>
+
+<p>Good principles in scientific computing can help you write code that is easier
+to maintain, easier to reproduce, and easier to debug. But it can be difficult
+to find an introduction to get you started. The goal of this project is to
+provide reproducible documents you can use to get started on the most important
+points. You can use these lessons on your own, or as a group.</p>
+
+<p>The content is divided in three categories: <a href="/lessons/">lessons</a>,
+<a href="/capstones/">capstones</a> and <a href="/primers/">primers</a>. We recommend starting by the
+lessons - they will provide basic information. Capstones are examples of
+real-life application of the content of lessons. Finally, primers are very short
+bits of additional information, which can be browsed at any time.</p>
+
+<h2 id="who-is-this-material-for">Who is this material for?</h2>
+
+<p>This material is aimed at people who have already interacted with a computer
+using a programming language, but want to adopt best practices that make their
+code more robust. It can also be used to facilitate the onboarding of new people
+in your lab or in your project.</p>
+
+<p>Scientific computing can be very diverse, ranging from a few-step analysis
+of small data sets to simulations running for weeks on supercomputers.
+We focus on the most common situations that every scientist encounters
+at some stage of a research project: data analyses performed on a standard
+desktop computer. The general ideas and principles that we expose carry over
+to other situations as well, but the concrete tools and methods may not
+be suitable for tasks requiring special hardware such as GPUs or supercomputers,
+or for projects requiring a significant software development effort.</p>
+
+<p>We will use the <a href="http://julialang.org/">Julia</a> programming language; but you don&rsquo;t need to know
+anything about it either. We will keep the discussion very general, and not use
+any of the (very cool!) language-specific features and syntax. And do you want
+good news? You don&rsquo;t need to install anything! You can run everything on
+<a href="http://juliabox.com/">JuliaBox</a>, a cloud-based service to run reproducible documents as
+notebooks (if you want to read a short introduction to notebooks, we have
+written one <a href="https://nbviewer.jupyter.org/github/tpoisot/ScientificComputingForTheRestOfUs/blob/master/_lessons/00_introduction_to_notebooks.ipynb">here</a>).</p>
+
+<p>In fact, you will see that good practices for scientific computing have very
+little to do with tools and technical things; instead, they rely on thinking
+about programming in a slightly different way. You will be able to apply these
+principles to any language you prefer to use.</p>
+
+<h2 id="how-to-use-this-material">How to use this material</h2>
+
+<p>The best way to read this material is to keep a window with either
+<a href="http://juliabox.com/">JuliaBox</a> or a terminal running <em>Julia</em> open, and <strong>type</strong> the code. It
+is tempting to copy and paste, but typing the code actually matters.</p>
+
+<p>Snippets of code that are <em>important</em> are presented this way:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="p">[</span><span class="n">rand</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">]</span></code></pre></div>
+<p>Bits of code of lower importance (pseudocode or code you are not meant to type),
+are presented this way:</p>
+<div class="highlight"><pre class="chroma"><code class="language-raw" data-lang="raw">for each_element in vector
+  function(each_element)
+end</code></pre></div>
+<p>Finally, the output of code is presented this way:</p>
+
+<pre><code>2-element Array{Float64,1}:
+ 0.1
+ 0.0
+</code></pre>
+
+<p>Throughout the lessons, we have added some asides &ndash; they are ranked in order of
+importance. The first are &ldquo;informations&rdquo;:</p>
+
+<div class="callout information">All that should matter in the choice of tools, language, environment, is that it lets you become productive, and solve the problem you want to solve.</div>
+
+
+<p>&ldquo;Opinions&rdquo; are points we would like to raise for the reader&rsquo;s
+consideration, and can be ignored. Example:</p>
+
+<div class="callout opinion">People who think it&rsquo;s OK to criticize others based on their choice of language,
+OS, text editor, etc, should go home and think about what they did.</div>
+
+
+<p>&ldquo;Warnings&rdquo; are points that can be important, but not necessarily as a novice. It
+is worth keeping a mental note of them, especially in the long term. Example:</p>
+
+<div class="callout warning">Any time you are about to comment on people&rsquo;s choice of tools, ask yourself
+whether this is really necessary, and the answer is usually &ldquo;no&rdquo;. The Good Tool
+is the one that works for its user.</div>
+
+
+<p>&ldquo;Dangers&rdquo; are really important point, that can prove especially dangerous or
+risky to everyone. They are worth reading a few times over. Example:</p>
+
+<div class="callout danger">This toxic behaviour is driving brilliant people away, and should
+never be tolerated. Disliking Windows has not made anyone edgy or cool since
+1998.</div>
+
+
+<h2 id="workshop">Workshop</h2>
+
+<p>This material can be given in a workshop format, ideally over two days, covering
+several lessons and one or two capstone examples. Please contact <a href="mailto:timothee.poisot@umontreal.ca">Timothée
+Poisot</a> for more information.</p>
+
+<h2 id="contributing">Contributing</h2>
+
+<p>There are a number of ways to contribute. Before you start, please have a look
+at our <a href="https://github.com/tpoisot/ScientificComputingForTheRestOfUs/blob/master/CODE_OF_CONDUCT.md">Code of Conduct</a>. It boils down to <em>be nice and respectful</em> &ndash; no
+contribution, no matter how amazing it may be, justifies or excuses bad
+behaviour.</p>
+
+<p>The first thing you can do is comment on Issues that have the <a href="https://github.com/tpoisot/ScientificComputingForTheRestOfUs/labels/request%20for%20feedback">&ldquo;Request for
+feedback&rdquo;</a> label. They represent situations for which we are actively
+seeking community feedback, and anyone is always welcome to chime in.</p>
+
+<p>If you are not sure about opening an issue, you can use the
+<a href="https://gitter.im/ScientificComputingForTheRestOfUs/Lobby">chatroom</a>. We&rsquo;ll be glad to have a more informal conversation with
+you!</p>
+
+<p>If there is a more specific point you would like to raise, you can <a href="https://github.com/tpoisot/ScientificComputingForTheRestOfUs/issues/new">create a new
+Issue</a>, and explain your idea, critique, or comment. And of course,
+you can always browse the <a href="https://github.com/tpoisot/ScientificComputingForTheRestOfUs/issues">current Issues</a>, to get a sense of what is
+being discussed.</p>
+
+<p>If you want to contribute more, then great! Have a look at the <a href="https://github.com/tpoisot/ScientificComputingForTheRestOfUs/blob/master/CONTRIBUTING.md">contribution
+guidelines</a> first, to get you started with setting up a development
+environment. You can have a look at <a href="https://github.com/tpoisot/ScientificComputingForTheRestOfUs/labels/good%20first%20issue">&ldquo;Good first issues&rdquo;</a>, if you want
+some inspiration.</p>
+
+<h2 id="contributors">Contributors</h2>
+
+<p><strong>Lesson contents</strong>: Timothée Poisot, <a href="https://github.com/notzaki">Zaki Ahmed</a></p>
+
+<p><strong>Comments, ideas, feedback</strong>: Hao Ye, Philipp Bayer, Tim Head, Ethan White, Andrew MacDonald</p>
+
+<p><strong>Other contributions</strong>: Konrad Hinsen</p>
+
+<h2 id="want-to-read-more">Want to read more?</h2>
+
+<p>In a rush? Yes you are. We suggest <a href="http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005510">&ldquo;Good enough practices in scientific
+computing&rdquo;</a> to get you started.</p>
+
+<p>A little bit more time? We think <a href="http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1001745">&ldquo;Best practices in scientific
+computing&rdquo;</a> might suit you.</p>
+
+<p>Want a more complete thing to read? <a href="https://www.amazon.ca/Pragmatic-Programmer-Journeyman-Master/dp/020161622X/ref=as_li_ss_tl?ie=UTF8&amp;linkCode=sl1&amp;tag=&amp;linkId=0ff8cca36522d8539b26e536778bbb5e">&ldquo;The pragmatic programmer&rdquo;</a> is a
+masterpiece. I have also heard great things about <a href="https://www.amazon.ca/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882">&ldquo;Clean code&rdquo;</a>. The
+online book <a href="https://benlauwens.github.io/ThinkJulia.jl/latest/book.html">&ldquo;How to think like a computer scientist&rdquo;</a> is based on
+Julia, and very thorough.</p>
+
+<p>If you still have some time, you can read something about <a href="https://ojs.library.queensu.ca/index.php/IEE/article/view/5644">ways to improve user
+confidence in your software</a>, or ways to <a href="http://www.cell.com/trends/ecology-evolution/abstract/S0169-5347(15)00290-6">elevate code as a research
+output</a>.</p>
+
+<p><a href="http://www.codeisscience.com/">Code is Science</a> is a very nice project about making peer review of
+scientific code more common. They have a list of <a href="https://github.com/yochannah/code-is-science/issues/">issues you can
+tackle</a> to help!</p>
+
+<p>Finally, a short <a href="https://web.archive.org/web/20171114145519/http://blogs.nature.com/naturejobs/2017/11/10/techblog-timothee-poisot-data-science-for-the-rest-of-us/">Q&amp;A at <em>Nature Jobs</em></a> about this project.</p>
+
+<h2 id="other-information">Other information</h2>
+
+<p><img src="https://img.shields.io/github/license/tpoisot/ScientificComputingForTheRestOfUs.svg?style=flat-square" alt="license" /></p>
+
+
+      </section><script src="/js/ui.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:"neutral", curve: "basis"});</script>
+</body>
+</html>

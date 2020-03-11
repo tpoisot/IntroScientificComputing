@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Distributions on </title>
+    <link>http://sciencecomputing.io/packages/distributions/</link>
+    <description>Recent content in Distributions on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://sciencecomputing.io/packages/distributions/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Approximate Bayesian Computation</title>
+      <link>http://sciencecomputing.io/capstones/abc/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/capstones/abc/</guid>
+      <description>Approximate Bayesian computation, or ABC for short, is a very useful heuristic to estimate the posterior distribution of model parameters, specifically when the analytical expression of the likelihood function is unavailable (or when we can&amp;rsquo;t be bothered to figure it out). The theory on how ABC works will not be covered here in detail, so reading the previous article is highly recommended.
+We will rely on a few packages for this example:</description>
+    </item>
+    
+  </channel>
+</rss>

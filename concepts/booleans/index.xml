@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Booleans on </title>
+    <link>http://sciencecomputing.io/concepts/booleans/</link>
+    <description>Recent content in Booleans on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://sciencecomputing.io/concepts/booleans/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>The flow of execution</title>
+      <link>http://sciencecomputing.io/lessons/control_flow/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/lessons/control_flow/</guid>
+      <description>Programming really is a language But if you understand three words, you will be able to hold a good conversation with your computer! These three words are if, for, and while. If you have some previous experience with writing code, you can skim through this lesson.
+One great way to make your code robust is to keep it very simple, and one great way to keep your code very simple is to recognize that often, we want to do one of three things: do one thing if something happens (if), do one thing to a series of things (for), or do one thing until something happens (while).</description>
+    </item>
+    
+  </channel>
+</rss>

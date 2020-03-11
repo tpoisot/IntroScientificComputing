@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Primers on </title>
+    <link>http://sciencecomputing.io/primers/</link>
+    <description>Recent content in Primers on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://sciencecomputing.io/primers/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Advanced control flow</title>
+      <link>http://sciencecomputing.io/primers/advanced_control_flow/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/primers/advanced_control_flow/</guid>
+      <description>In the first lesson, we have presented the flow of execution as something largely unescapable. In practice, there are two important operations we may want to perform: skip an iteration, or stop the iteration process entirely. In this primer, we will see how this can be achieved using the break and next keywords.
+Understanding how next and break can be used is extremely useful as you start developing more complex workflows.</description>
+    </item>
+    
+  </channel>
+</rss>

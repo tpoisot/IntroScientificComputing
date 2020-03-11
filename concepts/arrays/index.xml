@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>arrays on </title>
+    <link>http://sciencecomputing.io/concepts/arrays/</link>
+    <description>Recent content in arrays on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://sciencecomputing.io/concepts/arrays/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Approximate Bayesian Computation</title>
+      <link>http://sciencecomputing.io/capstones/abc/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/capstones/abc/</guid>
+      <description>Approximate Bayesian computation, or ABC for short, is a very useful heuristic to estimate the posterior distribution of model parameters, specifically when the analytical expression of the likelihood function is unavailable (or when we can&amp;rsquo;t be bothered to figure it out). The theory on how ABC works will not be covered here in detail, so reading the previous article is highly recommended.
+We will rely on a few packages for this example:</description>
+    </item>
+    
+    <item>
+      <title>Runge-Kutta integration</title>
+      <link>http://sciencecomputing.io/capstones/runge_kutta_integration/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/capstones/runge_kutta_integration/</guid>
+      <description>Numerical integration, the search for solutions of differential equations, is a hallmark of scientific computing. In this lesson, we will see how we can apply multipe concepts to write our own routine for the second-order Runge-Kutta method. In practice, it is never recommended to write one&amp;rsquo;s own routine for numerical integration, as there are specific packages to handle this task. In Julia, this is DifferentialEquations.jl. This being said, writing a Runge-Kutta method is an interesting exercise.</description>
+    </item>
+    
+  </channel>
+</rss>

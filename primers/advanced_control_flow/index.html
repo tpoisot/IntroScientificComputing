@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html><head>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+  <link rel="stylesheet" href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js"></script>
+
+  <link rel="stylesheet" href="/css/normalize.css" />
+  <link rel="stylesheet" href="/css/configuration.css" />
+  <link rel="stylesheet" href="/css/index.css" />
+
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js" integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+        ]
+      });
+    });
+  </script>
+
+  <title>Advanced control flow · Scientific computing</title>
+
+</head>
+<body><nav id="main" class="sidebar">
+  <div class="toggle">
+    <a class="button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <line x1="0" y1="20" x2="100" y2="20" />
+        <line x1="0" y1="50" x2="100" y2="50" />
+        <line x1="0" y1="80" x2="100" y2="80" />
+      </svg>
+    </a>
+  </div>
+  <div class="header">
+    <h1><a href="/">Scientific computing</a></h1>
+    <h2>(for the rest of us)</h2>
+  </div>
+  <ul class="nav">
+    
+    
+    <li class="lessons"><i class="fas fa-fw fa-graduation-cap"></i><a class="sidebar-nav-item " href="/lessons/" title="">Lessons</a></li>
+    
+    <li class="primers"><i class="fas fa-fw fa-bolt"></i><a class="sidebar-nav-item  active" href="/primers/" title="">Primers</a></li>
+    
+    <li class="capstones"><i class="fas fa-fw fa-star"></i><a class="sidebar-nav-item " href="/capstones/" title="">Capstones</a></li>
+    
+    <li class="ml"><i class="fas fa-fw fa-brain"></i><a class="sidebar-nav-item " href="/machinelearning/" title="">Machine Learning</a></li>
+    
+  </ul>
+</nav>
+<section id="content">
+
+<p>In the <a href="http://sciencecomputing.io/lessons/control_flow/">first lesson</a>, we have
+presented the flow of execution as something largely unescapable. In practice,
+there are two important operations we may want to perform: skip an iteration, or
+stop the iteration process entirely. In this primer, we will see how this can be
+achieved using the <code>break</code> and <code>next</code> keywords.</p>
+
+<p>Understanding how <code>next</code> and <code>break</code> can be used is extremely useful as you
+start developing more complex workflows. It can save a lot of time when you know
+that you want to avoid some operations, and is therefore worth understanding.</p>
+
+<p>Let&rsquo;s imagine that we have the following loop:</p>
+<div class="highlight"><pre class="chroma"><code class="language-raw" data-lang="raw">i = 1
+while true
+  println(i)
+  global i += 1
+end</code></pre></div>
+<p>You should <strong>not</strong> run this, because it will run forever. This loop as no
+<em>termination condition</em>, and therefore will go on forever. Let&rsquo;s say we want to
+stop it after <code>i &gt;= 5</code> &ndash; this is something we can do using the <code>break</code> keyword:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">while</span> <span class="kc">true</span>
+  <span class="n">println</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+  <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span> <span class="o">||</span> <span class="k">break</span>
+  <span class="kd">global</span> <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="k">end</span></code></pre></div>
+<pre><code>1
+2
+3
+4
+5
+</code></pre>
+
+<p>The line we added (<code>i &lt; 5 || break</code>) will check that <code>i</code> is less than or equal
+to 5 &ndash; if this is true, then it will <code>break</code> the iteration, <em>i.e.</em> stop. Note
+that <code>i &lt; 5 || break</code> uses <a href="https://docs.julialang.org/en/v1.0/manual/control-flow/#Short-Circuit-Evaluation-1">short-circuit
+evaluation</a>,
+which is a wonderful bit of notation: simple yet efficient.</p>
+
+<p>The <code>continue</code> keyword has an extremely useful role too &ndash; it allows you to skip
+one iteration. Let&rsquo;s say that we want to perform an operation only on number
+smaller than <sup>1</sup>&frasl;<sub>3</sub>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">for</span> <span class="n">r</span> <span class="kp">in</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+  <span class="n">r</span> <span class="o">≥</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span> <span class="o">||</span> <span class="k">continue</span>
+  <span class="n">println</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="n">r</span><span class="p">;</span> <span class="n">digits</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+<span class="k">end</span></code></pre></div>
+<pre><code>1.0
+0.62
+0.84
+0.46
+0.99
+</code></pre>
+
+<p>In short, <code>continue</code> will <em>skip ahead</em> to the next element in the iteration.
+This can be very important to avoid performing operations on objects that are
+not relevant.</p>
+
+
+
+      </section><script src="/js/ui.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:"neutral", curve: "basis"});</script>
+</body>
+</html>

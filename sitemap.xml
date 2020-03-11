@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>http://sciencecomputing.io/primers/advanced_control_flow/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/capstones/abc/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/lessons/planning_ahead/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/capstones/genetic_algorithm/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/machinelearning/neuralnetwork/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/capstones/runge_kutta_integration/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/lessons/control_flow/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/lessons/writing_functions/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/lessons/avoiding_mistakes/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/booleans/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/packages/csv/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/capstones/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/packages/dataframes/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/packages/distributions/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/packages/flux/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/lessons/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/machinelearning/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/packages/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/primers/</loc>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/packages/random/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/packages/statistics/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/packages/statsbase/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/packages/statsplots/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/packages/test/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/arrays/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/assertion/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/control-flow/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/data-frames/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/defensive-programming/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/flowcharts/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/generic-code/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/iteration/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/keyword-arguments/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/numerical-precision/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/pseudo-code/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/type-stability/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/type-system/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/unit-testing/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/working-with-files/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>http://sciencecomputing.io/concepts/writing-functions/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

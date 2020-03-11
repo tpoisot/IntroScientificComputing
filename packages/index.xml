@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Packages on </title>
+    <link>http://sciencecomputing.io/packages/</link>
+    <description>Recent content in Packages on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://sciencecomputing.io/packages/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>CSV</title>
+      <link>http://sciencecomputing.io/packages/csv/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/packages/csv/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DataFrames</title>
+      <link>http://sciencecomputing.io/packages/dataframes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/packages/dataframes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Distributions</title>
+      <link>http://sciencecomputing.io/packages/distributions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/packages/distributions/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Flux</title>
+      <link>http://sciencecomputing.io/packages/flux/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/packages/flux/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Random</title>
+      <link>http://sciencecomputing.io/packages/random/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/packages/random/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Statistics</title>
+      <link>http://sciencecomputing.io/packages/statistics/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/packages/statistics/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>StatsBase</title>
+      <link>http://sciencecomputing.io/packages/statsbase/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/packages/statsbase/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>StatsPlots</title>
+      <link>http://sciencecomputing.io/packages/statsplots/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/packages/statsplots/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Test</title>
+      <link>http://sciencecomputing.io/packages/test/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/packages/test/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

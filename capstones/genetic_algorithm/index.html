@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html><head>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+  <link rel="stylesheet" href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js"></script>
+
+  <link rel="stylesheet" href="/css/normalize.css" />
+  <link rel="stylesheet" href="/css/configuration.css" />
+  <link rel="stylesheet" href="/css/index.css" />
+
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js" integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+        ]
+      });
+    });
+  </script>
+
+  <title>Genetic algorithm · Scientific computing</title>
+
+</head>
+<body><nav id="main" class="sidebar">
+  <div class="toggle">
+    <a class="button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <line x1="0" y1="20" x2="100" y2="20" />
+        <line x1="0" y1="50" x2="100" y2="50" />
+        <line x1="0" y1="80" x2="100" y2="80" />
+      </svg>
+    </a>
+  </div>
+  <div class="header">
+    <h1><a href="/">Scientific computing</a></h1>
+    <h2>(for the rest of us)</h2>
+  </div>
+  <ul class="nav">
+    
+    
+    <li class="lessons"><i class="fas fa-fw fa-graduation-cap"></i><a class="sidebar-nav-item " href="/lessons/" title="">Lessons</a></li>
+    
+    <li class="primers"><i class="fas fa-fw fa-bolt"></i><a class="sidebar-nav-item " href="/primers/" title="">Primers</a></li>
+    
+    <li class="capstones"><i class="fas fa-fw fa-star"></i><a class="sidebar-nav-item  active" href="/capstones/" title="">Capstones</a></li>
+    
+    <li class="ml"><i class="fas fa-fw fa-brain"></i><a class="sidebar-nav-item " href="/machinelearning/" title="">Machine Learning</a></li>
+    
+  </ul>
+</nav>
+<section id="content">
+
+<p>Genetic algorithm is a heuristic that takes heavy inspiration from evolutionary
+biology, to explore a space of parameters rapidly and converge to an optimum.
+Every solution is a &ldquo;genome&rdquo;, and the combinations can undergo mutation and
+recombination. By simulating a process of reproduction, over sufficiently many
+generation, this heuristic usually gives very good results. It is also simple to
+implement, and this is what we will do!</p>
+
+<p>A genetic algorithm works by measuring the fitness of a solution (<em>i.e.</em> its fit
+to a problem we have defined). We can then pick solution for &ldquo;reproduction&rdquo;,
+which involves recombination at various points in the &ldquo;genome&rdquo;, and finally a
+step for the mutation of offspring. There are an almost infinite number of
+variations at each of these steps, but we will limit ourselves to a simple case
+here.</p>
+
+<p>Specifically, we will use the <code>DataFrames</code> and <code>CSV</code> package (installed in
+<code>StatsKit</code>) to read a table containing metabolic rates of species, and then use
+genetic algorithm to try and find out the scaling exponent linking mass to the
+field metabolic rate. The data come from a meta-analysis by <a href="hudson">Lawrence N. Hudson
+and colleagues</a>, and can be downloaded as follows:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">DataFrames</span>
+<span class="k">using</span> <span class="n">Statistics</span>
+<span class="k">using</span> <span class="n">StatsBase</span>
+<span class="k">import</span> <span class="n">CSV</span>
+<span class="k">using</span> <span class="n">StatsPlots</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s">&#34;http://sciencecomputing.io/data/metabolicrates.csv&#34;</span>
+<span class="n">tmp</span> <span class="o">=</span> <span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">rates</span> <span class="o">=</span> <span class="n">CSV</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+<span class="n">rates</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span><span class="o">:</span><span class="p">]</span></code></pre></div>
+<table class="data-frame"><thead><tr><th></th><th>Class</th><th>Order</th><th>Family</th><th>Genus</th><th>Species</th><th>Study</th><th>M (kg)</th><th>FMR (kJ / day)</th></tr><tr><th></th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th><th>Float64</th><th>Float64</th></tr></thead><tbody><p>5 rows × 8 columns</p><tr><th>1</th><td>Mammalia</td><td>Carnivora</td><td>Odobenidae</td><td>Odobenus</td><td>rosmarus</td><td>Acquarone et al 2006</td><td>1370.0</td><td>345000.0</td></tr><tr><th>2</th><td>Mammalia</td><td>Carnivora</td><td>Odobenidae</td><td>Odobenus</td><td>rosmarus</td><td>Acquarone et al 2006</td><td>1250.0</td><td>417400.0</td></tr><tr><th>3</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>7.4</td><td>3100.0</td></tr><tr><th>4</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>6.95</td><td>2898.0</td></tr><tr><th>5</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>8.9</td><td>3528.0</td></tr></tbody></table>
+
+<p>Let&rsquo;s have a look at the names of the columns:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">names</span><span class="p">(</span><span class="n">rates</span><span class="p">)</span></code></pre></div>
+<pre><code>8-element Array{Symbol,1}:
+ :Class                  
+ :Order                  
+ :Family                 
+ :Genus                  
+ :Species                
+ :Study                  
+ Symbol(&quot;M (kg)&quot;)        
+ Symbol(&quot;FMR (kJ / day)&quot;)
+</code></pre>
+
+<p>We will replace the last two names, as they are not easy to work with:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">rename!</span><span class="p">(</span><span class="n">rates</span><span class="p">,</span> <span class="n">names</span><span class="p">(</span><span class="n">rates</span><span class="p">)[</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="o">:</span><span class="n">mass</span><span class="p">)</span>
+<span class="n">rename!</span><span class="p">(</span><span class="n">rates</span><span class="p">,</span> <span class="n">names</span><span class="p">(</span><span class="n">rates</span><span class="p">)[</span><span class="k">end</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="o">:</span><span class="n">fmr</span><span class="p">)</span>
+<span class="n">rates</span> <span class="o">=</span> <span class="n">rates</span><span class="p">[</span><span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">mass</span><span class="p">]</span><span class="o">.&lt;</span><span class="mf">1e3</span><span class="p">,</span><span class="o">:</span><span class="p">]</span>
+<span class="n">rates</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span><span class="o">:</span><span class="p">]</span></code></pre></div>
+<table class="data-frame"><thead><tr><th></th><th>Class</th><th>Order</th><th>Family</th><th>Genus</th><th>Species</th><th>Study</th><th>mass</th><th>fmr</th></tr><tr><th></th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th><th>String</th><th>Float64</th><th>Float64</th></tr></thead><tbody><p>5 rows × 8 columns</p><tr><th>1</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>7.4</td><td>3100.0</td></tr><tr><th>2</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>6.95</td><td>2898.0</td></tr><tr><th>3</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>8.9</td><td>3528.0</td></tr><tr><th>4</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>9.6</td><td>3881.0</td></tr><tr><th>5</th><td>Aves</td><td>Procellariiformes</td><td>Diomedeidae</td><td>Diomedea</td><td>exulans</td><td>Adams et al 1986</td><td>9.4</td><td>3830.0</td></tr></tbody></table>
+
+<p>Much better! Now let&rsquo;s try to figure out the relationship between the last two
+variables:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">scatter</span><span class="p">(</span><span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">mass</span><span class="p">],</span> <span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">fmr</span><span class="p">],</span> <span class="n">c</span><span class="o">=:</span><span class="n">teal</span><span class="p">,</span> <span class="n">leg</span><span class="o">=</span><span class="kc">false</span><span class="p">,</span> <span class="n">msc</span><span class="o">=:</span><span class="n">transparent</span><span class="p">)</span>
+<span class="n">xaxis!</span><span class="p">(</span><span class="o">:</span><span class="n">log10</span><span class="p">,</span> <span class="s">&#34;Mass (kg)&#34;</span><span class="p">)</span>
+<span class="n">yaxis!</span><span class="p">(</span><span class="o">:</span><span class="n">log10</span><span class="p">,</span> <span class="s">&#34;Field Metabolic Rate (kj per day)&#34;</span><span class="p">)</span></code></pre></div>
+<figure>
+    <img src="../figures/genetic_algorithm_4_1.png"/> <figcaption>
+            <h4>Relationship between field metabolic rate and mass - this is a neat log-log relationship, and so linear regression will give us the exponent.</h4>
+        </figcaption>
+</figure>
+
+
+<p>Neat! This is a log-log relationship, so we can represent this problem as:</p>
+
+<p>$$\text{log}{10}(\text{FMR}) \propto m\times\text{log}_{10}(\text{M})+b$$</p>
+
+<p>To simplify the problem a little bit, we will average the values within species;
+because the relation is log-log, we will average the log of the value (as
+opposed to taking the log of the averages).</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">rates</span> <span class="o">=</span> <span class="n">by</span><span class="p">(</span>
+  <span class="n">rates</span><span class="p">,</span>
+  <span class="p">[</span><span class="o">:</span><span class="n">Genus</span><span class="p">,</span> <span class="o">:</span><span class="n">Species</span><span class="p">],</span>
+  <span class="p">[</span><span class="o">:</span><span class="n">mass</span><span class="p">,</span> <span class="o">:</span><span class="n">fmr</span><span class="p">]</span> <span class="o">=&gt;</span>
+    <span class="n">x</span> <span class="o">-&gt;</span> <span class="p">(</span>
+    <span class="n">mass</span><span class="o">=</span><span class="n">mean</span><span class="p">(</span><span class="n">log10</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mass</span><span class="p">)),</span>
+    <span class="n">fmr</span><span class="o">=</span><span class="n">mean</span><span class="p">(</span><span class="n">log10</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">fmr</span><span class="p">))</span>
+    <span class="p">)</span>
+  <span class="p">)</span>
+<span class="n">rates</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span><span class="o">:</span><span class="p">]</span></code></pre></div>
+<table class="data-frame"><thead><tr><th></th><th>Genus</th><th>Species</th><th>mass</th><th>fmr</th></tr><tr><th></th><th>String</th><th>String</th><th>Float64</th><th>Float64</th></tr></thead><tbody><p>5 rows × 4 columns</p><tr><th>1</th><td>Diomedea</td><td>exulans</td><td>0.952967</td><td>3.35304</td></tr><tr><th>2</th><td>Arctocephalus</td><td>gazella</td><td>1.53131</td><td>4.32877</td></tr><tr><th>3</th><td>Sula</td><td>sula</td><td>0.0263231</td><td>3.07421</td></tr><tr><th>4</th><td>Macrotus</td><td>californicus</td><td>-1.88828</td><td>1.33622</td></tr><tr><th>5</th><td>Microtus</td><td>pennsylvanicus</td><td>-1.44936</td><td>1.9947</td></tr></tbody></table>
+
+<p>We can look at the simplified data:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">scatter</span><span class="p">(</span><span class="mf">10.0</span><span class="o">.^</span><span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">mass</span><span class="p">],</span> <span class="mf">10.0</span><span class="o">.^</span><span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">fmr</span><span class="p">],</span> <span class="n">c</span><span class="o">=:</span><span class="n">teal</span><span class="p">,</span> <span class="n">leg</span><span class="o">=</span><span class="kc">false</span><span class="p">,</span> <span class="n">msc</span><span class="o">=:</span><span class="n">transparent</span><span class="p">)</span>
+<span class="n">xaxis!</span><span class="p">(</span><span class="o">:</span><span class="n">log10</span><span class="p">,</span> <span class="s">&#34;Mass (kg)&#34;</span><span class="p">)</span>
+<span class="n">yaxis!</span><span class="p">(</span><span class="o">:</span><span class="n">log10</span><span class="p">,</span> <span class="s">&#34;Field Metabolic Rate (kj per day)&#34;</span><span class="p">)</span></code></pre></div>
+<figure>
+    <img src="../figures/genetic_algorithm_6_1.png"/> <figcaption>
+            <h4>Same data, but a little bit fewer points. In addition, aggregating by species doesn&#39;t increase the impact that well sampled species will have on the regression output.</h4>
+        </figcaption>
+</figure>
+
+
+<div class="callout information">In this capstone, we will try to write a very general code for genetic
+algorithms. It is possible to come up with a more specific code, but spending
+time to think about making code general is almost always wise, since it means we
+can seamlessly re-use already written code.</div>
+
+
+<p>Genetic algorithms represent the state of the problem as &ldquo;genomes&rdquo;, which here
+will be composed of two genes: $m$ and $b$. There are a few decisions we need to
+take already: how large is our initial population, and how much standing
+variation do we have?</p>
+
+<p>Just to be a little fancier than usual, we will define a <em>type</em> for our genomes:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">mutable</span> <span class="n">struct</span> <span class="n">Genome</span>
+  <span class="n">m</span><span class="o">::</span><span class="kt">Float64</span>
+  <span class="n">b</span><span class="o">::</span><span class="kt">Float64</span>
+<span class="k">end</span></code></pre></div>
+<div class="callout information">Defining a new type is <em>absolutely not</em> necessary. We are only doing it to show
+some interesting features of Julia.</div>
+
+
+<p>This means that our population will be of the type <code>Vector{Genome}</code>. Now, we
+will <em>add methods</em> to some of Julia&rsquo;s existing function, so we can write code
+that will read exactly like native code would:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">import</span> <span class="n">Base</span><span class="o">:</span> <span class="n">zero</span>
+<span class="n">zero</span><span class="p">(</span><span class="o">::</span><span class="kt">Type</span><span class="p">{</span><span class="n">Genome</span><span class="p">})</span> <span class="o">=</span> <span class="n">Genome</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></code></pre></div>
+<pre><code>zero (generic function with 47 methods)
+</code></pre>
+
+<p>Because we have created a <code>zero</code> method for the <code>Genome</code> type, we can create our
+population:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">population_size</span> <span class="o">=</span> <span class="mi">1_000</span>
+<span class="n">population</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">Genome</span><span class="p">,</span> <span class="n">population_size</span><span class="p">)</span>
+<span class="n">population</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">]</span></code></pre></div>
+<pre><code>5-element Array{Main.WeaveSandBox33.Genome,1}:
+ Main.WeaveSandBox33.Genome(0.0, 0.0)
+ Main.WeaveSandBox33.Genome(0.0, 0.0)
+ Main.WeaveSandBox33.Genome(0.0, 0.0)
+ Main.WeaveSandBox33.Genome(0.0, 0.0)
+ Main.WeaveSandBox33.Genome(0.0, 0.0)
+</code></pre>
+
+<p>To have a slightly more pleasing display, we can also overload the <code>show</code>
+function:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">import</span> <span class="n">Base</span><span class="o">:</span> <span class="n">show</span>
+<span class="n">show</span><span class="p">(</span><span class="n">io</span><span class="o">::</span><span class="kt">IO</span><span class="p">,</span> <span class="n">g</span><span class="o">::</span><span class="n">Genome</span><span class="p">)</span> <span class="o">=</span> <span class="n">print</span><span class="p">(</span><span class="n">io</span><span class="p">,</span> <span class="s">&#34;ŷ = </span><span class="si">$</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">m</span><span class="p">;</span> <span class="n">digits</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span><span class="s">×x + </span><span class="si">$</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">b</span><span class="p">;</span> <span class="n">digits</span><span class="o">=</span><span class="mi">3</span><span class="p">))</span><span class="s">&#34;</span><span class="p">)</span>
+<span class="n">population</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">]</span></code></pre></div>
+<pre><code>5-element Array{Main.WeaveSandBox33.Genome,1}:
+ ŷ = 0.0×x + 0.0
+ ŷ = 0.0×x + 0.0
+ ŷ = 0.0×x + 0.0
+ ŷ = 0.0×x + 0.0
+ ŷ = 0.0×x + 0.0
+</code></pre>
+
+<p>And we are now ready to start. At this point, it is useful to outline the
+general structure of the genetic algorithm:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">GA!</span><span class="p">(</span><span class="n">p</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="n">T</span><span class="p">},</span> <span class="n">fitness</span><span class="o">::</span><span class="kt">Function</span><span class="p">,</span> <span class="n">mutation!</span><span class="o">::</span><span class="kt">Function</span><span class="p">;</span> <span class="n">generations</span><span class="o">=</span><span class="mi">1_000</span><span class="p">)</span> <span class="n">where</span> <span class="p">{</span><span class="n">T</span><span class="p">}</span>
+  <span class="k">for</span> <span class="n">generation</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">generations</span>
+    <span class="n">fitnesses</span> <span class="o">=</span> <span class="n">fitness</span><span class="o">.</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">StatsBase</span><span class="o">.</span><span class="n">weights</span><span class="p">(</span><span class="n">fitnesses</span><span class="p">),</span> <span class="n">length</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">replace</span><span class="o">=</span><span class="kc">true</span><span class="p">)</span>
+    <span class="n">mutation!</span><span class="o">.</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="k">return</span> <span class="nb">nothing</span>
+<span class="k">end</span></code></pre></div>
+<pre><code>GA! (generic function with 1 method)
+</code></pre>
+
+<p>Wouldn&rsquo;t it be cool if the real code was actually that simple?</p>
+
+<p>What if I told you this <em>is</em> the real code? To make it work, we need to do two
+things. First, we need to define a <code>fitness</code> function, which, given an input
+(here, a <code>Genome</code>), will return its &ldquo;score&rdquo;. Second, we need to define a
+<code>mutation!</code> function, which will <em>modify</em> a genome.</p>
+
+<p>The fitness function can be defined as follows (note that we have already taken
+the log10 of the mass and FMR earlier):</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="kd">const</span> <span class="n">log10fmr</span> <span class="o">=</span> <span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">fmr</span><span class="p">]</span>
+<span class="kd">const</span> <span class="n">log10M</span> <span class="o">=</span> <span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">mass</span><span class="p">]</span>
+
+<span class="n">ŷ</span><span class="p">(</span><span class="n">g</span><span class="o">::</span><span class="n">Genome</span><span class="p">,</span> <span class="n">x</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">})</span><span class="o">=</span>  <span class="n">g</span><span class="o">.</span><span class="n">m</span> <span class="o">.*</span> <span class="n">x</span> <span class="o">.+</span> <span class="n">g</span><span class="o">.</span><span class="n">b</span>
+
+<span class="k">function</span> <span class="n">fmr_fitness</span><span class="p">(</span><span class="n">g</span><span class="o">::</span><span class="n">Genome</span><span class="p">)</span>
+  <span class="n">errors</span> <span class="o">=</span> <span class="n">log10fmr</span> <span class="o">.-</span> <span class="n">ŷ</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">log10M</span><span class="p">)</span>
+  <span class="n">sum_of_errors_sq</span> <span class="o">=</span> <span class="n">sum</span><span class="p">(</span><span class="n">errors</span><span class="o">.^</span><span class="mf">2.0</span><span class="p">)</span><span class="o">/</span><span class="n">length</span><span class="p">(</span><span class="n">log10fmr</span><span class="p">)</span>
+  <span class="k">return</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">sum_of_errors_sq</span>
+<span class="k">end</span></code></pre></div>
+<pre><code>fmr_fitness (generic function with 1 method)
+</code></pre>
+
+<p>The first thing we do is &ldquo;extract&rdquo; the $\text{log}_{10}$ of the FMR and mass,
+and turn them into vectors. Then we define a function which uses these vectors,
+and does the linear prediction. You may notice that this function uses elements
+from &ldquo;the outside&rdquo;, which have not been passed as arguments, and this may not be
+ideal - this is why the <code>log10...</code> variables have been declared as <code>const</code>: they
+will raise a warning if they are changed.</p>
+
+<p>We can check the score of an &ldquo;empty&rdquo; genome ($\hat y = 0$):</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">fmr_fitness</span><span class="p">(</span><span class="n">zero</span><span class="p">(</span><span class="n">Genome</span><span class="p">))</span></code></pre></div>
+<pre><code>0.1406618826939854
+</code></pre>
+
+<p>Now, let&rsquo;s define a function for mutations. Because we might want to change the
+rate at which parameters evolve, it would be useful to be able to generate
+multiple such functions. And so, our first task is to write a function that will
+return another function, which will itself modify the <code>Genome</code> object. Note that
+we <code>return nothing</code> at the end, because all of this function does is change an
+existing object.</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">using</span> <span class="n">Distributions</span>
+
+<span class="k">function</span> <span class="n">normal_error</span><span class="p">(</span><span class="n">σm</span><span class="o">::</span><span class="kt">Float64</span><span class="p">,</span> <span class="n">σb</span><span class="o">::</span><span class="kt">Float64</span><span class="p">)</span>
+  <span class="k">function</span> <span class="n">f</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="n">σm</span><span class="p">))</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">σb</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">nothing</span>
+  <span class="k">end</span>
+  <span class="k">return</span> <span class="n">f</span>
+<span class="k">end</span></code></pre></div>
+<pre><code>normal_error (generic function with 1 method)
+</code></pre>
+
+<p>We can test that this all works as expected:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">change_both!</span> <span class="o">=</span> <span class="n">normal_error</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+<span class="n">initial_genome</span> <span class="o">=</span> <span class="n">Genome</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">change_both!</span><span class="p">(</span><span class="n">initial_genome</span><span class="p">)</span>
+<span class="n">initial_genome</span></code></pre></div>
+<pre><code>ŷ = 0.185×x + 0.51
+</code></pre>
+
+<p>Let&rsquo;s now define a function to work on the actual problem:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">very_gradual_change!</span> <span class="o">=</span> <span class="n">normal_error</span><span class="p">(</span><span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">)</span></code></pre></div>
+<pre><code>(::Main.WeaveSandBox33.var&quot;#f#4&quot;{Float64,Float64}) (generic function with 1
+ method)
+</code></pre>
+
+<p>We have all of the pieces to apply our genetic algorithm. Before starting, it is
+always a good idea to try and eyeball the parameters. Judging from the plot we
+made early in the lesson, the intercept is probably just around 3, so we can
+probably draw it from $\mathcal{N}(\mu=3, \sigma=1)$; the slope seems to be
+close to one but a little bit lower, so we can get it from
+$\mathcal{N}(\mu=0.75, \sigma=0.2)$:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">population</span> <span class="o">=</span> <span class="p">[</span><span class="n">Genome</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mf">0.75</span><span class="p">,</span><span class="mf">0.2</span><span class="p">)),</span> <span class="n">rand</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">500</span><span class="p">]</span></code></pre></div>
+<pre><code>500-element Array{Main.WeaveSandBox33.Genome,1}:
+ ŷ = 0.791×x + 3.047
+ ŷ = 0.727×x + 3.623
+ ŷ = 0.69×x + 2.376 
+ ŷ = 0.648×x + 2.175
+ ŷ = 0.687×x + 3.502
+ ŷ = 0.768×x + 2.0  
+ ŷ = 1.076×x + 1.754
+ ŷ = 0.815×x + 2.816
+ ŷ = 0.53×x + 2.529 
+ ŷ = 0.58×x + 4.256 
+ ⋮                   
+ ŷ = 1.012×x + 2.53 
+ ŷ = 0.745×x + 3.453
+ ŷ = 0.282×x + 3.533
+ ŷ = 0.986×x + 3.606
+ ŷ = 0.614×x + 2.85 
+ ŷ = 0.764×x + 3.81 
+ ŷ = 0.731×x + 0.336
+ ŷ = 0.651×x + 2.498
+ ŷ = 0.994×x + 3.033
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">GA!</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">fmr_fitness</span><span class="p">,</span> <span class="n">very_gradual_change!</span><span class="p">;</span> <span class="n">generations</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span></code></pre></div>
+<p><strong><em>TODO</em></strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">scatter</span><span class="p">(</span><span class="mf">10.0</span><span class="o">.^</span><span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">mass</span><span class="p">],</span> <span class="mf">10.0</span><span class="o">.^</span><span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">fmr</span><span class="p">],</span> <span class="n">c</span><span class="o">=:</span><span class="n">teal</span><span class="p">,</span> <span class="n">leg</span><span class="o">=</span><span class="kc">false</span><span class="p">,</span> <span class="n">msc</span><span class="o">=:</span><span class="n">transparent</span><span class="p">)</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">LinRange</span><span class="p">(</span><span class="mf">10.0</span><span class="o">.^</span><span class="n">minimum</span><span class="p">(</span><span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">mass</span><span class="p">]),</span> <span class="mf">10.0</span><span class="o">.^</span><span class="n">maximum</span><span class="p">(</span><span class="n">rates</span><span class="p">[</span><span class="o">:</span><span class="n">mass</span><span class="p">]),</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">mostfit</span> <span class="o">=</span> <span class="n">fmr_fitness</span><span class="o">.</span><span class="p">(</span><span class="n">population</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">findmax</span> <span class="o">|&gt;</span> <span class="n">last</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="mf">10.0</span><span class="o">.^</span><span class="n">ŷ</span><span class="p">(</span><span class="n">population</span><span class="p">[</span><span class="n">mostfit</span><span class="p">],</span> <span class="n">log10</span><span class="o">.</span><span class="p">(</span><span class="n">pred</span><span class="p">)),</span> <span class="n">c</span><span class="o">=:</span><span class="n">orange</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ls</span><span class="o">=:</span><span class="n">dash</span><span class="p">)</span>
+<span class="n">xaxis!</span><span class="p">(</span><span class="o">:</span><span class="n">log10</span><span class="p">,</span> <span class="s">&#34;Mass (kg)&#34;</span><span class="p">)</span>
+<span class="n">yaxis!</span><span class="p">(</span><span class="o">:</span><span class="n">log10</span><span class="p">,</span> <span class="s">&#34;Field Metabolic Rate (kj per day)&#34;</span><span class="p">)</span></code></pre></div>
+<figure>
+    <img src="../figures/genetic_algorithm_19_1.png"/> <figcaption>
+            <h4>Relationship between field metabolic rate and mass - this is a neat log-log relationship, and so linear regression will give us the exponent.</h4>
+        </figcaption>
+</figure>
+
+
+<p>We can also look at the equation for the most fit genome: ŷ = 0.584×x + 2.893.</p>
+
+
+
+      </section><script src="/js/ui.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:"neutral", curve: "basis"});</script>
+</body>
+</html>

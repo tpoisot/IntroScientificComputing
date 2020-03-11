@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>pseudo-code on </title>
+    <link>http://sciencecomputing.io/concepts/pseudo-code/</link>
+    <description>Recent content in pseudo-code on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://sciencecomputing.io/concepts/pseudo-code/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Before we start...</title>
+      <link>http://sciencecomputing.io/lessons/planning_ahead/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/lessons/planning_ahead/</guid>
+      <description>Programming is intimidating If your working environment looks anything like mine, the first thing you may see on a new project will look like this - an empty text editor, and an empty code interpreter. This is highly intimidating.
+Facing an empty text editor at the beginning of a programming task is like facing an empty page at the beginning of a writing project. To make it easier to work through, one really good (but also really uncommon) approach is to walk away from the computer.</description>
+    </item>
+    
+  </channel>
+</rss>

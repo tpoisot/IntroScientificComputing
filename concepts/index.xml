@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Concepts on </title>
+    <link>http://sciencecomputing.io/concepts/</link>
+    <description>Recent content in Concepts on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://sciencecomputing.io/concepts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Booleans</title>
+      <link>http://sciencecomputing.io/concepts/booleans/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/booleans/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>arrays</title>
+      <link>http://sciencecomputing.io/concepts/arrays/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/arrays/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>assertion</title>
+      <link>http://sciencecomputing.io/concepts/assertion/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/assertion/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>control flow</title>
+      <link>http://sciencecomputing.io/concepts/control-flow/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/control-flow/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>data frames</title>
+      <link>http://sciencecomputing.io/concepts/data-frames/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/data-frames/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>defensive programming</title>
+      <link>http://sciencecomputing.io/concepts/defensive-programming/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/defensive-programming/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>flowcharts</title>
+      <link>http://sciencecomputing.io/concepts/flowcharts/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/flowcharts/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>generic code</title>
+      <link>http://sciencecomputing.io/concepts/generic-code/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/generic-code/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>iteration</title>
+      <link>http://sciencecomputing.io/concepts/iteration/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/iteration/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>keyword arguments</title>
+      <link>http://sciencecomputing.io/concepts/keyword-arguments/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/keyword-arguments/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>numerical precision</title>
+      <link>http://sciencecomputing.io/concepts/numerical-precision/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/numerical-precision/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>pseudo-code</title>
+      <link>http://sciencecomputing.io/concepts/pseudo-code/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/pseudo-code/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>type stability</title>
+      <link>http://sciencecomputing.io/concepts/type-stability/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/type-stability/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>type system</title>
+      <link>http://sciencecomputing.io/concepts/type-system/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/type-system/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>unit testing</title>
+      <link>http://sciencecomputing.io/concepts/unit-testing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/unit-testing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>working with files</title>
+      <link>http://sciencecomputing.io/concepts/working-with-files/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/working-with-files/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>writing functions</title>
+      <link>http://sciencecomputing.io/concepts/writing-functions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/concepts/writing-functions/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

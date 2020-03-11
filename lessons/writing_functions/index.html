@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html><head>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+  <link rel="stylesheet" href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js"></script>
+
+  <link rel="stylesheet" href="/css/normalize.css" />
+  <link rel="stylesheet" href="/css/configuration.css" />
+  <link rel="stylesheet" href="/css/index.css" />
+
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js" integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+        ]
+      });
+    });
+  </script>
+
+  <title>Writing functions · Scientific computing</title>
+
+</head>
+<body><nav id="main" class="sidebar">
+  <div class="toggle">
+    <a class="button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <line x1="0" y1="20" x2="100" y2="20" />
+        <line x1="0" y1="50" x2="100" y2="50" />
+        <line x1="0" y1="80" x2="100" y2="80" />
+      </svg>
+    </a>
+  </div>
+  <div class="header">
+    <h1><a href="/">Scientific computing</a></h1>
+    <h2>(for the rest of us)</h2>
+  </div>
+  <ul class="nav">
+    
+    
+    <li class="lessons"><i class="fas fa-fw fa-graduation-cap"></i><a class="sidebar-nav-item  active" href="/lessons/" title="">Lessons</a></li>
+    
+    <li class="primers"><i class="fas fa-fw fa-bolt"></i><a class="sidebar-nav-item " href="/primers/" title="">Primers</a></li>
+    
+    <li class="capstones"><i class="fas fa-fw fa-star"></i><a class="sidebar-nav-item " href="/capstones/" title="">Capstones</a></li>
+    
+    <li class="ml"><i class="fas fa-fw fa-brain"></i><a class="sidebar-nav-item " href="/machinelearning/" title="">Machine Learning</a></li>
+    
+  </ul>
+</nav>
+<section id="content">
+
+
+
+<h2 id="good-code-is-small-code">Good code is small code</h2>
+
+<p>In the previous lessons, we have seen how to express problems using <code>for</code>, <code>if</code>,
+and <code>while</code>. In this lesson, we will see how it is possible to <em>wrap</em> these
+instructions in functions. Functions allow you to write code that is modular,
+can easily be re-used, and (more importantly for us), can easily be tested,
+validated, and fixed.</p>
+
+<p>Throughout this lesson, we will pay attention to decomposing a problem into a
+series of small parts. The &ldquo;<a href="https://en.wikipedia.org/wiki/Unix_philosophy">UNIX philosophy</a>&rdquo; is a useful guide for this,
+and it can be summarized as:</p>
+
+<ol>
+<li>Make each function do one thing well</li>
+<li>Expect the output of most functions to become the input of another function</li>
+<li>Don&rsquo;t hesitate to throw away and rebuild the clumsy parts</li>
+</ol>
+
+<p>In a sense, writing a program works much like writing a manuscript. Writing a
+manuscript is a <em>big task</em>. But decomposing the task into paragraphs makes it
+more manageable. Having an outline lets you ensure that each paragraph logically
+flows into the next one. It also lets you rewrite the paragraph without breaking
+the flow of your manuscript. Good practices in scientific writing also apply to
+writing code!</p>
+
+<h2 id="after-this-lesson-you-will-be-able-to">After this lesson, you will be able to &hellip;</h2>
+
+<ul>
+<li>&hellip; create functions to automate and repeat tasks</li>
+<li>&hellip; understand the notions of input and output</li>
+<li>&hellip; understand what type stability is</li>
+</ul>
+
+<h2 id="what-is-the-value-of-π-anyways">What is the value of π anyways?</h2>
+
+<p>There is a nifty algorithm to estimate the value of $\pi$. We start by drawing a
+square, and the length of its sides is 2. Two what? Two arbitrary units, it
+doesn&rsquo;t really matter. The circle inscribed within this circle has a radius of
+$r = 1$ (arbitrary unit). And therefore, this inscribed circle has an area of
+$\pi \times r^2=\pi$ (arbitrary units squared).</p>
+
+<p>Now let&rsquo;s grab some darts (some <em>computer simulated</em> darts). If we throw them
+randomly at the square, they have a chance of falling within the circle ($\pi /
+4$, which is the area of the circle divided by the area of the square), or
+outside of the circle ($1 - \pi / 4$). So if we throw a bunch (it&rsquo;s a technical
+term for <em>some</em>) of darts ($N$) at the square, we can measure the number $n$
+that fall into the circle, and then estimate that $\pi \approx 4\times(n/N)$.</p>
+
+<p>We can decompose this problem into a series of steps. First, we need to generate
+a series of darts, with coordinates in $(0,2)$. This makes the center of the
+square $(1,1)$. We could have thrown darts in $(-1,1)$ with a center at $(0,0)$;
+or in $(5,7)$ with a center at $(6,6)$. This is largely arbitrary, but using
+$(0,2)$ will be save us almost four keystrokes!</p>
+
+<p>After the following lesson, it is tempting to write:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">darts</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">N</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.*</span><span class="mi">2</span>
+    <span class="n">push!</span><span class="p">(</span><span class="n">darts</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="k">end</span>
+<span class="n">darts</span></code></pre></div>
+<pre><code>10-element Array{Any,1}:
+ (1.9225655456880713, 1.658569803007004) 
+ (1.6680582698706812, 1.3557236665503827)
+ (0.5050215751771776, 1.4784549205481996)
+ (1.5405078126322218, 0.613905254034699) 
+ (1.0015544363511082, 1.8094555548805933)
+ (1.5380589866231302, 1.5077082285774792)
+ (1.6688886226961581, 1.6053748725468124)
+ (1.9094541174426842, 1.152405518131034) 
+ (0.2504165312914206, 0.9547856567875397)
+ (1.8288391504264139, 0.4369642853850819)
+</code></pre>
+
+<p>This introduces a few new notations. The <code>darts = []</code> instruction creates an
+<em>empty</em> array. This is not the optimal way of approaching this problem, but
+remember the UNIX philosophy: we&rsquo;ll rewrite this awkard part later. Then we use
+a <code>for</code> loop to throw the darts.</p>
+
+<p>At each step of the loop, we generate a new dart: its coordinates are <code>rand(2)</code>
+(two random numbers in $(0,1)$), which we multiply by <code>2</code> to have them in
+$(0,2)$.</p>
+
+<p>Finaly, we <em>add</em> this set of coordinates to <code>darts</code>. The <code>push!</code> function will
+take its first <em>argument</em>, and add its second argument at the end. Wait, hold
+on. What&rsquo;s an argument? It&rsquo;s something you give to a function, to get it to do
+its work. We will go into this deeply in a few moments.</p>
+
+<div class="callout opinion">Our initial intuition of writing this code &ldquo;as is&rdquo;, <em>i.e.</em> not within a
+function, is valid. It is often easier to experiment with different ways of
+expressing a problem, then wrap it up nicely in a function.</div>
+
+
+<p>This code works. But it is kind of messy. There is a <code>N</code> variable, which is
+declared even though it is unlikely we will need it (because we can get it from
+<code>length(darts)</code>, remember?). So we will put this code inside its own function.</p>
+
+<p>In <em>Julia</em> (and most other languages), we can declare functions using the
+following syntax:</p>
+
+<pre><code>function functionname(foo, bar)
+  baz = foo + bar
+  return baz
+end
+</code></pre>
+
+<p>This will generate a function called <code>functionname</code>, with two arguments. Inside
+the function, a variable called <code>baz</code> will be created, and the function will
+return its <em>value</em>.</p>
+
+<p>It is wise to think of functions as wood chippers. You can put things in, and
+you will get things out, but we strongly advise against going inside: if you
+limit the <em>inputs</em> to the function to its arguments, and its <em>effects</em> to the
+<code>return</code> statement, your function will have a neat, predictible behavior (that
+is, at least, the theory). Functions that only act on their arguments, and only
+give you something back through <code>return</code>, have no <a href="https://en.wikipedia.org/wiki/Side_effect_(computer_science)">side effect</a>.</p>
+
+<p><em>Julia</em> has a special way of indicating functions <em>with</em> side effects: they have
+a <code>!</code> at the end. Remember <code>push!</code> from the previous code block? The <code>!</code> at the
+end tells you &ldquo;Hey, you are going to change things <em>outside</em> of this function,
+be careful&rdquo;. We will write a few functions with side effects later.</p>
+
+<h3 id="writing-a-function-to-throw-darts">Writing a function to throw darts</h3>
+
+<p>But what if we want to change the number of darts we will generate? What if
+later, we want to re-use this code for anoter project? What if we don&rsquo;t want to
+have variables <code>N</code> and <code>darts</code> in our global scope? In this case, we will write
+a function.</p>
+
+<p>Our function will take an <em>input</em>, which is the number of darts we want to
+throw, and return an <em>output</em>, which is an array of coordinates of where the
+darts hit. The block below presents <em>one possible</em> implementation of such a
+function, with comments about whats is hapenning in every line:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">throw_darts</span><span class="p">(</span><span class="n">n</span><span class="o">::</span><span class="kt">Int64</span><span class="p">)</span>
+    <span class="cm">#=
+</span><span class="cm">    Let&#39;s create a space to store the results in
+</span><span class="cm">
+</span><span class="cm">    The line below will &#34;pre-allocate&#34; a variable called darts.
+</span><span class="cm">    Its type is an array, with a single dimension, which contains
+</span><span class="cm">    tuples of two floating point numbers.
+</span><span class="cm">
+</span><span class="cm">    Pre-allocation is useful when the size of objects you maipulate
+</span><span class="cm">    increases. It tells the computer to reserve enough space in memory.
+</span><span class="cm">    Also specifying the type of the objects will let the computer
+</span><span class="cm">    reserve exactly enough space in memory.
+</span><span class="cm">    =#</span>
+    <span class="n">darts</span> <span class="o">=</span> <span class="kt">Array</span><span class="p">{</span><span class="kt">Tuple</span><span class="p">{</span><span class="kt">Float64</span><span class="p">,</span><span class="kt">Float64</span><span class="p">},</span><span class="mi">1</span><span class="p">}(</span><span class="n">undef</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="cm">#=
+</span><span class="cm">    Now we can fill the variable with random darts. Julia has
+</span><span class="cm">    a nice function called `eachindex`, which is able to iterate
+</span><span class="cm">    over all positions in an array (or more broadly, over a
+</span><span class="cm">    collection). Using eachindex(darts) is equivalent to
+</span><span class="cm">    writing 1:length(darts).
+</span><span class="cm">    =#</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="n">eachindex</span><span class="p">(</span><span class="n">darts</span><span class="p">)</span>
+        <span class="cm">#=
+</span><span class="cm">        This line uses a little bit of julian notation:
+</span><span class="cm">        specifically, adding ... after a variable will
+</span><span class="cm">        &#34;unpack&#34; its elements, which lets us store them
+</span><span class="cm">        in a tuple. The same thing can be done with
+</span><span class="cm">
+</span><span class="cm">        x, y = rand(2).*2
+</span><span class="cm">        darts[i] = (x, y)
+</span><span class="cm">        =#</span>
+        <span class="n">darts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kt">Tuple</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.*</span><span class="mf">2.0</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="cm">#=
+</span><span class="cm">    Finally, we explicitly return the value of darts. This is
+</span><span class="cm">    not mandatory (by default julia returns the output of the last
+</span><span class="cm">    operation that was done within the function), but being explicit
+</span><span class="cm">    is always better than being implicit.
+</span><span class="cm">    =#</span>
+    <span class="k">return</span> <span class="n">darts</span>
+<span class="k">end</span></code></pre></div>
+<pre><code>throw_darts (generic function with 1 method)
+</code></pre>
+
+<p>Now, we can <em>call</em> this function, using <code>throw_darts(10)</code>. You can experiment
+changing <code>10</code> by other values. For example, how do you throw 124 darts?</p>
+
+<h3 id="how-many-darts-are-within-the-circle">How many darts are within the circle?</h3>
+
+<p>Now that we are able to throw darts, we can see how many of them are within the
+circle. Remember, the circle has a diameter of two, and is centered on $(1, 1)$.
+It would be tempting to take <em>all</em> the darts we generated, and see how many of
+them are within the circle. But it is almost always better to write functions
+that do the simplest thing possible: in this case, is a single dart within the
+circle?</p>
+
+<p>This is done by measuring the distance between the darts and the center of the
+circle &ndash; if it is lower than the radius, then the dart is within the circle. We
+can calculate the distance between points $(x_1, y_1)$ and $(x_2, y_2)$ as
+$\sqrt{(x_1-x_2)^2+(y_1-y_2)^2}$. This is quite easy to write as a function!</p>
+
+<p>We can decide that this function will accept as input a first point, another
+point, and a radius. So the first line will look like:</p>
+
+<pre><code>function is_within_circle(point, center, radius)
+</code></pre>
+
+<p>Then, we can take the distance between the points as</p>
+
+<pre><code>distance = (point[1]-center[1])^2 + (point[2]-center[2])^2
+</code></pre>
+
+<p>, and so the point is within the circle if</p>
+
+<pre><code>distance &lt; radius
+</code></pre>
+
+<p>Let&rsquo;s wrap this up!</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">is_within_circle</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+  <span class="n">distance</span> <span class="o">=</span> <span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">center</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span>
+  <span class="k">return</span> <span class="n">distance</span> <span class="o">&lt;=</span> <span class="n">radius</span>
+<span class="k">end</span></code></pre></div>
+<pre><code>is_within_circle (generic function with 1 method)
+</code></pre>
+
+<p>There is a more <em>idiomatic</em> way of writing this function &ndash; <em>idiomatic</em> means
+that we are using some language-specific ways of expressing operations. In this
+case, it could be</p>
+
+<pre><code>function idiomatic_is_within_circle(point, center, radius)
+  return sum((point.-center).^2) &lt; radius
+end
+</code></pre>
+
+<div class="callout opinion">Writing things in an idiomatic way is <em>sometimes</em> better. But it can be more
+confusing for people with less familiarity with the language, or more difficult
+to maintain (unless profusely commented) in the long term.</div>
+
+
+<p>Now, let&rsquo;s apply a few sanity checks to this function (we will see much more of
+this in the next lesson). We know that the center of the circle is within the
+circle, that a point above the center at a distance equal to the radius is
+within the circle, and that a point above the center as a distance greater than
+the radius is not:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&#34;Case 1: &#34;</span><span class="p">,</span> <span class="n">is_within_circle</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">))</span></code></pre></div>
+<pre><code>Case 1: true
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">println</span><span class="p">(</span><span class="s">&#34;Case 2: &#34;</span><span class="p">,</span> <span class="n">is_within_circle</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">))</span></code></pre></div>
+<pre><code>Case 2: true
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">println</span><span class="p">(</span><span class="s">&#34;Case 3: &#34;</span><span class="p">,</span> <span class="n">is_within_circle</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">),</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">))</span></code></pre></div>
+<pre><code>Case 3: false
+</code></pre>
+
+<p>Although these are very simple tests, it seems that our function checks out. So
+we can move forward. But before we do so, let us take a step back.</p>
+
+<p>So far, we have</p>
+
+<ol>
+<li>A way of throwing random darts</li>
+<li>A way of knowing which of these darts fall within a circle</li>
+</ol>
+
+<p>The next step is therefore to take each dart, in turn, and see if they are
+within the circle! We can do this with a loop. There are a few ways of doing it.</p>
+
+<p>The first is to pre-allocate an array of Boolean values (<code>true</code>/<code>false</code>), with
+as many spots as we have thrown darts, and store the result of the question <em>Is
+this dart within the circle?</em>.</p>
+
+<p>Another is to have a counter, starting at <code>0</code>, and we add <code>1</code> every time a dart
+is within the circle.</p>
+
+<p>There are probably about another million different ways to do this. Here we will
+write a function using the counter:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">how_many_darts</span><span class="p">(</span><span class="n">darts</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+    <span class="cm">#=
+</span><span class="cm">    Our function will take three inputs:
+</span><span class="cm">    1. the darts we generated
+</span><span class="cm">    2. the center of the circle
+</span><span class="cm">    3. the radius of the circle
+</span><span class="cm">    =#</span>
+
+    <span class="cm">#=
+</span><span class="cm">    We create a variable called `n`, and give it a value of `0`
+</span><span class="cm">    =#</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="cm">#=
+</span><span class="cm">    This loop uses the `for element in collection` syntax: the variable
+</span><span class="cm">    `dart` will take every vale in `darts` in turn.
+</span><span class="cm">    =#</span>
+    <span class="k">for</span> <span class="n">dart</span> <span class="kp">in</span> <span class="n">darts</span>
+
+        <span class="cm">#=
+</span><span class="cm">        Only when the dart is within the circle do we
+</span><span class="cm">        add 1 to the counter:
+</span><span class="cm">        =#</span>
+        <span class="k">if</span> <span class="n">is_within_circle</span><span class="p">(</span><span class="n">dart</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="cm">#=
+</span><span class="cm">    Finally, we explicitly return the value of n
+</span><span class="cm">    =#</span>
+    <span class="k">return</span> <span class="n">n</span>
+<span class="k">end</span></code></pre></div>
+<pre><code>how_many_darts (generic function with 1 method)
+</code></pre>
+
+<p>And we&rsquo;re done! Remember, our approximation of $\pi$ is $4\times(n/N)$, where
+$N$ is the number of darts, and $n$ is the number of hits. So we can finally
+write a function, specifying $N$, and start to estimate the value of $\pi$:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">estimate_pi</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+  <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+  <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span>
+  <span class="n">darts</span> <span class="o">=</span> <span class="n">throw_darts</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="n">how_many_darts</span><span class="p">(</span><span class="n">darts</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+  <span class="k">return</span> <span class="mi">4</span><span class="o">*</span><span class="n">n</span><span class="o">/</span><span class="n">N</span>
+<span class="k">end</span></code></pre></div>
+<pre><code>estimate_pi (generic function with 1 method)
+</code></pre>
+
+<p>Our function is <em>building</em> on the previous, small, functions we wrote. This
+results in code that is easy to read (we don&rsquo;t have to scroll through multiple
+screens to see what the function does). Because we have named our functions
+explicitely, the code is also easy to understand. In the next lesson, we will
+see that modular code is easy to <em>test</em> (and to debug).</p>
+
+<p>So, how good is our estimate?</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">estimate</span> <span class="o">=</span> <span class="n">estimate_pi</span><span class="p">(</span><span class="mi">100000</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&#34;Estimate: </span><span class="si">$</span><span class="p">(</span><span class="n">estimate</span><span class="p">)</span><span class="se">\t\t</span><span class="s">π: </span><span class="si">$</span><span class="p">(</span><span class="nb">π</span><span class="o">+</span><span class="mi">0</span><span class="p">)</span><span class="s">&#34;</span><span class="p">)</span></code></pre></div>
+<pre><code>Estimate: 3.14016		π: 3.141592653589793
+</code></pre>
+
+<h2 id="keyword-arguments-and-default-values">Keyword arguments and default values</h2>
+
+<p>In all functions thus far, we <em>had</em> to give all the values of all arguments.
+Sometimes, it make sense to have some arguments take a default value, which we
+can change when we need to, but will remain constant otherwise.</p>
+
+<div class="callout warning">Giving default values can save some time, but it means you don&rsquo;t need to <em>think</em>
+quite as much about the parameters you are using. And thinking is a pretty big
+part of research. For this reason, we think that default values should not be
+used for parameters that are central to the analysis, but should instead be
+reserved for things like filenames, number of iterations, etc.</div>
+
+
+<p>Let&rsquo;s say we want to write a quite poorly thought-out function to get the
+logarithm of any number in any base. <em>Julia</em> has a <code>log</code> function, which can be
+called with <code>log(b,n)</code> to get $\text{log}_b(n)$. We would like to write a
+function to get the $\text{log}_2$ by default, but still be able to change the
+base if we need.</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="k">function</span> <span class="n">my_log_function</span><span class="p">(</span><span class="n">n</span><span class="p">;</span> <span class="n">b</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">log</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>
+<span class="k">end</span></code></pre></div>
+<pre><code>my_log_function (generic function with 1 method)
+</code></pre>
+
+<p>We have declared the arguments of this function differently: <code>n</code> is a
+<em>non-keyword</em> argument, because it makes no sense to fix a default value. On the
+other hand, <code>b</code> has a default value of <code>2.0</code>. If we call this function using,
+for example,</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">my_log_function</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span></code></pre></div>
+<pre><code>1.0
+</code></pre>
+
+<p>then the computer will see that we have not asked for a specific value of <code>b</code>,
+and use the default. But if we use the following syntax,</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">my_log_function</span><span class="p">(</span><span class="mf">2.0</span><span class="p">;</span> <span class="n">b</span><span class="o">=</span><span class="n">ℯ</span><span class="p">)</span></code></pre></div>
+<pre><code>0.6931471805599453
+</code></pre>
+
+<p>then the value of <code>b</code> will be fixed (to $e$), and the function will use this.</p>
+
+<div class="callout opinion">Some languages allow/require to use <code>;</code> to separate keywords and non-keywords
+arguments. It is a good idea, and we recommend using it even when <em>calling</em> the
+functions: <code>my_log_function(2.0; n=2.0)</code> &ndash; this makes it clear to see where the
+keywords arguments are.</div>
+
+
+<h2 id="a-note-on-type-stability">A note on type stability</h2>
+
+<p>An important but often overlooked notion is &ldquo;type stability&rdquo;. In a nutshell, it
+means that within a function, the variables do not change their type. John Myles
+White wrote a <a href="http://www.johnmyleswhite.com/notebook/2013/12/06/writing-type-stable-code-in-julia/">great blog post about it</a>, which I encourage you to read
+after going through this lesson. Chris Rackauckas also wrote about <a href="http://www.stochasticlifestyle.com/7-julia-gotchas-handle/">common
+performance issues</a>, which features type stability.</p>
+
+<p>The issue with computers (well, one of) is that they give types to everything.
+While for us, 2, 2.0, and 2.000000&hellip;00 are the same thing, this is not the case
+for our computers. And we need to pay attention to this fact to write code that
+is reasonably fast. Let&rsquo;s start with a few illustrations:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">typeof</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></code></pre></div>
+<pre><code>Int64
+</code></pre>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">typeof</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span></code></pre></div>
+<pre><code>Float64
+</code></pre>
+
+<p>The <code>typeof</code> function tells us how the computer is thinking about its argument:
+<code>0</code> is an integer number, and <code>0.0</code> is a floating point number.</p>
+
+<p>Now, if I were to ask you what the sum of 0 and 1.0 is, you would not take
+longer than if I has asked you what the sum of 0.0 and 1.0 is. Is it true for
+the computer?</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">time_int_and_float</span> <span class="o">=</span> <span class="nd">@elapsed</span> <span class="mi">0</span> <span class="o">+</span> <span class="mf">1.0</span>
+<span class="n">time_float_and_float</span> <span class="o">=</span> <span class="nd">@elapsed</span> <span class="mf">0.0</span> <span class="o">+</span> <span class="mf">1.0</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&#34;It takes </span><span class="si">$</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="n">time_int_and_float</span><span class="o">/</span><span class="n">time_float_and_float</span><span class="p">;</span> <span class="n">digits</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span><span class="s"> times longer to work with different types!&#34;</span><span class="p">)</span></code></pre></div>
+<pre><code>It takes 1.3 times longer to work with different types!
+</code></pre>
+
+<p>The exact number may vary, but on my machine, it takes about 1.5 times longer to
+do the operation with different types. Why is that?</p>
+
+<p>It is because the computer needs to &ldquo;rethink&rdquo; about one of these numbers (<em>i.e.</em>
+to change <code>0</code> in <code>0.0</code>, or <code>1.0</code> in <code>1</code>), before it can do the actual operation.
+There is no obvious way to identify functions in which arguments will change
+type over time. This being said, writing short functions, and thinking about
+what goes in and out, will help catch some mistakes.</p>
+
+<p>And speaking of catching mistakes&hellip;. the next lesson will be focused on making
+sure our code does what we want it to do. We will discuss defensive programming
+and a little bit of testing.</p>
+
+
+
+      </section><script src="/js/ui.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:"neutral", curve: "basis"});</script>
+</body>
+</html>

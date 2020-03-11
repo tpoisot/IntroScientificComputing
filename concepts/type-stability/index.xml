@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>type stability on </title>
+    <link>http://sciencecomputing.io/concepts/type-stability/</link>
+    <description>Recent content in type stability on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://sciencecomputing.io/concepts/type-stability/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Writing functions</title>
+      <link>http://sciencecomputing.io/lessons/writing_functions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/lessons/writing_functions/</guid>
+      <description>Good code is small code In the previous lessons, we have seen how to express problems using for, if, and while. In this lesson, we will see how it is possible to wrap these instructions in functions. Functions allow you to write code that is modular, can easily be re-used, and (more importantly for us), can easily be tested, validated, and fixed.
+Throughout this lesson, we will pay attention to decomposing a problem into a series of small parts.</description>
+    </item>
+    
+  </channel>
+</rss>

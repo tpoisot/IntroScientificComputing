@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>type system on </title>
+    <link>http://sciencecomputing.io/concepts/type-system/</link>
+    <description>Recent content in type system on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://sciencecomputing.io/concepts/type-system/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Genetic algorithm</title>
+      <link>http://sciencecomputing.io/capstones/genetic_algorithm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/capstones/genetic_algorithm/</guid>
+      <description>Genetic algorithm is a heuristic that takes heavy inspiration from evolutionary biology, to explore a space of parameters rapidly and converge to an optimum. Every solution is a &amp;ldquo;genome&amp;rdquo;, and the combinations can undergo mutation and recombination. By simulating a process of reproduction, over sufficiently many generation, this heuristic usually gives very good results. It is also simple to implement, and this is what we will do!
+A genetic algorithm works by measuring the fitness of a solution (i.</description>
+    </item>
+    
+  </channel>
+</rss>

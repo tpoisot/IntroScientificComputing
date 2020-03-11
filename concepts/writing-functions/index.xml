@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>writing functions on </title>
+    <link>http://sciencecomputing.io/concepts/writing-functions/</link>
+    <description>Recent content in writing functions on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://sciencecomputing.io/concepts/writing-functions/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Avoiding mistakes</title>
+      <link>http://sciencecomputing.io/lessons/avoiding_mistakes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/lessons/avoiding_mistakes/</guid>
+      <description>We can&amp;rsquo;t avoid mistakes But we can work as cautiously as possible, to make sure we catch them in time. It is always better to try and fail to run something, than to have the operation keep going and accumulating mistakes.
+There are four types of mistakes to look out for: mistakes in the code, confusing interface, issues with arguments, and lack of integration. Some are caused by the programmer, and some are caused by the user.</description>
+    </item>
+    
+    <item>
+      <title>Runge-Kutta integration</title>
+      <link>http://sciencecomputing.io/capstones/runge_kutta_integration/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/capstones/runge_kutta_integration/</guid>
+      <description>Numerical integration, the search for solutions of differential equations, is a hallmark of scientific computing. In this lesson, we will see how we can apply multipe concepts to write our own routine for the second-order Runge-Kutta method. In practice, it is never recommended to write one&amp;rsquo;s own routine for numerical integration, as there are specific packages to handle this task. In Julia, this is DifferentialEquations.jl. This being said, writing a Runge-Kutta method is an interesting exercise.</description>
+    </item>
+    
+    <item>
+      <title>Writing functions</title>
+      <link>http://sciencecomputing.io/lessons/writing_functions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://sciencecomputing.io/lessons/writing_functions/</guid>
+      <description>Good code is small code In the previous lessons, we have seen how to express problems using for, if, and while. In this lesson, we will see how it is possible to wrap these instructions in functions. Functions allow you to write code that is modular, can easily be re-used, and (more importantly for us), can easily be tested, validated, and fixed.
+Throughout this lesson, we will pay attention to decomposing a problem into a series of small parts.</description>
+    </item>
+    
+  </channel>
+</rss>

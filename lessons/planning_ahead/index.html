@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html><head>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+  <link rel="stylesheet" href='//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js"></script>
+
+  <link rel="stylesheet" href="/css/normalize.css" />
+  <link rel="stylesheet" href="/css/configuration.css" />
+  <link rel="stylesheet" href="/css/index.css" />
+
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css" integrity="sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js" integrity="sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js" integrity="sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false}
+        ]
+      });
+    });
+  </script>
+
+  <title>Before we start... · Scientific computing</title>
+
+</head>
+<body><nav id="main" class="sidebar">
+  <div class="toggle">
+    <a class="button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <line x1="0" y1="20" x2="100" y2="20" />
+        <line x1="0" y1="50" x2="100" y2="50" />
+        <line x1="0" y1="80" x2="100" y2="80" />
+      </svg>
+    </a>
+  </div>
+  <div class="header">
+    <h1><a href="/">Scientific computing</a></h1>
+    <h2>(for the rest of us)</h2>
+  </div>
+  <ul class="nav">
+    
+    
+    <li class="lessons"><i class="fas fa-fw fa-graduation-cap"></i><a class="sidebar-nav-item  active" href="/lessons/" title="">Lessons</a></li>
+    
+    <li class="primers"><i class="fas fa-fw fa-bolt"></i><a class="sidebar-nav-item " href="/primers/" title="">Primers</a></li>
+    
+    <li class="capstones"><i class="fas fa-fw fa-star"></i><a class="sidebar-nav-item " href="/capstones/" title="">Capstones</a></li>
+    
+    <li class="ml"><i class="fas fa-fw fa-brain"></i><a class="sidebar-nav-item " href="/machinelearning/" title="">Machine Learning</a></li>
+    
+  </ul>
+</nav>
+<section id="content">
+
+
+
+<h2 id="programming-is-intimidating">Programming is intimidating</h2>
+
+<p>If your working environment looks anything like mine, the first thing you may
+see on a new project will look like this - an empty text editor, and an empty
+code interpreter. This is highly intimidating.</p>
+
+<p><img src="../figures/white-page.png" alt="test" /></p>
+
+<p>Facing an empty text editor at the beginning of a programming task is like
+facing an empty page at the beginning of a writing project. To make it easier to
+work through, one really good (but also really uncommon) approach is to walk
+away from the computer. Instead of trying to write code, we will first try to
+articulate the structure of our project - and not jumping to our keyboard works
+really well for this.</p>
+
+<p>In this lesson, we will see how we can optimize our preparation for any project,
+by having good project organization, thinking about the flowchart of our
+program, and writing pseudo-code as needed.</p>
+
+<h2 id="after-this-lesson-you-will-be-able-to">After this lesson, you will be able to &hellip;</h2>
+
+<ul>
+<li>&hellip; organize a project</li>
+<li>&hellip; write the flowchart of your program</li>
+<li>&hellip; work out some of the most complex pieces using pseudo-code</li>
+</ul>
+
+<h2 id="project-management">Project management</h2>
+
+<p>Here is a productivity tip: work in such a way that you do not need to think
+about the non-important parts of your project. For us, this means having a
+standard layout for any project, and using it consistently. We will suggest one
+such layout below, but this is not the only one. There are an infinity of them,
+and the one that <em>works</em> is the one that works <em>for you</em>.</p>
+
+<p>Still, there are some good guidelines to follow.</p>
+
+<p>First, a project is a folder, everything in the project belongs to the folder,
+and everything outside the folder cannot belong to the project. This is
+important because it maximizes the chances that you can copy your project to
+another computer, and have it &ldquo;just work&rdquo;. Of course in real life, things seldom
+&ldquo;just work&rdquo;, and this is why we should pay extra care to the practices that
+maximise the chances of it being the case.</p>
+
+<div class="callout information">This is not necessarily true if your project involves remote computing - or very
+large amounts of data. But then again, if you work in such a way, we expect that
+you will have read the documentation, and sought proper training.</div>
+
+
+<p>Second, file paths are not your friends. By far the biggest obstacle to
+reproducibility is the difference in ways to tell the computer <em>where files
+are</em>. We encourage to use <em>relative paths</em>, relative specifically to the folder
+in which your project lives. So, for example,</p>
+<div class="highlight"><pre class="chroma"><code class="language-raw" data-lang="raw">/home/tim/ohno/my/computer/is_a_mess/MyCoolProject/data/file.txt</code></pre></div>
+<p>is an <em>absolute</em> file path, from the very root of where files live. But I am
+only working on <code>MyCoolProject</code> at the moment, so the <em>relative</em> path of this
+file is</p>
+<div class="highlight"><pre class="chroma"><code class="language-raw" data-lang="raw">data/file.txt</code></pre></div>
+<p>Or is it? On my machine running Linux, sure. But on a Windows machine I would
+use in a computer lab? The file would be at</p>
+<div class="highlight"><pre class="chroma"><code class="language-raw" data-lang="raw">data\file.txt</code></pre></div>
+<p>This difference between <code>/</code> and <code>\</code> is trivial to us, but <em>not</em> to the computer.
+So to avoid these issues, it is better to let your programming language
+construct the path correclty. <em>Julia</em> has the <code>joinpath</code> function, and so we
+would refer to this file as:</p>
+<div class="highlight"><pre class="chroma"><code class="language-julia" data-lang="julia"><span class="n">joinpath</span><span class="p">(</span><span class="s">&#34;data&#34;</span><span class="p">,</span> <span class="s">&#34;file.txt&#34;</span><span class="p">)</span></code></pre></div>
+<pre><code>&quot;data/file.txt&quot;
+</code></pre>
+
+<p>Third, and final principle, similar things should be grouped together. In other
+words, it will be easier to navigate our project if there is a folder called
+<code>data</code> and it contains data, a folder called <code>figures</code> and it contains figures,
+and a folder called <code>code</code> which contains code. The name and variety of these
+folders is left up to you.</p>
+
+<p>With this in mind, here is a possible template for a project.</p>
+<div class="highlight"><pre class="chroma"><code class="language-raw" data-lang="raw">.
+├── .git                    # We use version control, always!
+│   └── ...
+├── artifacts               # Outputs that are not figures go here
+│   └── summary.csv
+├── code                    # Code that creates something goes here
+│   ├── figure01.jl
+│   └── simulations.jl
+├── data                    # Raw data goes here
+│   └── BCI.data
+├── lib                     # Useful functions go here
+│   ├── environmentaldata.jl
+│   └── model.jl
+├── LICENSE                 # We use a license, always!
+├── README.md               # Also mandatory: a README
+├── Project.toml
+├── Manifest.toml
+└── text                    # This folder can store notes and documents
+    └── notes.md</code></pre></div>
+<p><a href="readme">README</a></p>
+
+<p><a href="license">LICENSE</a></p>
+
+<p><a href="pkg"><em>Julia</em> package manager</a></p>
+
+<h2 id="flowcharts">Flowcharts</h2>
+
+<p>One of the most powerful tool to plan a programming task is to draw a flochart.
+In simple terms, a flowchart will let you map the different steps that the
+program will have to follow, and see what is required for each of them. To
+illustrate, we will use a flowchart not of a program, but of a pancake recipe.</p>
+
+<p>At the beginning, it can be useful to break the task down into coarse steps:</p>
+
+<div class="mermaid" align="center">
+graph LR
+
+prepare --> cook
+cook --> eat
+</div>
+
+
+<p>This is not much to look at, but this is a very high-level view of what we want
+to achieve. It is also easy to zoom in on every task, and try to further break
+it down into smaller tasks. Let&rsquo;s do this for the task at left: <em>prepare</em>.</p>
+
+<div class="mermaid" align="center">
+graph LR
+
+liquid[liquid ingredients] --> batter
+solid[solid ingredients] --> batter
+batter --> cook
+cook --> eat
+</div>
+
+
+<p>&ldquo;All&rdquo; we have done so far is to split the <em>prepare</em> step into the preparation of
+solid and liquid ingredients. To come up with a full flowchart, we need to
+repeat this process until we are satisfied by the completeness of it:</p>
+
+<div class="mermaid" align="center">
+graph LR
+
+liquid[liquid ingredients] --> mix{mix}
+solid[solid ingredients] --> mix
+mix --> batter
+batter --> cook{cook}
+cook --> eat{eat}
+</div>
+
+
+<p>Notice that we have introduced a new shape: the rotated square will be used to
+note <em>actions</em>, and anything else will be either an output or an input of these
+actions.</p>
+
+<div class="callout opinion">We like the idea of using different shapes to indicate different steps: what
+goes in, what is the action, are there any artifacts produced or side-effects?
+This being said, even a very coarse flowchart can help you.</div>
+
+
+<p>If we repeat the exercise for most of the boxes, we may end up with a flowchart
+like this. It might seem a little overwhelming at first, but this is a helpful
+document. It maps out the precise steps and processes in your project, and can
+help you both to <em>plan</em> what to write, but also to <em>understand</em> what you have
+written previously.</p>
+
+<div class="mermaid" align="center">
+graph TD
+
+flour --> sift{sift}
+sugar --> mix1{mix}
+bak[baking powder] --> mix1
+salt --> mix1
+sift --> mix1
+
+milk --> mix2{mix}
+eggs --> whisk1{whisk}
+whisk1 --> mix2
+butter --> melt{melt}
+melt --> mix2
+
+mix1 --> combine{combine}
+mix2 --> combine
+combine --> batter
+
+griddle[flat griddle] --> heat{heat}
+
+batter --> cook{cook}
+heat --> cook
+
+cook --> flip{flip}
+flip --> cook2{cook}
+cook2 --> pancake
+
+pancake --> eat{eat}
+
+</div>
+
+
+<h2 id="pseudo-code">Pseudo-code</h2>
+
+<ul>
+<li>&hellip;</li>
+</ul>
+
+<h2 id="use-cases">Use cases</h2>
+
+<h2 id="basic-tests">Basic tests</h2>
+
+
+
+      </section><script src="/js/ui.js"></script>
+<script>mermaid.initialize({startOnLoad:true, theme:"neutral", curve: "basis"});</script>
+</body>
+</html>
