@@ -77,51 +77,12 @@ of Naive Bayes classification is that it can work even if you only have access
 to the moments of the distribution, and not to the raw data themselves!</p><p>We now need to create statistical distributions from the information in this
 table - in <em>Julia</em>, a dataframe can store just about any type of information,
 so it is perfectly fine to store the object representing the normal distribution
-for each variable and cultivar in a new column.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>distribution_data</span><span class=o></span><span class=o>.</span><span class=n>distribution</span><span class=o></span> <span class=o>=</span> <span class=p>[</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=n>row</span><span class=o></span><span class=o>.</span><span class=n>μ</span><span class=o></span><span class=p>,</span> <span class=n>row</span><span class=o></span><span class=o>.</span><span class=n>σ</span><span class=o></span><span class=p>)</span> <span class=k>for</span> <span class=n>row</span><span class=o></span> <span class=kp>in</span> <span class=n>eachrow</span><span class=o></span><span class=p>(</span><span class=n>distribution_data</span><span class=o></span><span class=p>)</span><span class=p>]</span>
-</code></pre></div><pre><code>21-element Array{Distributions.Normal{Float64},1}:
- Distributions.Normal{Float64}(μ=18.333809523809517, σ=1.4202583006456944) 
- 
- Distributions.Normal{Float64}(μ=14.312033898305087, σ=1.1531333320955184) 
- 
- Distributions.Normal{Float64}(μ=11.867192982456144, σ=0.7226655875150318) 
- 
- Distributions.Normal{Float64}(μ=16.139365079365078, σ=0.598993437994842)  
- 
- Distributions.Normal{Float64}(μ=14.279152542372882, σ=0.5509906067651469) 
- 
- Distributions.Normal{Float64}(μ=13.244912280701756, σ=0.3498832601587969) 
- 
- Distributions.Normal{Float64}(μ=0.8831063492063493, σ=0.015794955023635513
-)
- Distributions.Normal{Float64}(μ=0.8807694915254234, σ=0.015726830294636812
-)
- Distributions.Normal{Float64}(μ=0.849321052631579, σ=0.020734337779584246)
- 
- Distributions.Normal{Float64}(μ=6.152365079365081, σ=0.2639895710053532)  
- 
- ⋮                                                                         
- 
- Distributions.Normal{Float64}(μ=3.6754603174603178, σ=0.18729800520757373)
- 
- Distributions.Normal{Float64}(μ=3.2431694915254243, σ=0.17427625241734326)
- 
- Distributions.Normal{Float64}(μ=2.8497543859649124, σ=0.140664657037041)  
- 
- Distributions.Normal{Float64}(μ=3.6029841269841265, σ=1.1826898605279395) 
- 
- Distributions.Normal{Float64}(μ=2.722477966101695, σ=1.1786889249278267)  
- 
- Distributions.Normal{Float64}(μ=4.724087719298246, σ=1.1998727355239114)  
- 
- Distributions.Normal{Float64}(μ=6.023619047619047, σ=0.2534568378710555)  
- 
- Distributions.Normal{Float64}(μ=5.078237288135592, σ=0.2448924703495358)  
- 
- Distributions.Normal{Float64}(μ=5.121754385964913, σ=0.16573508128311212)
-</code></pre><p>Of course, this format is not ideal for what we're about to do (measure the
+for each variable and cultivar in a new column.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>distribution_data</span><span class=o></span><span class=o>.</span><span class=n>distribution</span><span class=o></span> <span class=o>=</span> <span class=p>[</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=n>row</span><span class=o></span><span class=o>.</span><span class=n>μ</span><span class=o></span><span class=p>,</span> <span class=n>row</span><span class=o></span><span class=o>.</span><span class=n>σ</span><span class=o></span><span class=p>)</span> <span class=k>for</span> <span class=n>row</span><span class=o></span> <span class=kp>in</span> <span class=n>eachrow</span><span class=o></span><span class=p>(</span><span class=n>distribution_data</span><span class=o></span><span class=p>)</span><span class=p>]</span><span class=p>;</span>
+</code></pre></div><p>Of course, this format is not ideal for what we're about to do (measure the
 probability that a sample belongs to a class), so we will unstack it by cultivar
 (this drops the <code>μ</code> and <code>σ</code> columns, but they are not needed anymore):</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>distributions</span><span class=o></span> <span class=o>=</span> <span class=n>unstack</span><span class=o></span><span class=p>(</span><span class=n>distribution_data</span><span class=o></span><span class=p>,</span> <span class=o>:</span><span class=n>cultivar</span><span class=o></span><span class=p>,</span> <span class=o>:</span><span class=n>variable</span><span class=o></span><span class=p>,</span> <span class=o>:</span><span class=n>distribution</span><span class=o></span><span class=p>)</span>
-</code></pre></div><table class=data-frame><thead><tr><th></th><th>cultivar</th><th>area</th><th>asymmetry</th><th>compactness</th><th>kernel_groove</th><th>kernel_length</th><th>kernel_width</th><th>perimeter</th></tr><tr><th></th><th>Float64</th><th>Distrib…⍰</th><th>Distrib…⍰</th><th>Distrib…⍰</th><th>Distrib…⍰</th><th>Distrib…⍰</th><th>Distrib…⍰</th><th>Distrib…⍰</th></tr></thead><tbody><p>3 rows × 8 columns</p><tr><th>1</th><td>1.0</td><td>Distributions.Normal{Float64}(μ=14.312, σ=1.15313)</td><td>Distributions.Normal{Float64}(μ=2.72248, σ=1.17869)</td><td>Distributions.Normal{Float64}(μ=0.880769, σ=0.0157268)</td><td>Distributions.Normal{Float64}(μ=5.07824, σ=0.244892)</td><td>Distributions.Normal{Float64}(μ=5.50188, σ=0.224089)</td><td>Distributions.Normal{Float64}(μ=3.24317, σ=0.174276)</td><td>Distributions.Normal{Float64}(μ=14.2792, σ=0.550991)</td></tr><tr><th>2</th><td>2.0</td><td>Distributions.Normal{Float64}(μ=18.3338, σ=1.42026)</td><td>Distributions.Normal{Float64}(μ=3.60298, σ=1.18269)</td><td>Distributions.Normal{Float64}(μ=0.883106, σ=0.015795)</td><td>Distributions.Normal{Float64}(μ=6.02362, σ=0.253457)</td><td>Distributions.Normal{Float64}(μ=6.15237, σ=0.26399)</td><td>Distributions.Normal{Float64}(μ=3.67546, σ=0.187298)</td><td>Distributions.Normal{Float64}(μ=16.1394, σ=0.598993)</td></tr><tr><th>3</th><td>3.0</td><td>Distributions.Normal{Float64}(μ=11.8672, σ=0.722666)</td><td>Distributions.Normal{Float64}(μ=4.72409, σ=1.19987)</td><td>Distributions.Normal{Float64}(μ=0.849321, σ=0.0207343)</td><td>Distributions.Normal{Float64}(μ=5.12175, σ=0.165735)</td><td>Distributions.Normal{Float64}(μ=5.2374, σ=0.139699)</td><td>Distributions.Normal{Float64}(μ=2.84975, σ=0.140665)</td><td>Distributions.Normal{Float64}(μ=13.2449, σ=0.349883)</td></tr></tbody></table><p>And with this information, we are ready to make a prediction. We will keep the
+<span class=n>select</span><span class=o></span><span class=p>(</span><span class=n>distributions</span><span class=o></span><span class=p>,</span> <span class=p>[</span><span class=o>:</span><span class=n>cultivar</span><span class=o></span><span class=p>,</span> <span class=o>:</span><span class=n>area</span><span class=o></span><span class=p>,</span> <span class=o>:</span><span class=n>compactness</span><span class=o></span><span class=p>]</span><span class=p>)</span>
+</code></pre></div><table class=data-frame><thead><tr><th></th><th>cultivar</th><th>area</th><th>compactness</th></tr><tr><th></th><th>Float64</th><th>Distrib…⍰</th><th>Distrib…⍰</th></tr></thead><tbody><p>3 rows × 3 columns</p><tr><th>1</th><td>1.0</td><td>Distributions.Normal{Float64}(μ=14.312, σ=1.15313)</td><td>Distributions.Normal{Float64}(μ=0.880769, σ=0.0157268)</td></tr><tr><th>2</th><td>2.0</td><td>Distributions.Normal{Float64}(μ=18.3338, σ=1.42026)</td><td>Distributions.Normal{Float64}(μ=0.883106, σ=0.015795)</td></tr><tr><th>3</th><td>3.0</td><td>Distributions.Normal{Float64}(μ=11.8672, σ=0.722666)</td><td>Distributions.Normal{Float64}(μ=0.849321, σ=0.0207343)</td></tr></tbody></table><p>And with this information, we are ready to make a prediction. We will keep the
 cultivar information from the <code>leftovers</code> dataset, and then remove it to
 simulate what would happen if we had, for example, spilled all of our wheat
 kernels and had to put them in the correct kernel bags.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>true_cultivar</span><span class=o></span> <span class=o>=</span> <span class=n>leftovers</span><span class=o></span><span class=o>.</span><span class=n>cultivar</span><span class=o></span>
