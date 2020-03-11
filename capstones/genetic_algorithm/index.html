@@ -142,7 +142,7 @@ existing object.</p><div class=highlight><pre class=chroma><code class=language-
 <span class=n>initial_genome</span><span class=o></span> <span class=o>=</span> <span class=n>Genome</span><span class=o></span><span class=p>(</span><span class=mf>0.2</span><span class=p>,</span> <span class=mf>0.5</span><span class=p>)</span>
 <span class=n>change_both!</span><span class=o></span><span class=p>(</span><span class=n>initial_genome</span><span class=o></span><span class=p>)</span>
 <span class=n>initial_genome</span><span class=o></span>
-</code></pre></div><pre><code>ŷ = 0.202×x + 0.501
+</code></pre></div><pre><code>ŷ = 0.198×x + 0.507
 </code></pre><p>Let's now define a function to work on the actual problem:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>very_gradual_change!</span><span class=o></span> <span class=o>=</span> <span class=n>normal_error</span><span class=o></span><span class=p>(</span><span class=mf>1e-3</span><span class=p>,</span> <span class=mf>1e-3</span><span class=p>)</span>
 </code></pre></div><pre><code>(::getfield(Main.WeaveSandBox0, Symbol(&quot;#f#4&quot;)){Float64,Float64}) (generic 
 function with 1 method)
@@ -153,26 +153,26 @@ probably draw it from $\mathcal{N}(\mu=3, \sigma=1)$; the slope seems to be
 close to one but a little bit lower, so we can get it from
 $\mathcal{N}(\mu=0.75, \sigma=0.2)$:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>population</span><span class=o></span> <span class=o>=</span> <span class=p>[</span><span class=n>Genome</span><span class=o></span><span class=p>(</span><span class=n>rand</span><span class=o></span><span class=p>(</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=mf>0.75</span><span class=p>,</span><span class=mf>0.2</span><span class=p>)</span><span class=p>)</span><span class=p>,</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=mi>3</span><span class=p>,</span><span class=mi>1</span><span class=p>)</span><span class=p>)</span><span class=p>)</span> <span class=k>for</span> <span class=n>i</span><span class=o></span> <span class=kp>in</span> <span class=mi>1</span><span class=o>:</span><span class=mi>500</span><span class=p>]</span>
 </code></pre></div><pre><code>500-element Array{Main.WeaveSandBox0.Genome,1}:
- ŷ = 0.653×x + 1.704
- ŷ = 0.698×x + 4.232
- ŷ = 0.927×x + 4.041
- ŷ = 0.471×x + 3.471
- ŷ = 0.87×x + 4.375 
- ŷ = 0.521×x + 2.749
- ŷ = 0.888×x + 2.477
- ŷ = 0.939×x + 3.664
- ŷ = 0.794×x + 4.082
- ŷ = 0.672×x + 3.562
+ ŷ = 0.484×x + 3.266
+ ŷ = 1.003×x + 3.514
+ ŷ = 0.382×x + 2.923
+ ŷ = 0.915×x + 3.541
+ ŷ = 0.915×x + 2.196
+ ŷ = 0.705×x + 1.554
+ ŷ = 0.865×x + 2.47 
+ ŷ = 0.993×x + 2.478
+ ŷ = 0.585×x + 5.12 
+ ŷ = 0.487×x + 3.162
  ⋮                   
- ŷ = 0.61×x + 3.631 
- ŷ = 0.918×x + 3.382
- ŷ = 0.923×x + 3.3  
- ŷ = 0.758×x + 4.553
- ŷ = 0.741×x + 4.869
- ŷ = 1.026×x + 3.142
- ŷ = 0.564×x + 4.564
- ŷ = 0.889×x + 4.872
- ŷ = 0.762×x + 5.028
+ ŷ = 0.636×x + 3.369
+ ŷ = 0.913×x + 2.532
+ ŷ = 0.932×x + 4.056
+ ŷ = 0.398×x + 2.126
+ ŷ = 0.877×x + 2.597
+ ŷ = 0.522×x + 3.089
+ ŷ = 0.709×x + 1.883
+ ŷ = 0.504×x + 2.792
+ ŷ = 0.872×x + 4.265
 </code></pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>GA!</span><span class=o></span><span class=p>(</span><span class=n>population</span><span class=o></span><span class=p>,</span> <span class=n>fmr_fitness</span><span class=o></span><span class=p>,</span> <span class=n>very_gradual_change!</span><span class=o></span><span class=p>;</span> <span class=n>generations</span><span class=o></span><span class=o>=</span><span class=mi>10000</span><span class=p>)</span>
 </code></pre></div><p><strong><em>TODO</em></strong></p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>scatter</span><span class=o></span><span class=p>(</span><span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>fmr</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>teal</span><span class=o></span><span class=p>,</span> <span class=n>leg</span><span class=o></span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>msc</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>transparent</span><span class=o></span><span class=p>)</span>
 <span class=n>pred</span><span class=o></span> <span class=o>=</span> <span class=n>collect</span><span class=o></span><span class=p>(</span><span class=n>LinRange</span><span class=o></span><span class=p>(</span><span class=mf>10.0</span><span class=o>.^</span><span class=n>minimum</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>)</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>maximum</span><span class=o></span><span class=p>(</span><span class=n>rates</span><span class=o></span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=o></span><span class=p>]</span><span class=p>)</span><span class=p>,</span> <span class=mi>100</span><span class=p>)</span><span class=p>)</span>
@@ -180,4 +180,4 @@ $\mathcal{N}(\mu=0.75, \sigma=0.2)$:</p><div class=highlight><pre class=chroma><
 <span class=n>plot!</span><span class=o></span><span class=p>(</span><span class=n>pred</span><span class=o></span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>ŷ</span><span class=o></span><span class=p>(</span><span class=n>population</span><span class=o></span><span class=p>[</span><span class=n>mostfit</span><span class=o></span><span class=p>]</span><span class=p>,</span> <span class=n>log10</span><span class=o></span><span class=o>.</span><span class=p>(</span><span class=n>pred</span><span class=o></span><span class=p>)</span><span class=p>)</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>orange</span><span class=o></span><span class=p>,</span> <span class=n>lw</span><span class=o></span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>ls</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>dash</span><span class=o></span><span class=p>)</span>
 <span class=n>xaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>M</span><span class=s>a</span><span class=s>s</span><span class=s>s</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>g</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
 <span class=n>yaxis!</span><span class=o></span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=o></span><span class=p>,</span> <span class=s>&#34;</span><span class=s>F</span><span class=s>i</span><span class=s>e</span><span class=s>l</span><span class=s>d</span><span class=s> </span><span class=s>M</span><span class=s>e</span><span class=s>t</span><span class=s>a</span><span class=s>b</span><span class=s>o</span><span class=s>l</span><span class=s>i</span><span class=s>c</span><span class=s> </span><span class=s>R</span><span class=s>a</span><span class=s>t</span><span class=s>e</span><span class=s> </span><span class=s>(</span><span class=s>k</span><span class=s>j</span><span class=s> </span><span class=s>p</span><span class=s>e</span><span class=s>r</span><span class=s> </span><span class=s>d</span><span class=s>a</span><span class=s>y</span><span class=s>)</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><figure><img src=../figures/genetic_algorithm_19_1.png><figcaption><h4>Relationship between field metabolic rate and mass - this is a neat log-log relationship, and so linear regression will give us the exponent.</h4></figcaption></figure><p>We can also look at the equation for the most fit genome: ŷ = 0.65×x + 2.944.</p></section><script src=/js/ui.js></script><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
+</code></pre></div><figure><img src=../figures/genetic_algorithm_19_1.png><figcaption><h4>Relationship between field metabolic rate and mass - this is a neat log-log relationship, and so linear regression will give us the exponent.</h4></figcaption></figure><p>We can also look at the equation for the most fit genome: ŷ = 0.643×x + 2.984.</p></section><script src=/js/ui.js></script><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
