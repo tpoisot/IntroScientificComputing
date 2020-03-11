@@ -1,24 +1,2 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Random on </title>
-    <link>http://sciencecomputing.io/packages/random/</link>
-    <description>Recent content in Random on </description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-	<atom:link href="http://sciencecomputing.io/packages/random/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    <item>
-      <title>Neural network with Flux</title>
-      <link>http://sciencecomputing.io/machinelearning/neuralnetwork/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://sciencecomputing.io/machinelearning/neuralnetwork/</guid>
-      <description>In this lesson, we will create neural networks using Flux, a performant and elegant package for doing machine learning in Julia. Flux is very well documented, and multiple step-by-step examples have been written to provide users with a solid understanding of how it can be used to build machine learning models in a few lines of code only.
-We will be using the seeds dataset, which we believe is a better version of the widely used iris dataset.</description>
-    </item>
-    
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Random on</title><link>http://sciencecomputing.io/packages/random/</link><description>Recent content in Random on</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><atom:link href="http://sciencecomputing.io/packages/random/index.xml" rel="self" type="application/rss+xml"/><item><title>Neural network with Flux</title><link>http://sciencecomputing.io/machinelearning/neuralnetwork/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>http://sciencecomputing.io/machinelearning/neuralnetwork/</guid><description>In this lesson, we will create neural networks using Flux, a performant and elegant package for doing machine learning in Julia. Flux is very well documented, and multiple step-by-step examples have been written to provide users with a solid understanding of how it can be used to build machine learning models in a few lines of code only.
+We will be using the seeds dataset, which we believe is a better version of the widely used iris dataset.</description></item></channel></rss>
