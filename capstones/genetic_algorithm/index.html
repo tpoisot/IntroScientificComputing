@@ -8,11 +8,11 @@ to a problem we have defined). We can then pick solution for &ldquo;reproduction
 which involves recombination at various points in the &ldquo;genome&rdquo;, and finally a
 step for the mutation of offspring. There are an almost infinite number of
 variations at each of these steps, but we will limit ourselves to a simple case
-here.</p><p>Specifically, we will use the <code>DataFrames</code> and <code>CSV</code> package (installed in
-<code>StatsKit</code>) to read a table containing metabolic rates of species, and then use
-genetic algorithm to try and find out the scaling exponent linking mass to the
-field metabolic rate. The data come from a meta-analysis by <a href=hudson>Lawrence N. Hudson
-and colleagues</a>, and can be downloaded as follows:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>using</span> <span class=n>DataFrames</span><span class=o></span>
+here.</p><p>Specifically, we will use the <code>DataFrames</code> and <code>CSV</code> package to read a table
+containing metabolic rates of species, and then use genetic algorithm to try and
+find out the scaling exponent linking mass to the field metabolic rate. The data
+come from a meta-analysis by <a href=hudson>Lawrence N. Hudson and colleagues</a>, and
+can be downloaded as follows:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>using</span> <span class=n>DataFrames</span><span class=o></span>
 </code></pre></div><pre class=julia-error>
 ERROR: On worker 2:
 ArgumentError: Package DataFrames &#91;a93c6f00-e57d-5684-b7b6-d8193f3e46c0&#93; is required but does not seem to be installed:
