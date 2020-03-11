@@ -30,16 +30,16 @@ $(0,2)$ will be save us almost four keystrokes!</p><p>After the following lesson
 <span class=k>end</span>
 <span class=n>darts</span><span class=o></span>
 </code></pre></div><pre><code>10-element Array{Any,1}:
- (1.4077336636542777, 1.664573952962857)  
- (0.3738955127540806, 1.3484465186307664) 
- (1.55955761190378, 1.73463166464231)     
- (0.7592328613928108, 0.732453993004381)  
- (0.23266031211500815, 1.213405474448194) 
- (1.305481520111122, 1.3821425513916852)  
- (0.12016694680860596, 1.6870660405867923)
- (0.5248788007440446, 0.5141553471596088) 
- (0.1994530440276665, 0.09781943960009087)
- (0.6582855272528545, 0.2052283876928116)
+ (0.7238917256211836, 1.5117725358678444)  
+ (0.6907769464910603, 0.5958162711208965)  
+ (0.7268253353246887, 0.4163241148229395)  
+ (1.34380230209061, 1.9264888712726198)    
+ (1.6693756699287459, 1.049830791580764)   
+ (0.2893389484391604, 0.40126767815990316) 
+ (0.1645893576657218, 0.8270283663710298)  
+ (1.4185428245882266, 0.41197626911192264) 
+ (1.2603062084113597, 0.7173792036611091)  
+ (1.0425644716994178, 0.010944271379298431)
 </code></pre><p>This introduces a few new notations. The <code>darts = []</code> instruction creates an
 <em>empty</em> array. This is not the optimal way of approaching this problem, but
 remember the UNIX philosophy: we'll rewrite this awkard part later. Then we use
@@ -210,7 +210,7 @@ screens to see what the function does). Because we have named our functions
 explicitely, the code is also easy to understand. In the next lesson, we will
 see that modular code is easy to <em>test</em> (and to debug).</p><p>So, how good is our estimate?</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>estimate</span><span class=o></span> <span class=o>=</span> <span class=n>estimate_pi</span><span class=o></span><span class=p>(</span><span class=mi>100000</span><span class=p>)</span>
 <span class=n>println</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>E</span><span class=s>s</span><span class=s>t</span><span class=s>i</span><span class=s>m</span><span class=s>a</span><span class=s>t</span><span class=s>e</span><span class=s>:</span><span class=s> </span><span class=si>$</span><span class=p>(</span><span class=n>estimate</span><span class=o></span><span class=p>)</span><span class=se>\t</span><span class=se>\t</span><span class=s>π</span><span class=s>:</span><span class=s> </span><span class=si>$</span><span class=p>(</span><span class=nb>π</span><span class=o>+</span><span class=mi>0</span><span class=p>)</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>Estimate: 3.1402		π: 3.141592653589793
+</code></pre></div><pre><code>Estimate: 3.14752		π: 3.141592653589793
 </code></pre><h2 id=keyword-arguments-and-default-values>Keyword arguments and default values</h2><p>In all functions thus far, we <em>had</em> to give all the values of all arguments.
 Sometimes, it make sense to have some arguments take a default value, which we
 can change when we need to, but will remain constant otherwise.</p><div class="callout warning">Giving default values can save some time, but it means you don't need to <em>think</em>
@@ -253,7 +253,7 @@ longer than if I has asked you what the sum of 0.0 and 1.0 is. Is it true for
 the computer?</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>time_int_and_float</span><span class=o></span> <span class=o>=</span> <span class=nd>@elapsed</span><span class=o></span> <span class=mi>0</span> <span class=o>+</span> <span class=mf>1.0</span>
 <span class=n>time_float_and_float</span><span class=o></span> <span class=o>=</span> <span class=nd>@elapsed</span><span class=o></span> <span class=mf>0.0</span> <span class=o>+</span> <span class=mf>1.0</span>
 <span class=n>println</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>I</span><span class=s>t</span><span class=s> </span><span class=s>t</span><span class=s>a</span><span class=s>k</span><span class=s>e</span><span class=s>s</span><span class=s> </span><span class=si>$</span><span class=p>(</span><span class=n>round</span><span class=o></span><span class=p>(</span><span class=n>time_int_and_float</span><span class=o></span><span class=o>/</span><span class=n>time_float_and_float</span><span class=o></span><span class=p>;</span> <span class=n>digits</span><span class=o></span><span class=o>=</span><span class=mi>2</span><span class=p>)</span><span class=p>)</span><span class=s> </span><span class=s>t</span><span class=s>i</span><span class=s>m</span><span class=s>e</span><span class=s>s</span><span class=s> </span><span class=s>l</span><span class=s>o</span><span class=s>n</span><span class=s>g</span><span class=s>e</span><span class=s>r</span><span class=s> </span><span class=s>t</span><span class=s>o</span><span class=s> </span><span class=s>w</span><span class=s>o</span><span class=s>r</span><span class=s>k</span><span class=s> </span><span class=s>w</span><span class=s>i</span><span class=s>t</span><span class=s>h</span><span class=s> </span><span class=s>d</span><span class=s>i</span><span class=s>f</span><span class=s>f</span><span class=s>e</span><span class=s>r</span><span class=s>e</span><span class=s>n</span><span class=s>t</span><span class=s> </span><span class=s>t</span><span class=s>y</span><span class=s>p</span><span class=s>e</span><span class=s>s</span><span class=s>!</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>It takes 1.89 times longer to work with different types!
+</code></pre></div><pre><code>It takes 2.38 times longer to work with different types!
 </code></pre><p>The exact number may vary, but on my machine, it takes about 1.5 times longer to
 do the operation with different types. Why is that?</p><p>It is because the computer needs to &ldquo;rethink&rdquo; about one of these numbers (<em>i.e.</em>
 to change <code>0</code> in <code>0.0</code>, or <code>1.0</code> in <code>1</code>), before it can do the actual operation.

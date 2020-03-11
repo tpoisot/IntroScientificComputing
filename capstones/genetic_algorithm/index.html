@@ -194,7 +194,7 @@ existing object.</p><div class=highlight><pre class=chroma><code class=language-
 <span class=n>initial_genome</span><span class=o></span> <span class=o>=</span> <span class=n>Genome</span><span class=o></span><span class=p>(</span><span class=mf>0.2</span><span class=p>,</span> <span class=mf>0.5</span><span class=p>)</span>
 <span class=n>change_both!</span><span class=o></span><span class=p>(</span><span class=n>initial_genome</span><span class=o></span><span class=p>)</span>
 <span class=n>initial_genome</span><span class=o></span>
-</code></pre></div><pre><code>ŷ = 0.196×x + 0.506
+</code></pre></div><pre><code>ŷ = 0.191×x + 0.488
 </code></pre><p>Let's now define a function to work on the actual problem:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>very_gradual_change!</span><span class=o></span> <span class=o>=</span> <span class=n>normal_error</span><span class=o></span><span class=p>(</span><span class=mf>1e-3</span><span class=p>,</span> <span class=mf>1e-3</span><span class=p>)</span>
 </code></pre></div><pre><code>(::Main.WeaveSandBox10.var&quot;#f#4&quot;{Float64,Float64}) (generic function with 1
  method)
@@ -205,26 +205,26 @@ probably draw it from $\mathcal{N}(\mu=3, \sigma=1)$; the slope seems to be
 close to one but a little bit lower, so we can get it from
 $\mathcal{N}(\mu=0.75, \sigma=0.2)$:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>population</span><span class=o></span> <span class=o>=</span> <span class=p>[</span><span class=n>Genome</span><span class=o></span><span class=p>(</span><span class=n>rand</span><span class=o></span><span class=p>(</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=mf>0.75</span><span class=p>,</span><span class=mf>0.2</span><span class=p>)</span><span class=p>)</span><span class=p>,</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=mi>3</span><span class=p>,</span><span class=mi>1</span><span class=p>)</span><span class=p>)</span><span class=p>)</span> <span class=k>for</span> <span class=n>i</span><span class=o></span> <span class=kp>in</span> <span class=mi>1</span><span class=o>:</span><span class=mi>500</span><span class=p>]</span>
 </code></pre></div><pre><code>500-element Array{Main.WeaveSandBox10.Genome,1}:
- ŷ = 0.952×x + 1.998
- ŷ = 0.687×x + 1.604
- ŷ = 0.683×x + 5.807
- ŷ = 0.946×x + 4.711
- ŷ = 0.724×x + 3.134
- ŷ = 0.728×x + 4.554
- ŷ = 0.915×x + 1.218
- ŷ = 0.949×x + 2.962
- ŷ = 0.98×x + 2.972 
- ŷ = 0.563×x + 4.847
+ ŷ = 1.023×x + 2.071
+ ŷ = 0.677×x + 4.37 
+ ŷ = 0.216×x + 2.372
+ ŷ = 0.356×x + 4.85 
+ ŷ = 0.597×x + 1.89 
+ ŷ = 0.866×x + 1.636
+ ŷ = 0.825×x + 4.192
+ ŷ = 0.686×x + 2.232
+ ŷ = 0.638×x + 4.29 
+ ŷ = 1.288×x + 4.455
  ⋮                   
- ŷ = 0.987×x + 1.646
- ŷ = 0.93×x + 4.754 
- ŷ = 0.867×x + 2.226
- ŷ = 0.953×x + 4.91 
- ŷ = 0.787×x + 3.229
- ŷ = 0.758×x + 3.964
- ŷ = 0.414×x + 2.567
- ŷ = 1.101×x + 3.113
- ŷ = 0.876×x + 2.342
+ ŷ = 0.844×x + 3.6  
+ ŷ = 0.591×x + 2.454
+ ŷ = 1.097×x + 0.795
+ ŷ = 0.758×x + 3.1  
+ ŷ = 0.635×x + 1.422
+ ŷ = 0.866×x + 3.672
+ ŷ = 1.076×x + 4.515
+ ŷ = 0.5×x + 3.065  
+ ŷ = 0.987×x + 2.784
 </code></pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>GA!</span><span class=o></span><span class=p>(</span><span class=n>population</span><span class=o></span><span class=p>,</span> <span class=n>fmr_fitness</span><span class=o></span><span class=p>,</span> <span class=n>very_gradual_change!</span><span class=o></span><span class=p>;</span> <span class=n>generations</span><span class=o></span><span class=o>=</span><span class=mi>10000</span><span class=p>)</span>
 </code></pre></div><pre class=julia-error>
 ERROR: UndefVarError: log10M not defined
