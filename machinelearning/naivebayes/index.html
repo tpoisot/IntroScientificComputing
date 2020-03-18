@@ -25,13 +25,12 @@ coyote or a roadrunner:</p><div class=highlight><pre class=chroma><code class=la
 will adhere to its notation here. In short, given an array $\mathbf{x}$ of
 observations of multiple features, the probability ($p(C_k | x)$) that this
 sample belongs to the class $C_k$ is <em>proportional</em> to $p(C_k) \prod p(x_i |
-C_k)$.
-We can multiply these probabilities together because Naive Bayes classification makes the
-assumption of independance between features. This is precisely why we say that this
-classifier is &lsquo;naive&rsquo;.
-Further, we can get the class to which the sample should be assigned
-using $\hat y = \text{argmax}_{k \in K} p(C_k) \prod p(x_i | C_k)$ - the class
-that is the most probable is taken as the guess.</p><p>Calculating $p(x_i | C_k)$ assumes that we know the distribution of the values
+C_k)$. We can multiply these probabilities together because Naive Bayes
+classification makes the assumption of independance between features. This is
+precisely why we say that this classifier is &lsquo;naive&rsquo;. Further, we can get the
+class to which the sample should be assigned using $\hat y = \text{argmax}_{k
+\in K} p(C_k) \prod p(x_i | C_k)$ - the class that is the most probable is taken
+as the guess.</p><p>Calculating $p(x_i | C_k)$ assumes that we know the distribution of the values
 of the <em>i</em>-th variable in class $C_k$, which is not necessarily true. In this
 example we will assume that all we know for sure is the average and standard
 deviation, meaning that the distribution we will use should be a normal
