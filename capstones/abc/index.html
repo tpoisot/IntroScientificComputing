@@ -4,31 +4,37 @@ ABC for short, is a very useful heuristic to estimate the posterior distribution
 of model parameters, specifically when the analytical expression of the
 likelihood function is unavailable (or when we can't be bothered to figure it
 out). The theory on how ABC works will not be covered here in detail, so reading
-the previous article is highly recommended.</p><p>We will rely on a few packages for this example:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>using</span> <span class=n>StatsPlots</span><span class=o></span>
-<span class=k>using</span> <span class=n>Statistics</span><span class=o></span>
-<span class=k>using</span> <span class=n>StatsBase</span><span class=o></span>
-<span class=k>using</span> <span class=n>Distributions</span><span class=o></span>
+the previous article (and the references it links to) is highly recommended.</p><p>We will rely on a few packages for this example:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>using</span> <span class=n>StatsPlots</span><span class=o></span>     <span class=c># Plots of statistical distributions</span>
+<span class=k>using</span> <span class=n>Statistics</span><span class=o></span>     <span class=c># mean and std</span>
+<span class=k>using</span> <span class=n>Distributions</span><span class=o></span>  <span class=c># Statistical distributions</span>
 </code></pre></div><p>Let us now imagine an island. It is a small island, no more than a few meters in
-diameter, in the Florida keys. Every year, for 20 years, a few biologists comb
-through the island, to figure out whether or not <em>Eurycotis floridana</em> is
-present or absent. This results in a timeseries, like this:</p><pre><code>Year 1	present
-Year 2	absent
-Year 3	present
+diameter, in the Florida keys. On this island is a single shrub, and on this
+single shrub an insect can live. Every year, for 20 years, a few biologists comb
+through the shrub, to figure out whether or not the insect is present or absent.
+This results in a timeseries, like this:</p><pre><code>Year 1	absent
+Year 2	present
+Year 3	absent
 Year 4	present
-Year 5	absent
-Year 6	absent
+Year 5	present
+Year 6	present
 Year 7	absent
-Year 8	present
-Year 9	present
-Year 10	present
+Year 8	absent
+Year 9	absent
+Year 10	absent
 </code></pre><p>To begin with, let us see how we can model the presence/absence of this species.
 We will make two assumptions. First, the biological process here can be
 represented by modeling the probabilities of <em>transition</em>, <em>i.e.</em> the chance of
 changing from one state to another. Second, there is a small chance of <em>error</em>
-when measuring the state of the system. Specifically, while detecting at least
-one individual means that there is no chance that the species is absent, <em>not</em>
-detecting any individual can also mean that there were present in low density,
-and have not been detected.</p><p>We can represent this system using the following figure:</p><div class=mermaid align=center>graph LR
+when measuring the state of the system; this is because our insect evolved a
+really good mimetism, and is more or less the same color as the shrub.
+Specifically, while detecting at least one individual means that there is no
+chance that the species is absent, <em>not</em> detecting any individual can also mean
+that there were present in low density, and have not been detected. The problem
+is therefore that if we want to think about the extinction-colonization dynamics
+of this island, our empirical dataset adds some uncertainty due to the
+measurement. We will use ABC to quantify this uncertainty, and estimate the
+value of the extinction and colonization parameters to conduct additional
+simulations.</p><p>We can represent this system using the following figure:</p><div class=mermaid align=center>graph LR
 subgraph True state
 present -- e --> absent
 absent -- c --> present
@@ -40,35 +46,57 @@ absent --> InsectAbsent[absent]
 present -- 1-m --> InsectPresent[present]
 present -- m --> InsectAbsent[absent]
 end</div><p>In the <em>true state</em> box, the rates represent the probabilities of state change.
-The rates between <em>true state</em> and <em>measured state</em> represent the probabilities
-of making the wrong measurement. We now have enough to write a simple function
-to simulate this model:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>island</span><span class=o></span><span class=p>(</span><span class=nb>e</span><span class=o>:</span><span class=o>:</span><span class=n>T</span><span class=o></span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=n>T</span><span class=o></span><span class=p>,</span> <span class=n>m</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=n>T</span><span class=o></span><span class=p>;</span> <span class=n>n</span><span class=o></span><span class=o>=</span><span class=mi>200</span><span class=p>)</span> <span class=n>where</span><span class=o></span> <span class=p>{</span><span class=n>T</span><span class=o></span> <span class=o>&lt;</span><span class=o>:</span> <span class=kt>AbstractFloat</span><span class=p>}</span>
+An empty island can be colonized at rate $c$; an occupied island can become
+empty through extinction at rate $e$; finally, we can miss the insect during
+sampling at rate $m$. The rates between <em>true state</em> and <em>measured state</em>
+represent the probabilities of making the wrong measurement. We now have enough
+to write a simple function to simulate this model. The point of this function is
+to return a timeseries, where an occupied island at a given year is <code>true</code>, and
+an empty isladnd is <code>false</code>. Because there are two distinct processes, we will
+first simulate the <em>true state</em> of the island, and then write a second function
+to simulate the <em>measured state</em>:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>island_true_state</span><span class=o></span><span class=p>(</span><span class=nb>e</span><span class=o>:</span><span class=o>:</span><span class=n>T</span><span class=o></span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=n>T</span><span class=o></span><span class=p>;</span> <span class=n>n</span><span class=o></span><span class=o>=</span><span class=mi>200</span><span class=p>)</span> <span class=n>where</span><span class=o></span> <span class=p>{</span><span class=n>T</span><span class=o></span> <span class=o>&lt;</span><span class=o>:</span> <span class=kt>AbstractFloat</span><span class=p>}</span>
   <span class=nd>@assert</span><span class=o></span> <span class=mf>0.0</span> <span class=o>≤</span> <span class=nb>e</span> <span class=o>≤</span> <span class=mf>1.0</span>
   <span class=nd>@assert</span><span class=o></span> <span class=mf>0.0</span> <span class=o>≤</span> <span class=n>c</span><span class=o></span> <span class=o>≤</span> <span class=mf>1.0</span>
-  <span class=nd>@assert</span><span class=o></span> <span class=mf>0.0</span> <span class=o>≤</span> <span class=n>m</span><span class=o></span> <span class=o>≤</span> <span class=mf>1.0</span>
-  <span class=n>true_state</span><span class=o></span> <span class=o>=</span> <span class=n>zeros</span><span class=o></span><span class=p>(</span><span class=kt>Bool</span><span class=p>,</span> <span class=n>n</span><span class=o></span><span class=p>)</span>
-  <span class=n>measured_state</span><span class=o></span> <span class=o>=</span> <span class=n>zeros</span><span class=o></span><span class=p>(</span><span class=kt>Bool</span><span class=p>,</span> <span class=n>n</span><span class=o></span><span class=p>)</span>
-  <span class=n>measured_state</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=</span> <span class=n>true_state</span><span class=o></span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
+  <span class=n>state</span><span class=o></span> <span class=o>=</span> <span class=n>zeros</span><span class=o></span><span class=p>(</span><span class=kt>Bool</span><span class=p>,</span> <span class=n>n</span><span class=o></span><span class=p>)</span>
   <span class=k>for</span> <span class=n>year</span><span class=o></span> <span class=kp>in</span> <span class=mi>2</span><span class=o>:</span><span class=n>n</span><span class=o></span>
-    <span class=n>true_state</span><span class=o></span><span class=p>[</span><span class=n>year</span><span class=o></span><span class=p>]</span> <span class=o>=</span> <span class=n>true_state</span><span class=o></span><span class=p>[</span><span class=n>year</span><span class=o></span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>?</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=p>)</span> <span class=o>≥</span> <span class=nb>e</span> <span class=o>:</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=p>)</span> <span class=o>&lt;</span> <span class=n>c</span><span class=o></span>
-    <span class=n>measured_state</span><span class=o></span><span class=p>[</span><span class=n>year</span><span class=o></span><span class=p>]</span> <span class=o>=</span> <span class=n>true_state</span><span class=o></span><span class=p>[</span><span class=n>year</span><span class=o></span><span class=p>]</span> <span class=o>?</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=p>)</span> <span class=o>≥</span> <span class=n>m</span><span class=o></span> <span class=o>:</span> <span class=kc>false</span>
+    <span class=n>state</span><span class=o></span><span class=p>[</span><span class=n>year</span><span class=o></span><span class=p>]</span> <span class=o>=</span> <span class=n>state</span><span class=o></span><span class=p>[</span><span class=n>year</span><span class=o></span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>?</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=p>)</span> <span class=o>≥</span> <span class=nb>e</span> <span class=o>:</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=p>)</span> <span class=o>&lt;</span> <span class=n>c</span><span class=o></span>
+  <span class=k>end</span>
+  <span class=k>return</span> <span class=n>state</span><span class=o></span>
+<span class=k>end</span>
+
+<span class=k>function</span> <span class=n>island_measured_state</span><span class=o></span><span class=p>(</span><span class=n>state</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Bool</span><span class=p>}</span><span class=p>,</span> <span class=n>m</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=n>T</span><span class=o></span><span class=p>)</span> <span class=n>where</span><span class=o></span> <span class=p>{</span><span class=n>T</span><span class=o></span> <span class=o>&lt;</span><span class=o>:</span> <span class=kt>AbstractFloat</span><span class=p>}</span>
+  <span class=n>measured_state</span><span class=o></span> <span class=o>=</span> <span class=n>similar</span><span class=o></span><span class=p>(</span><span class=n>state</span><span class=o></span><span class=p>)</span>
+  <span class=k>for</span> <span class=p>(</span><span class=n>year</span><span class=o></span><span class=p>,</span> <span class=n>real_state</span><span class=o></span><span class=p>)</span> <span class=kp>in</span> <span class=n>enumerate</span><span class=o></span><span class=p>(</span><span class=n>state</span><span class=o></span><span class=p>)</span>
+    <span class=n>measured_state</span><span class=o></span><span class=p>[</span><span class=n>year</span><span class=o></span><span class=p>]</span> <span class=o>=</span> <span class=n>real_state</span><span class=o></span> <span class=o>?</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=p>)</span> <span class=o>≥</span> <span class=n>m</span><span class=o></span> <span class=o>:</span> <span class=kc>false</span>
   <span class=k>end</span>
   <span class=k>return</span> <span class=n>measured_state</span><span class=o></span>
 <span class=k>end</span>
+
+<span class=k>function</span> <span class=n>island</span><span class=o></span><span class=p>(</span><span class=nb>e</span><span class=o>:</span><span class=o>:</span><span class=n>T</span><span class=o></span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=n>T</span><span class=o></span><span class=p>,</span> <span class=n>m</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=n>T</span><span class=o></span><span class=p>;</span> <span class=n>n</span><span class=o></span><span class=o>=</span><span class=mi>200</span><span class=p>)</span> <span class=n>where</span><span class=o></span> <span class=p>{</span><span class=n>T</span><span class=o></span> <span class=o>&lt;</span><span class=o>:</span> <span class=kt>AbstractFloat</span><span class=p>}</span>
+  <span class=n>true_state</span><span class=o></span> <span class=o>=</span> <span class=n>island_true_state</span><span class=o></span><span class=p>(</span><span class=nb>e</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=p>;</span> <span class=n>n</span><span class=o></span><span class=o>=</span><span class=n>n</span><span class=o></span><span class=p>)</span>
+  <span class=n>measured_state</span><span class=o></span> <span class=o>=</span> <span class=n>island_measured_state</span><span class=o></span><span class=p>(</span><span class=n>true_state</span><span class=o></span><span class=p>,</span> <span class=n>m</span><span class=o></span><span class=p>)</span>
+  <span class=k>return</span> <span class=n>measured_state</span><span class=o></span>
+<span class=k>end</span>
 </code></pre></div><pre><code>island (generic function with 1 method)
-</code></pre><p>In ABC, one key notion is the idea of &ldquo;summary statistics&rdquo;, <em>i.e.</em> the act of
+</code></pre><p>This is not the most efficient way to express this problem (we will need to
+iterate over our timeseries twice!), but it will be good enough for this
+example; most importantly, it means that we will be able to use
+<code>island_true_state</code> to generate simulations without the observation error after
+we are done estimating the values of the parameters.</p><p>In ABC, one key notion is the idea of &ldquo;summary statistics&rdquo;, <em>i.e.</em> the act of
 compressing the empirical data and model output to something that can be
-meaningfully compared. Here, we will work with two informations, namely the rate
-of transition, and the temporal occupancy. In ABC, the summary statistics are
-<em>key</em> in determining the validity of the results. Using too much exposes you to
-the curse of dimensionality, and using too few (or the wrong ones) can lead to
-spurious conclusions. Another few indicators we could have used are apparent
+meaningfully compared. The selection of summary statistics can be <a href=https://arxiv.org/abs/1106.6281>very
+complex</a>, and is in fact a key step in the success of ABC. Using too
+much exposes you to the curse of dimensionality, and using too few (or the wrong
+ones) can lead to spurious conclusions.</p><p>Here, we will work with two informations, namely the rate of transition, and the
+temporal occupancy. Another few indicators we could have used are apparent
 colonisation events (when the island appeared empty one year, then occupied the
 next), apparent extinction events (when the island appears occupied one year,
 and empty the next), and finally the number of times where the sequence
 occupied/empty/occupied appears. Feel free to try and adapt the code after you
 have been through this lesson once to use these and other indicators, and see
-how the results change.</p><p>In any case, here is our function to summarize a sequence of observations:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>summary</span><span class=o></span><span class=p>(</span><span class=n>t</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Bool</span><span class=p>}</span><span class=p>)</span>
+how the results change. A good rule of thumb is to think about summary
+statistics both as a statistician and a domain expert: you want to capture the
+structure of your data, but also the mechanisms of interest.</p><p>In any case, here is our function to summarize a sequence of observations:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>summary</span><span class=o></span><span class=p>(</span><span class=n>t</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Bool</span><span class=p>}</span><span class=p>)</span>
   <span class=n>transitions</span><span class=o></span> <span class=o>=</span> <span class=mf>0.0</span>
   <span class=k>for</span> <span class=n>i</span><span class=o></span> <span class=kp>in</span> <span class=mi>2</span><span class=o>:</span><span class=n>length</span><span class=o></span><span class=p>(</span><span class=n>t</span><span class=o></span><span class=p>)</span>
     <span class=k>if</span> <span class=n>t</span><span class=o></span><span class=p>[</span><span class=n>i</span><span class=o></span><span class=p>]</span> <span class=o>≠</span> <span class=n>t</span><span class=o></span><span class=p>[</span><span class=n>i</span><span class=o></span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
@@ -98,11 +126,11 @@ correct this.</p><div class=highlight><pre class=chroma><code class=language-jul
 </code></pre><p>We have defined two functions, each of which returns the value of one indicator.
 We can now write a declaration for <code>summary</code> that will accept the states
 timeseries, <em>and</em> an array of functions to measure the indicators:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>summary</span><span class=o></span><span class=p>(</span><span class=n>t</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=kt>Vector</span><span class=p>{</span><span class=kt>Bool</span><span class=p>}</span><span class=p>,</span> <span class=n>f</span><span class=o></span><span class=o>:</span><span class=o>:</span><span class=kt>Vector</span><span class=p>{</span><span class=n>T</span><span class=o></span><span class=p>}</span><span class=p>)</span> <span class=n>where</span><span class=o></span> <span class=p>{</span><span class=n>T</span><span class=o></span> <span class=o>&lt;</span><span class=o>:</span> <span class=kt>Function</span><span class=p>}</span>
-   <span class=n>s</span><span class=o></span> <span class=o>=</span> <span class=n>zeros</span><span class=o></span><span class=p>(</span><span class=kt>Float64</span><span class=p>,</span> <span class=n>length</span><span class=o></span><span class=p>(</span><span class=n>f</span><span class=o></span><span class=p>)</span><span class=p>)</span>
-   <span class=k>for</span> <span class=p>(</span><span class=n>i</span><span class=o></span><span class=p>,</span> <span class=n>fn</span><span class=o></span><span class=p>)</span> <span class=kp>in</span> <span class=n>enumerate</span><span class=o></span><span class=p>(</span><span class=n>f</span><span class=o></span><span class=p>)</span>
-      <span class=n>s</span><span class=o></span><span class=p>[</span><span class=n>i</span><span class=o></span><span class=p>]</span> <span class=o>=</span> <span class=n>fn</span><span class=o></span><span class=p>(</span><span class=n>t</span><span class=o></span><span class=p>)</span>
-   <span class=k>end</span>
-   <span class=k>return</span> <span class=n>s</span><span class=o></span>
+  <span class=n>s</span><span class=o></span> <span class=o>=</span> <span class=n>zeros</span><span class=o></span><span class=p>(</span><span class=kt>Float64</span><span class=p>,</span> <span class=n>length</span><span class=o></span><span class=p>(</span><span class=n>f</span><span class=o></span><span class=p>)</span><span class=p>)</span>
+  <span class=k>for</span> <span class=p>(</span><span class=n>i</span><span class=o></span><span class=p>,</span> <span class=n>fn</span><span class=o></span><span class=p>)</span> <span class=kp>in</span> <span class=n>enumerate</span><span class=o></span><span class=p>(</span><span class=n>f</span><span class=o></span><span class=p>)</span>
+    <span class=n>s</span><span class=o></span><span class=p>[</span><span class=n>i</span><span class=o></span><span class=p>]</span> <span class=o>=</span> <span class=n>fn</span><span class=o></span><span class=p>(</span><span class=n>t</span><span class=o></span><span class=p>)</span>
+  <span class=k>end</span>
+  <span class=k>return</span> <span class=n>s</span><span class=o></span>
 <span class=k>end</span>
 </code></pre></div><pre><code>summary (generic function with 2 methods)
 </code></pre><p>Is it perfect? No. Is it an improvement over the previous implementation?
@@ -112,8 +140,8 @@ with parameters $(e=0.2, c=0.6, m=0.1)$, and get the summary statistics:</p><div
    <span class=p>[</span><span class=n>occupancy</span><span class=o></span><span class=p>,</span> <span class=n>transitions</span><span class=o></span><span class=p>]</span> <span class=c># list of things to measure</span>
    <span class=p>)</span>
 </code></pre></div><pre><code>2-element Array{Float64,1}:
- 0.68              
- 0.3768844221105528
+ 0.68               
+ 0.32663316582914576
 </code></pre><p>At this point, we need empirical data to feed the model. Let's say that over
 twenty years, the species has been observed from year 4 to 12, then 14 to 15,
 and finally from year 17 to 20. We can write this as:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>empirical_data</span><span class=o></span> <span class=o>=</span> <span class=n>zeros</span><span class=o></span><span class=p>(</span><span class=kt>Bool</span><span class=p>,</span> <span class=mi>20</span><span class=p>)</span>
@@ -121,17 +149,21 @@ and finally from year 17 to 20. We can write this as:</p><div class=highlight><p
 <span class=n>empirical_data</span><span class=o></span><span class=p>[</span><span class=mi>14</span><span class=o>:</span><span class=mi>15</span><span class=p>]</span> <span class=o>.=</span> <span class=kc>true</span>
 <span class=n>empirical_data</span><span class=o></span><span class=p>[</span><span class=mi>17</span><span class=o>:</span><span class=mi>20</span><span class=p>]</span> <span class=o>.=</span> <span class=kc>true</span>
 </code></pre></div><p>Your biologist colleague would be very happy if you could get to an estimate of
-the parameters that govern the presence of this insect on the island. This is an
-easy enough task to do with ABC.</p><p>We can measure the statistics of this timeseries:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>summary</span><span class=o></span><span class=p>(</span><span class=n>empirical_data</span><span class=o></span><span class=p>)</span>
+the parameters that govern the presence of this insect on the island, <em>minus</em>
+the observation error. This is an easy enough task to do with ABC.</p><p>We can measure the statistics of this timeseries:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>summary</span><span class=o></span><span class=p>(</span><span class=n>empirical_data</span><span class=o></span><span class=p>)</span>
 </code></pre></div><pre><code>2-element Array{Float64,1}:
  0.75              
  0.2631578947368421
-</code></pre><p>And just like this, we are ready to start the ABC process. We will start by
+</code></pre><p>Good parameter values will result in simulations that have similar summary
+statistics. Keep in mind that the empircal data are the real state of the island
+<em>and</em> the measurement error, so we need to use the <code>island</code> model.</p><p>And just like this, we are ready to start the ABC process. We will start by
 deciding on priors for all three parameters. We could model them in a variety of
-ways, including β laws, and truncated distributions. Let's go with the later, as
-it is a neat illustration of the <code>Distributions</code> package. We picked a value of
-colonisation higher than extinction (as the species seems to persist), and a
-relatively low rate of false absences.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>Dc</span><span class=o></span> <span class=o>=</span> <span class=n>Truncated</span><span class=o></span><span class=p>(</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=mf>0.6</span><span class=p>,</span> <span class=mf>0.1</span><span class=p>)</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>)</span>
+ways, including beta distributions, and truncated distributions. Let's go with
+the later, as it is a neat illustration of the <code>Distributions</code> package. We
+picked a value of colonisation higher than extinction (as the species seems to
+persist), and a relatively low rate of false absences, albeit with a larger
+standard deviation because we are not really sure as to what this parameter
+should look like.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>Dc</span><span class=o></span> <span class=o>=</span> <span class=n>Truncated</span><span class=o></span><span class=p>(</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=mf>0.6</span><span class=p>,</span> <span class=mf>0.1</span><span class=p>)</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>)</span>
 <span class=n>De</span><span class=o></span> <span class=o>=</span> <span class=n>Truncated</span><span class=o></span><span class=p>(</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=mf>0.3</span><span class=p>,</span> <span class=mf>0.1</span><span class=p>)</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>)</span>
 <span class=n>Dm</span><span class=o></span> <span class=o>=</span> <span class=n>Truncated</span><span class=o></span><span class=p>(</span><span class=n>Normal</span><span class=o></span><span class=p>(</span><span class=mf>0.1</span><span class=p>,</span> <span class=mf>0.3</span><span class=p>)</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>)</span>
 </code></pre></div><p>In this algorithm (as with any other Bayesian application), priors are
@@ -144,8 +176,10 @@ prior that is too flat (let's say a uniform distribution that goes from negative
 infinity to positive infinity) means that the time to convergence will explode.</p><p>We will generate 10⁶ samples using our simulation model, and get the summary
 statistics for all of them. Note that the simulations run for 200 timesteps, as
 opposed to 20 for the empirical data. This is perfectly fine, because ABC works
-on summary statistics. An interesting exercise is to change the number of
-timesteps in the simulations, and see if/how the posterior distributions react.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>N</span><span class=o></span> <span class=o>=</span> <span class=mi>1_000_000</span>
+on summary statistics, and not on the raw data. In fact, if we <em>only</em> add the
+summary statistics and not the raw data, we could still apply ABC! An
+interesting exercise is to change the number of timesteps in the simulations,
+and see if/how the posterior distributions react.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>N</span><span class=o></span> <span class=o>=</span> <span class=mi>1_000_000</span>
 <span class=n>Sc</span><span class=o></span> <span class=o>=</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=n>Dc</span><span class=o></span><span class=p>,</span> <span class=n>N</span><span class=o></span><span class=p>)</span>
 <span class=n>Se</span><span class=o></span> <span class=o>=</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=n>De</span><span class=o></span><span class=p>,</span> <span class=n>N</span><span class=o></span><span class=p>)</span>
 <span class=n>Sm</span><span class=o></span> <span class=o>=</span> <span class=n>rand</span><span class=o></span><span class=p>(</span><span class=n>Dm</span><span class=o></span><span class=p>,</span> <span class=n>N</span><span class=o></span><span class=p>)</span>
@@ -158,7 +192,10 @@ empirical results:</p><div class=highlight><pre class=chroma><code class=languag
   <span class=k>return</span> <span class=n>sum</span><span class=o></span><span class=p>(</span><span class=n>sqrt</span><span class=o></span><span class=o>.</span><span class=p>(</span><span class=p>(</span><span class=n>x1</span><span class=o></span><span class=o>.-</span><span class=n>x2</span><span class=o></span><span class=p>)</span><span class=o>.^</span><span class=mf>2.0</span><span class=p>)</span><span class=p>)</span>
 <span class=k>end</span>
 <span class=n>distances</span><span class=o></span> <span class=o>=</span> <span class=n>map</span><span class=o></span><span class=p>(</span><span class=n>s</span><span class=o></span> <span class=o>-</span><span class=o>&gt;</span> <span class=n>euclidean_distance</span><span class=o></span><span class=p>(</span><span class=n>s</span><span class=o></span><span class=p>,</span> <span class=n>summary</span><span class=o></span><span class=p>(</span><span class=n>empirical_data</span><span class=o></span><span class=p>)</span><span class=p>)</span><span class=p>,</span> <span class=n>simulated_results</span><span class=o></span><span class=p>)</span>
-</code></pre></div><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>density</span><span class=o></span><span class=p>(</span><span class=n>distances</span><span class=o></span><span class=p>,</span> <span class=n>leg</span><span class=o></span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>fill</span><span class=o></span><span class=o>=</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=o>:</span><span class=n>orange</span><span class=o></span><span class=p>,</span> <span class=mf>0.4</span><span class=p>)</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>orange</span><span class=o></span><span class=p>)</span>
+</code></pre></div><p>We could use another distance measure - dependind on the type of summary
+statistics, it might even be required. We can also assign weights to the
+different summary statistics, but this has a risk of overly fine-tuning the
+process, and it can be difficult to assess the consequences of these choices.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>density</span><span class=o></span><span class=p>(</span><span class=n>distances</span><span class=o></span><span class=p>,</span> <span class=n>leg</span><span class=o></span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>fill</span><span class=o></span><span class=o>=</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=o>:</span><span class=n>orange</span><span class=o></span><span class=p>,</span> <span class=mf>0.4</span><span class=p>)</span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>orange</span><span class=o></span><span class=p>)</span>
 <span class=n>xaxis!</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>D</span><span class=s>i</span><span class=s>s</span><span class=s>t</span><span class=s>a</span><span class=s>n</span><span class=s>c</span><span class=s>e</span><span class=s>&#34;</span><span class=p>,</span> <span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>)</span><span class=p>)</span>
 <span class=n>yaxis!</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>D</span><span class=s>e</span><span class=s>n</span><span class=s>s</span><span class=s>i</span><span class=s>t</span><span class=s>y</span><span class=s>&#34;</span><span class=p>,</span> <span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>4</span><span class=p>)</span><span class=p>)</span>
 </code></pre></div><figure><img src=../figures/abc_13_1.png><figcaption><h4>Distance between the summaries of empirical and actual data.</h4></figcaption></figure><p>The actual ABC step is to <em>reject</em> some of the samples from them prior
@@ -176,7 +213,8 @@ increase the number of samples if you want to be very strict.</p><div class=high
 the sample size of the posterior has reached a certain threshold. Both solutions
 are valid, but for the sake of illustration, we went with the one that was
 simpler to implement. Feel free to work on other rejection samplers as a
-programming exercise.</div><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>density</span><span class=o></span><span class=p>(</span><span class=n>Sc</span><span class=o></span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>teal</span><span class=o></span><span class=p>,</span> <span class=n>ls</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>dash</span><span class=o></span><span class=p>,</span> <span class=n>lab</span><span class=o></span><span class=o>=</span><span class=s>&#34;</span><span class=s>&#34;</span><span class=p>)</span>
+programming exercise, this will be a good opportunity to practice writing
+<code>while</code> loops.</div><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>density</span><span class=o></span><span class=p>(</span><span class=n>Sc</span><span class=o></span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>teal</span><span class=o></span><span class=p>,</span> <span class=n>ls</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>dash</span><span class=o></span><span class=p>,</span> <span class=n>lab</span><span class=o></span><span class=o>=</span><span class=s>&#34;</span><span class=s>&#34;</span><span class=p>)</span>
 <span class=n>density!</span><span class=o></span><span class=p>(</span><span class=n>Se</span><span class=o></span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>purple</span><span class=o></span><span class=p>,</span> <span class=n>ls</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>dash</span><span class=o></span><span class=p>,</span> <span class=n>lab</span><span class=o></span><span class=o>=</span><span class=s>&#34;</span><span class=s>&#34;</span><span class=p>)</span>
 <span class=n>density!</span><span class=o></span><span class=p>(</span><span class=n>Sm</span><span class=o></span><span class=p>,</span> <span class=n>c</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>grey</span><span class=o></span><span class=p>,</span> <span class=n>ls</span><span class=o></span><span class=o>=</span><span class=o>:</span><span class=n>dash</span><span class=o></span><span class=p>,</span> <span class=n>lab</span><span class=o></span><span class=o>=</span><span class=s>&#34;</span><span class=s>&#34;</span><span class=p>)</span>
 
@@ -186,9 +224,18 @@ programming exercise.</div><div class=highlight><pre class=chroma><code class=la
 
 <span class=n>xaxis!</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>P</span><span class=s>a</span><span class=s>r</span><span class=s>a</span><span class=s>m</span><span class=s>e</span><span class=s>t</span><span class=s>e</span><span class=s>r</span><span class=s> </span><span class=s>v</span><span class=s>a</span><span class=s>l</span><span class=s>u</span><span class=s>e</span><span class=s>&#34;</span><span class=p>,</span> <span class=p>(</span><span class=mi>0</span><span class=p>,</span><span class=mi>1</span><span class=p>)</span><span class=p>)</span>
 <span class=n>yaxis!</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>D</span><span class=s>e</span><span class=s>n</span><span class=s>s</span><span class=s>i</span><span class=s>t</span><span class=s>y</span><span class=s>&#34;</span><span class=p>,</span> <span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>14</span><span class=p>)</span><span class=p>)</span>
-</code></pre></div><figure><img src=../figures/abc_15_1.png><figcaption><h4>Posterior distributions (shaded) and the corresponding priors (dashed) for the three parameters in the model.</h4></figcaption></figure><p>To summarize, we can now extract the values of the different parameters:</p><table><thead><tr><th align=center></th><th align=left>meaning</th><th align=right>mean</th><th align=right>standard deviation</th></tr></thead><tbody><tr><td align=center>$c$</td><td align=left>Colonization rate</td><td align=right>0.551</td><td align=right>0.068</td></tr><tr><td align=center>$e$</td><td align=left>Extinction rate</td><td align=right>0.154</td><td align=right>0.043</td></tr><tr><td align=center>$m$</td><td align=left>Measurement error rate</td><td align=right>0.05</td><td align=right>0.04</td></tr></tbody></table><p>Done! One of the strength of ABC is that we can now <em>generate</em> datasets, using
+</code></pre></div><figure><img src=../figures/abc_15_1.png><figcaption><h4>Posterior distributions (shaded) and the corresponding priors (dashed) for the three parameters in the model.</h4></figcaption></figure><p>To summarize, we can now extract the values of the different parameters:</p><table><thead><tr><th align=center></th><th align=left>meaning</th><th align=right>mean</th><th align=right>standard deviation</th></tr></thead><tbody><tr><td align=center>$c$</td><td align=left>Colonization rate</td><td align=right>0.552</td><td align=right>0.066</td></tr><tr><td align=center>$e$</td><td align=left>Extinction rate</td><td align=right>0.154</td><td align=right>0.042</td></tr><tr><td align=center>$m$</td><td align=left>Measurement error rate</td><td align=right>0.051</td><td align=right>0.038</td></tr></tbody></table><p>Done! One of the strength of ABC is that we can now <em>generate</em> datasets, using
 our original model for simulation. And because we know the measurement error
 rate, we can also correct these datasets to describe the data <em>generation</em>
 process (the actual presence/absence of the species) as opposed to the data
 <em>observation</em> process (measuring the presence/absence and being sometimes wrong
-about it).</p></section><script src=/js/ui.js></script><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
+about it).</p><p>We now have everything we need to answer our original question: what would the
+extinction/colonization dynamics looks like <em>minus</em> the measurement error? For
+this, we can use our <code>island_true_state</code> model, which only takes <code>c</code> and <code>e</code> as
+inputs, and generate timeseries. We will focus on the average temporal
+occupancy:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>posterior_c</span><span class=o></span> <span class=o>=</span> <span class=n>Sc</span><span class=o></span><span class=p>[</span><span class=n>posterior</span><span class=o></span><span class=p>]</span>
+<span class=n>posterior_e</span><span class=o></span> <span class=o>=</span> <span class=n>Se</span><span class=o></span><span class=p>[</span><span class=n>posterior</span><span class=o></span><span class=p>]</span>
+
+<span class=n>occupancies</span><span class=o></span> <span class=o>=</span> <span class=n>map</span><span class=o></span><span class=p>(</span><span class=p>(</span><span class=nb>e</span><span class=p>,</span><span class=n>c</span><span class=o></span><span class=p>)</span> <span class=o>-</span><span class=o>&gt;</span> <span class=n>occupancy</span><span class=o></span><span class=p>(</span><span class=n>island_true_state</span><span class=o></span><span class=p>(</span><span class=nb>e</span><span class=p>,</span><span class=n>c</span><span class=o></span><span class=p>)</span><span class=p>)</span><span class=p>,</span> <span class=n>posterior_e</span><span class=o></span><span class=p>,</span> <span class=n>posterior_c</span><span class=o></span><span class=p>)</span>
+<span class=n>density</span><span class=o></span><span class=p>(</span><span class=n>occupancies</span><span class=o></span><span class=p>,</span> <span class=n>fill</span><span class=o></span><span class=o>=</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=o>:</span><span class=n>orange</span><span class=o></span><span class=p>,</span> <span class=mf>0.4</span><span class=p>)</span><span class=p>)</span>
+</code></pre></div><figure><img src=../figures/abc_16_1.png><figcaption><h4>Distribution of the predicted occupancy without measurement error based on the posterior distribution.</h4></figcaption></figure></section><script src=/js/ui.js></script><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
