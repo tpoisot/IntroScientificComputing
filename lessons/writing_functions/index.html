@@ -30,16 +30,16 @@ $(0,2)$ will be save us almost four keystrokes!</p><p>After the following lesson
 <span class=k>end</span>
 <span class=n>darts</span><span class=o></span>
 </code></pre></div><pre><code>10-element Array{Any,1}:
- (0.04234885896087537, 1.1175846143463306)
- (0.11452400049459976, 1.454870002320439) 
- (1.7414762284281404, 1.8958496297655123) 
- (1.697878402235089, 0.9093639385882284)  
- (1.1620380439771907, 1.7336274832201952) 
- (1.733600468679422, 0.24520703184410575) 
- (1.8444824417137529, 0.1735424808735253) 
- (0.8571963316115689, 1.9119144392475729) 
- (1.1717686430948553, 1.2237063616562378) 
- (1.89730676456464, 0.3195923675895389)
+ (0.6920014547183828, 1.2967816900293716) 
+ (0.31599057350412485, 1.468033843850197) 
+ (1.0519911021564887, 0.40790735825965196)
+ (1.7664044588184518, 0.9989588734808872) 
+ (1.5266255095243646, 0.33932125573472316)
+ (1.0776262724356518, 1.6359481124251372) 
+ (0.8069875900548276, 0.6398253353443728) 
+ (1.6103107566679875, 0.5403083368105537) 
+ (0.2258775624352074, 1.443125429003644)  
+ (0.3015120813331298, 0.9515444807154823)
 </code></pre><p>This introduces a few new notations. The <code>darts = []</code> instruction creates an
 <em>empty</em> array. This is not the optimal way of approaching this problem, but
 remember the UNIX philosophy: we'll rewrite this awkard part later. Then we use
@@ -210,7 +210,7 @@ screens to see what the function does). Because we have named our functions
 explicitely, the code is also easy to understand. In the next lesson, we will
 see that modular code is easy to <em>test</em> (and to debug).</p><p>So, how good is our estimate?</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>estimate</span><span class=o></span> <span class=o>=</span> <span class=n>estimate_pi</span><span class=o></span><span class=p>(</span><span class=mi>100000</span><span class=p>)</span>
 <span class=n>println</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>E</span><span class=s>s</span><span class=s>t</span><span class=s>i</span><span class=s>m</span><span class=s>a</span><span class=s>t</span><span class=s>e</span><span class=s>:</span><span class=s> </span><span class=si>$</span><span class=p>(</span><span class=n>estimate</span><span class=o></span><span class=p>)</span><span class=se>\t</span><span class=se>\t</span><span class=s>π</span><span class=s>:</span><span class=s> </span><span class=si>$</span><span class=p>(</span><span class=nb>π</span><span class=o>+</span><span class=mi>0</span><span class=p>)</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>Estimate: 3.13168		π: 3.141592653589793
+</code></pre></div><pre><code>Estimate: 3.13148		π: 3.141592653589793
 </code></pre><h2 id=keyword-arguments-and-default-values>Keyword arguments and default values</h2><p>In all functions thus far, we <em>had</em> to give all the values of all arguments.
 Sometimes, it make sense to have some arguments take a default value, which we
 can change when we need to, but will remain constant otherwise.</p><div class="callout warning">Giving default values can save some time, but it means you don't need to <em>think</em>
@@ -253,7 +253,7 @@ longer than if I has asked you what the sum of 0.0 and 1.0 is. Is it true for
 the computer?</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>time_int_and_float</span><span class=o></span> <span class=o>=</span> <span class=nd>@elapsed</span><span class=o></span> <span class=mi>0</span> <span class=o>+</span> <span class=mf>1.0</span>
 <span class=n>time_float_and_float</span><span class=o></span> <span class=o>=</span> <span class=nd>@elapsed</span><span class=o></span> <span class=mf>0.0</span> <span class=o>+</span> <span class=mf>1.0</span>
 <span class=n>println</span><span class=o></span><span class=p>(</span><span class=s>&#34;</span><span class=s>I</span><span class=s>t</span><span class=s> </span><span class=s>t</span><span class=s>a</span><span class=s>k</span><span class=s>e</span><span class=s>s</span><span class=s> </span><span class=si>$</span><span class=p>(</span><span class=n>round</span><span class=o></span><span class=p>(</span><span class=n>time_int_and_float</span><span class=o></span><span class=o>/</span><span class=n>time_float_and_float</span><span class=o></span><span class=p>;</span> <span class=n>digits</span><span class=o></span><span class=o>=</span><span class=mi>2</span><span class=p>)</span><span class=p>)</span><span class=s> </span><span class=s>t</span><span class=s>i</span><span class=s>m</span><span class=s>e</span><span class=s>s</span><span class=s> </span><span class=s>l</span><span class=s>o</span><span class=s>n</span><span class=s>g</span><span class=s>e</span><span class=s>r</span><span class=s> </span><span class=s>t</span><span class=s>o</span><span class=s> </span><span class=s>w</span><span class=s>o</span><span class=s>r</span><span class=s>k</span><span class=s> </span><span class=s>w</span><span class=s>i</span><span class=s>t</span><span class=s>h</span><span class=s> </span><span class=s>d</span><span class=s>i</span><span class=s>f</span><span class=s>f</span><span class=s>e</span><span class=s>r</span><span class=s>e</span><span class=s>n</span><span class=s>t</span><span class=s> </span><span class=s>t</span><span class=s>y</span><span class=s>p</span><span class=s>e</span><span class=s>s</span><span class=s>!</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>It takes 0.7 times longer to work with different types!
+</code></pre></div><pre><code>It takes 1.07 times longer to work with different types!
 </code></pre><p>The exact number may vary, but on my machine, it takes about 1.5 times longer to
 do the operation with different types. Why is that?</p><p>It is because the computer needs to &ldquo;rethink&rdquo; about one of these numbers (<em>i.e.</em>
 to change <code>0</code> in <code>0.0</code>, or <code>1.0</code> in <code>1</code>), before it can do the actual operation.
