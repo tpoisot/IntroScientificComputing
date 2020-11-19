@@ -1,0 +1,142 @@
+<!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=http://sciencecomputing.io/configuration.f07adc66523bfb9376331df4a987ad0ee3a4168825f9727b79b19c0c9f42c034.css><link rel=stylesheet href=http://sciencecomputing.io/index.335b9da42905703c77c41fdd28e417e23f615f8497939b4133f857fd41559ea6.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>Neural network with Flux · Scientific computing</title></head><body><nav id=main class=sidebar><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class=sidebar-nav-item href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class=sidebar-nav-item href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class=sidebar-nav-item href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><p>In this lesson, we will create neural networks using <code>Flux</code>, a performant and
+elegant package for doing machine learning in Julia. <code>Flux</code> is very well
+documented, and <a href=https://fluxml.ai/>multiple step-by-step examples</a> have been
+written to provide users with a solid understanding of how it can be used to
+build machine learning models in a few lines of code only.</p><p>We will be using the seeds dataset, which we believe is a better version of the
+widely used iris dataset. It consists of 7 measures of wheat kernels. Each
+kernel belongs to one of the three cultivars labeled in the dataset. The aim of
+our models is to predict cultivars from the kernel features within a supervised
+learning framework. We will define and train two models before evaluating their
+predictive performance: a single-layer neural network and a deep neural network.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>using</span> <span class=n>Flux</span>
+<span class=k>import</span> <span class=n>CSV</span>
+<span class=k>using</span> <span class=n>DataFrames</span>
+<span class=k>using</span> <span class=n>Random</span>
+<span class=k>using</span> <span class=n>Statistics</span>
+</code></pre></div><p>The first thing we need to do is download our data, which we will store in our
+local folder. The data are available from the <a href=https://archive.ics.uci.edu/ml/machine-learning-databases/00236/seeds_dataset.txt>UCI Machine Learning
+repository</a>. To make sure that we do not download the dataset more often
+than necessary, we will write a short function to download the dataset if it
+doesn&rsquo;t exist, and if it exists, to return it as a data frame:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>get_dataset</span><span class=p>(</span><span class=n>url</span><span class=p>,</span> <span class=n>filename</span><span class=p>)</span>
+	<span class=k>if</span> <span class=o>!</span><span class=n>isfile</span><span class=p>(</span><span class=n>filename</span><span class=p>)</span>
+		<span class=n>download</span><span class=p>(</span><span class=n>url</span><span class=p>,</span> <span class=n>filename</span><span class=p>)</span>
+	<span class=k>end</span>
+	<span class=k>return</span> <span class=n>dropmissing</span><span class=p>(</span><span class=n>CSV</span><span class=o>.</span><span class=n>read</span><span class=p>(</span><span class=n>filename</span><span class=p>;</span> <span class=n>header</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=n>delim</span><span class=o>=</span><span class=sc>&#39;\t&#39;</span><span class=p>))</span>
+<span class=k>end</span>
+<span class=kd>const</span> <span class=n>seed_url</span> <span class=o>=</span> <span class=s>&#34;https://archive.ics.uci.edu/ml/machine-learning-databases/00236/seeds_dataset.txt&#34;</span>
+<span class=n>seeds</span> <span class=o>=</span> <span class=n>get_dataset</span><span class=p>(</span><span class=n>seed_url</span><span class=p>,</span> <span class=s>&#34;seeds.txt&#34;</span><span class=p>);</span>
+</code></pre></div><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>first</span><span class=p>(</span><span class=n>seeds</span><span class=p>,</span> <span class=mi>3</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: seeds not defined
+</code></pre><p>Note that we rely on <code>dropmissing</code>, because the original dataset is not properly
+formated, and some columns are delimited by more than one tabulation. These
+malformed rows will be dropped.</p><p>At this point, our column names are not very informative - we can look up the
+metadata for this dataset, and rename them as follows:</p><table><thead><tr><th>Variable</th><th>column</th><th>new name</th></tr></thead><tbody><tr><td>area</td><td>1</td><td><code>:area</code></td></tr><tr><td>perimeter</td><td>2</td><td><code>:perimeter</code></td></tr><tr><td>compactness</td><td>3</td><td><code>:compactness</code></td></tr><tr><td>length of kernel</td><td>4</td><td><code>:kernel_length</code></td></tr><tr><td>width of kernel</td><td>5</td><td><code>:kernel_width</code></td></tr><tr><td>asymmetry coefficient</td><td>6</td><td><code>:asymmetry</code></td></tr><tr><td>length of kernel groove</td><td>7</td><td><code>:kernel_groove</code></td></tr><tr><td>cultivar (ID)</td><td>8</td><td><code>:cultivar</code></td></tr></tbody></table><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rename!</span><span class=p>(</span><span class=n>seeds</span><span class=p>,</span>
+  <span class=p>[</span><span class=o>:</span><span class=n>Column1</span> <span class=o>=&gt;</span> <span class=o>:</span><span class=n>area</span><span class=p>,</span> <span class=o>:</span><span class=n>Column2</span> <span class=o>=&gt;</span> <span class=o>:</span><span class=n>perimeter</span><span class=p>,</span>
+  <span class=o>:</span><span class=n>Column3</span> <span class=o>=&gt;</span> <span class=o>:</span><span class=n>compactness</span><span class=p>,</span> <span class=o>:</span><span class=n>Column4</span> <span class=o>=&gt;</span> <span class=o>:</span><span class=n>kernel_length</span><span class=p>,</span>
+  <span class=o>:</span><span class=n>Column5</span> <span class=o>=&gt;</span> <span class=o>:</span><span class=n>kernel_width</span><span class=p>,</span> <span class=o>:</span><span class=n>Column6</span> <span class=o>=&gt;</span> <span class=o>:</span><span class=n>asymmetry</span><span class=p>,</span>
+  <span class=o>:</span><span class=n>Column7</span> <span class=o>=&gt;</span> <span class=o>:</span><span class=n>kernel_groove</span><span class=p>,</span> <span class=o>:</span><span class=n>Column8</span> <span class=o>=&gt;</span> <span class=o>:</span><span class=n>cultivar</span><span class=p>]</span>
+  <span class=p>)</span>
+<span class=n>seeds</span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
+</code></pre></div><pre><code>Error: UndefVarError: seeds not defined
+</code></pre><p>To ensure that our results will be consistent every time we run them, we will
+set the initial state of our random number generator.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>Random</span><span class=o>.</span><span class=n>seed!</span><span class=p>(</span><span class=mi>42</span><span class=p>);</span>
+</code></pre></div><p>At this point, we still need to decide on how many samples will be used for
+training, and how many will be used for testing. As usual, we will use 70% of
+the dataset for training, and so we need to calculate how many samples this
+amounts to.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>n_training</span> <span class=o>=</span> <span class=n>convert</span><span class=p>(</span><span class=kt>Int64</span><span class=p>,</span> <span class=n>round</span><span class=p>(</span><span class=mf>0.7</span><span class=o>*</span><span class=n>size</span><span class=p>(</span><span class=n>seeds</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span><span class=n>digits</span><span class=o>=</span><span class=mi>0</span><span class=p>))</span>
+</code></pre></div><pre><code>Error: UndefVarError: seeds not defined
+</code></pre><p>Because the data set is ordered (by cultivar, specifically), we cannot simply
+take the first Error: UndefVarError: n_training not defined samples. Instead, we will shuffle the rows of our
+dataframe, and take the first Error: UndefVarError: n_training not defined of that:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>seeds</span> <span class=o>=</span> <span class=n>seeds</span><span class=p>[</span><span class=n>shuffle</span><span class=p>(</span><span class=mi>1</span><span class=o>:</span><span class=k>end</span><span class=p>),</span> <span class=o>:</span><span class=p>]</span>
+<span class=n>first</span><span class=p>(</span><span class=n>seeds</span><span class=p>,</span> <span class=mi>3</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: seeds not defined
+</code></pre><p>We are now satistified about the fact that the dataset is aranged in a random
+way. This means that we can split it into a training and testing component:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>trn_set</span><span class=p>,</span> <span class=n>tst_set</span> <span class=o>=</span> <span class=n>seeds</span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=n>n_training</span><span class=p>,</span> <span class=o>:</span><span class=p>],</span> <span class=n>seeds</span><span class=p>[(</span><span class=n>n_training</span><span class=o>+</span><span class=mi>1</span><span class=p>)</span><span class=o>:</span><span class=k>end</span><span class=p>,</span> <span class=o>:</span><span class=p>]</span>
+<span class=n>size</span><span class=p>(</span><span class=n>trn_set</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: n_training not defined
+</code></pre><p>The next step is to extract the features (information we use for classification)
+and the labels (the categories to predict). Because our cultivar information is
+stored as a floating point number, we must first one-hot encode it. As the
+labels are initially randomly arranged, it is also very important to specificy
+their order. For performance reasons, <em>Flux</em> requires that instances be stored
+as columns in a matrix, so we will also need to transpose our data. Because this
+will need to be done for both testing and training set, we can write a function:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>get_features_and_labels</span><span class=p>(</span><span class=n>data_set</span><span class=p>)</span>
+	<span class=n>features</span> <span class=o>=</span> <span class=n>transpose</span><span class=p>(</span><span class=n>convert</span><span class=p>(</span><span class=kt>Matrix</span><span class=p>,</span> <span class=n>data_set</span><span class=p>[</span><span class=o>!</span><span class=p>,</span> <span class=n>Not</span><span class=p>(</span><span class=o>:</span><span class=n>cultivar</span><span class=p>)]))</span>
+	<span class=n>labels</span> <span class=o>=</span> <span class=n>Flux</span><span class=o>.</span><span class=n>onehotbatch</span><span class=p>(</span><span class=n>data_set</span><span class=o>.</span><span class=n>cultivar</span><span class=p>,</span> <span class=n>sort</span><span class=p>(</span><span class=n>unique</span><span class=p>(</span><span class=n>data_set</span><span class=o>.</span><span class=n>cultivar</span><span class=p>)))</span>
+	<span class=k>return</span> <span class=p>(</span><span class=n>features</span><span class=p>,</span> <span class=n>labels</span><span class=p>)</span>
+<span class=k>end</span>
+</code></pre></div><pre><code>get_features_and_labels (generic function with 1 method)
+</code></pre><p>With this function, we do not need to type the same code twice to get our
+training and testing sets correctly split:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>trn_features</span><span class=p>,</span> <span class=n>trn_labels</span> <span class=o>=</span> <span class=n>get_features_and_labels</span><span class=p>(</span><span class=n>trn_set</span><span class=p>);</span>
+<span class=n>tst_features</span><span class=p>,</span> <span class=n>tst_labels</span> <span class=o>=</span> <span class=n>get_features_and_labels</span><span class=p>(</span><span class=n>tst_set</span><span class=p>);</span>
+</code></pre></div><pre><code>Error: UndefVarError: trn_set not defined
+</code></pre><p>As a starting point, we will use a simple neural network with one input layer,
+containing one input neuron for every feature, and one output neuron for every
+label, which will be densely connected. We will then apply the softmax function
+to decide which label should be assigned. This is done using the following
+syntax in <em>Flux</em>:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>one_layer</span> <span class=o>=</span> <span class=n>Chain</span><span class=p>(</span>
+	<span class=n>Dense</span><span class=p>(</span><span class=n>size</span><span class=p>(</span><span class=n>trn_features</span><span class=p>,</span><span class=mi>1</span><span class=p>),</span> <span class=n>size</span><span class=p>(</span><span class=n>trn_labels</span><span class=p>,</span><span class=mi>1</span><span class=p>)),</span>
+	<span class=n>softmax</span>
+	<span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: trn_features not defined
+</code></pre><p>In order to train this network, we need to decide on an optimiser, which in our
+case will be a gradient descent with a rate of learning of 0.01:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>optimizer</span> <span class=o>=</span> <span class=n>Descent</span><span class=p>(</span><span class=mf>0.01</span><span class=p>)</span>
+</code></pre></div><pre><code>Flux.Optimise.Descent(0.01)
+</code></pre><p>The final step is to decide on a loss function; for a classification problem, we
+can usually start with cross entropy. This function will take a series of
+features as a first input, and the expected labels as the second input.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>loss</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>y</span><span class=p>)</span> <span class=o>=</span> <span class=n>Flux</span><span class=o>.</span><span class=n>crossentropy</span><span class=p>(</span><span class=n>one_layer</span><span class=p>(</span><span class=n>x</span><span class=p>),</span> <span class=n>y</span><span class=p>)</span>
+</code></pre></div><pre><code>loss (generic function with 1 method)
+</code></pre><p>Before we start, we will wrap the data into an iterator, to repeat them for
+every training epoch - we will start with 2000 training epochs:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>data_iterator</span> <span class=o>=</span> <span class=n>Iterators</span><span class=o>.</span><span class=n>repeated</span><span class=p>((</span><span class=n>trn_features</span><span class=p>,</span> <span class=n>trn_labels</span><span class=p>),</span> <span class=mi>2000</span><span class=p>);</span>
+</code></pre></div><pre><code>Error: UndefVarError: trn_features not defined
+</code></pre><p>Once all of this set-up work is done, training the network is very
+straightforward:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>Flux</span><span class=o>.</span><span class=n>train!</span><span class=p>(</span><span class=n>loss</span><span class=p>,</span> <span class=n>params</span><span class=p>(</span><span class=n>one_layer</span><span class=p>),</span> <span class=n>data_iterator</span><span class=p>,</span> <span class=n>optimizer</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: one_layer not defined
+</code></pre><p>As a first idea of the performance of this model, we might want to look at its
+accuracy on the training set. Accuracy in this case is defined as the proportion
+of correct guesses. To get the correct guesses, we need to one-cold our labels,
+to transform them into a series of 1, 2, and 3 corresponding to the various
+cultivars.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>accuracy</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>feat</span><span class=p>,</span> <span class=n>labs</span><span class=p>)</span>
+	<span class=n>pred</span> <span class=o>=</span> <span class=n>Flux</span><span class=o>.</span><span class=n>onecold</span><span class=p>(</span><span class=n>model</span><span class=p>(</span><span class=n>feat</span><span class=p>))</span>
+	<span class=n>obsv</span> <span class=o>=</span> <span class=n>Flux</span><span class=o>.</span><span class=n>onecold</span><span class=p>(</span><span class=n>labs</span><span class=p>)</span>
+	<span class=k>return</span> <span class=n>mean</span><span class=p>(</span><span class=n>pred</span> <span class=o>.==</span> <span class=n>obsv</span><span class=p>)</span>
+<span class=k>end</span>
+<span class=n>accuracy</span><span class=p>(</span><span class=n>one_layer</span><span class=p>,</span> <span class=n>trn_features</span><span class=p>,</span> <span class=n>trn_labels</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: one_layer not defined
+</code></pre><p>We can compare this to the testing set:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>accuracy</span><span class=p>(</span><span class=n>one_layer</span><span class=p>,</span> <span class=n>tst_features</span><span class=p>,</span> <span class=n>tst_labels</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: one_layer not defined
+</code></pre><p>This is a little bit lower, which is not necessarily surprising as we have used
+a small dataset, a shallow network, raw input data, and a relatively modest
+number of training epochs. We might now want to look at the confusin matrix for
+this network:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>confusion_matrix</span><span class=p>(</span><span class=n>model</span><span class=p>,</span> <span class=n>feat</span><span class=p>,</span> <span class=n>labs</span><span class=p>)</span>
+  <span class=n>plb</span> <span class=o>=</span> <span class=n>Flux</span><span class=o>.</span><span class=n>onehotbatch</span><span class=p>(</span><span class=n>Flux</span><span class=o>.</span><span class=n>onecold</span><span class=p>(</span><span class=n>model</span><span class=p>(</span><span class=n>feat</span><span class=p>)),</span> <span class=mi>1</span><span class=o>:</span><span class=mi>3</span><span class=p>)</span>
+  <span class=n>labs</span> <span class=o>*</span> <span class=n>plb</span><span class=o>&#39;</span>
+<span class=k>end</span>
+<span class=n>confusion_matrix</span><span class=p>(</span><span class=n>one_layer</span><span class=p>,</span> <span class=n>tst_features</span><span class=p>,</span> <span class=n>tst_labels</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: one_layer not defined
+</code></pre><p>A large majority of large values are on the diagonal, which corresponds to
+correct predictions, but there are a few outside of the diagonal. To fix this,
+we will try to complexify the network a little bit, maybe by adding a hidden
+network, and changing the activation function of the first layer to a ReLU (the
+default is to use a sigmoid):</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>hidden_size</span> <span class=o>=</span> <span class=mi>12</span>
+<span class=n>two_layers</span> <span class=o>=</span> <span class=n>Chain</span><span class=p>(</span>
+	<span class=n>Dense</span><span class=p>(</span><span class=n>size</span><span class=p>(</span><span class=n>trn_features</span><span class=p>,</span><span class=mi>1</span><span class=p>),</span> <span class=n>hidden_size</span><span class=p>,</span> <span class=n>relu</span><span class=p>),</span>
+	<span class=n>Dense</span><span class=p>(</span><span class=n>hidden_size</span><span class=p>,</span> <span class=n>size</span><span class=p>(</span><span class=n>trn_labels</span><span class=p>,</span><span class=mi>1</span><span class=p>)),</span>
+  <span class=n>softmax</span>
+  <span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: trn_features not defined
+</code></pre><p>We will re-define the loss function:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>v2_loss</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=n>y</span><span class=p>)</span> <span class=o>=</span> <span class=n>Flux</span><span class=o>.</span><span class=n>crossentropy</span><span class=p>(</span><span class=n>two_layers</span><span class=p>(</span><span class=n>x</span><span class=p>),</span> <span class=n>y</span><span class=p>)</span>
+</code></pre></div><pre><code>v2_loss (generic function with 1 method)
+</code></pre><p>And we can keep the data and optimiser as they are,</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>Flux</span><span class=o>.</span><span class=n>train!</span><span class=p>(</span><span class=n>v2_loss</span><span class=p>,</span> <span class=n>params</span><span class=p>(</span><span class=n>two_layers</span><span class=p>),</span> <span class=n>data_iterator</span><span class=p>,</span> <span class=n>optimizer</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: two_layers not defined
+</code></pre><p>When the training is finished, we can also look at the accuracy on the training
+and testing sets:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>accuracy</span><span class=p>(</span><span class=n>two_layers</span><span class=p>,</span> <span class=n>trn_features</span><span class=p>,</span> <span class=n>trn_labels</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: two_layers not defined
+</code></pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>accuracy</span><span class=p>(</span><span class=n>two_layers</span><span class=p>,</span> <span class=n>tst_features</span><span class=p>,</span> <span class=n>tst_labels</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: two_layers not defined
+</code></pre><p>Let&rsquo;s summarize this information, by comparing the gain in accuracy when adding
+one layer:</p><table><thead><tr><th>Dataset</th><th>One-layer model</th><th>Two-layers model</th><th>Change in accuracy</th></tr></thead><tbody><tr><td>training</td><td>Error: UndefVarError: acc_o_trn not defined</td><td>Error: UndefVarError: acc_t_trn not defined</td><td>Error: UndefVarError: acc_t_trn not defined</td></tr><tr><td>testing</td><td>Error: UndefVarError: acc_o_tst not defined</td><td>Error: UndefVarError: acc_t_tst not defined</td><td>Error: UndefVarError: acc_t_tst not defined</td></tr></tbody></table><p>We can confirm that the confusion matrix is also better, in that it has more
+elements on the diagonal:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>confusion_matrix</span><span class=p>(</span><span class=n>two_layers</span><span class=p>,</span> <span class=n>tst_features</span><span class=p>,</span> <span class=n>tst_labels</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: UndefVarError: two_layers not defined
+</code></pre><p>For more information on neural networks and deep learning, we suggest the <a href=http://neuralnetworksanddeeplearning.com/index.html>free
+online book of the same name</a>, which has a lot of annotated code examples,
+as well as information about the mathematics behind all of this.</p></section></section><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
