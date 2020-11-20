@@ -30,16 +30,16 @@ $(0,2)$ will be save us almost four keystrokes!</p><p>After the following lesson
 <span class=k>end</span>
 <span class=n>darts</span>
 </code></pre></div><pre><code>10-element Array{Any,1}:
- (0.18946364404331728, 0.2108284343802751)
- (0.32044104874828605, 0.8716064607222931)
- (1.637734051459431, 0.990025015295223)
- (0.9686934085717089, 1.295747070583467)
- (1.0267364897896045, 1.917495648117797)
- (0.7613327234949989, 1.4266687131637061)
- (0.0890027383776788, 0.9928110610221901)
- (0.5954694855868419, 1.4468699478223521)
- (0.5278126363733531, 0.22559310470386462)
- (0.6954758267168981, 0.41676395139279876)
+ (1.5192342164171269, 1.0057203854697119)
+ (0.2615521499570135, 0.019923179724182116)
+ (0.11320939043446421, 1.0915431020178206)
+ (0.6319930723463378, 0.12007841251549412)
+ (0.23903785971099722, 0.478653426938652)
+ (1.7974857561958135, 1.4023930759709882)
+ (0.5199261605248697, 1.6456516151773601)
+ (0.7903960974402295, 1.3462203962996928)
+ (0.2128815152252832, 1.6630154015539511)
+ (0.4624768506009267, 1.7569628017757593)
 </code></pre><p>This introduces a few new notations. The <code>darts = []</code> instruction creates an
 <em>empty</em> array. This is not the optimal way of approaching this problem, but
 remember the UNIX philosophy: we&rsquo;ll rewrite this awkard part later. Then we use
@@ -210,7 +210,7 @@ screens to see what the function does). Because we have named our functions
 explicitely, the code is also easy to understand. In the next lesson, we will
 see that modular code is easy to <em>test</em> (and to debug).</p><p>So, how good is our estimate?</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>estimate</span> <span class=o>=</span> <span class=n>estimate_pi</span><span class=p>(</span><span class=mi>100000</span><span class=p>)</span>
 <span class=n>println</span><span class=p>(</span><span class=s>&#34;Estimate: </span><span class=si>$</span><span class=p>(</span><span class=n>estimate</span><span class=p>)</span><span class=se>\t\t</span><span class=s>π: </span><span class=si>$</span><span class=p>(</span><span class=nb>π</span><span class=o>+</span><span class=mi>0</span><span class=p>)</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>Estimate: 3.14188		π: 3.141592653589793
+</code></pre></div><pre><code>Estimate: 3.142		π: 3.141592653589793
 </code></pre><h2 id=keyword-arguments-and-default-values>Keyword arguments and default values</h2><p>In all functions thus far, we <em>had</em> to give all the values of all arguments.
 Sometimes, it make sense to have some arguments take a default value, which we
 can change when we need to, but will remain constant otherwise.</p><div class="callout warning">Giving default values can save some time, but it means you don&rsquo;t need to <em>think</em>

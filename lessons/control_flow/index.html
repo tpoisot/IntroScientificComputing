@@ -152,7 +152,7 @@ we will use the far more dignified <em>smol</em> and <em>chonky</em>:</p><div cl
   <span class=k>end</span>
 <span class=k>end</span>
 </code></pre></div><pre><code>smol
-smol
+chonky
 smol
 chonky
 smol
@@ -199,11 +199,11 @@ end
 understanding what exactly is in the <code>random_numbers</code> object. Let&rsquo;s display it
 again:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span>
 </code></pre></div><pre><code>5-element Array{Float64,1}:
- 0.3056627921652795
- 0.06891570686187354
- 0.23130722801781545
- 0.6775039487589418
- 0.11017060066261486
+ 0.3812779766825847
+ 0.8057121931495919
+ 0.18420900510810445
+ 0.8586138914007606
+ 0.13649810947501684
 </code></pre><p>This type of object is an <em>array</em>; it may help to think of an array as a shelf,
 in which every compartment can store one thing. You can have shelves with a
 single row, a single column, or both rows and columns. In <em>Julia</em>, arrays are by
@@ -219,31 +219,31 @@ has 5 positions in its first <em>dimension</em>, and no positions in its second
 dimension: this is a column with five rows. We can also access any <em>position</em> we
 like; this is akin to asking &ldquo;computer, give me the content of the 1st
 compartment&rdquo;:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
-</code></pre></div><pre><code>0.3056627921652795
+</code></pre></div><pre><code>0.3812779766825847
 </code></pre><p>Some languages, like <em>Julia</em>, <em>R</em>, and <em>MatLab</em>, start counting from 1, but
 <em>python</em> and <em>C</em> start counting from 0. These are conventions that each language
 adopted. Everyone thinks the other camp is wrong, and it&rsquo;s one of these
 surprisingly bitter (considering how utterly unimportant they are) divides in
 the computer science world.</p><p>We can *also ask what the <em>last</em> position contains:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=p>[</span><span class=n>length</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)]</span>
-</code></pre></div><pre><code>0.11017060066261486
+</code></pre></div><pre><code>0.13649810947501684
 </code></pre><p>The way to read this instruction is as follows: get me the element at position
 <code>length(random_numbers)</code>. We know that the length of <code>random_numbers</code> is <code>5</code>, so
 this will return the 5th position. <em>Julia</em> has a quite pretty way of getting the
 last element of most collections:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=p>[</span><span class=k>end</span><span class=p>]</span>
-</code></pre></div><pre><code>0.11017060066261486
+</code></pre></div><pre><code>0.13649810947501684
 </code></pre><p>An extra bit of <a href=https://en.wikipedia.org/wiki/Syntactic_sugar>syntactic sugar</a> in <em>Julia</em> are the two following
 functions:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>first</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)</span>
-</code></pre></div><pre><code>0.3056627921652795
+</code></pre></div><pre><code>0.3812779766825847
 </code></pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>last</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)</span>
-</code></pre></div><pre><code>0.11017060066261486
+</code></pre></div><pre><code>0.13649810947501684
 </code></pre><p>Being able to access elements by their position can be very useful. Our
 <code>random_numbers</code> array has five elements, and we only want to print the
 odd-numbered ones. One way to do this would be to call then individually:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>println</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>[</span><span class=mi>1</span><span class=p>])</span>
 <span class=n>println</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>[</span><span class=mi>3</span><span class=p>])</span>
 <span class=n>println</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>[</span><span class=mi>5</span><span class=p>])</span>
-</code></pre></div><pre><code>0.3056627921652795
-0.23130722801781545
-0.11017060066261486
+</code></pre></div><pre><code>0.3812779766825847
+0.18420900510810445
+0.13649810947501684
 </code></pre><p>Of course, this is only reasonable if we have a very small number of things to
 do. But what if we want to iterate over hundreds, or thousands of values? We
 need a more efficient strategy.</p><h2 id=iterating-over-values>Iterating over values</h2><p>We know that a number is even if the statement <code>x % 2 == 0</code>, where <code>%</code> is
@@ -253,9 +253,9 @@ integer division by two is <em>not</em> 0: <code>x % 2 != 0</code>.</p><p>Let&rs
     <span class=n>println</span><span class=p>(</span><span class=s>&#34;Position </span><span class=si>$i</span><span class=s>:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>random_numbers</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
   <span class=k>end</span>
 <span class=k>end</span>
-</code></pre></div><pre><code>Position 1:	0.3056627921652795
-Position 3:	0.23130722801781545
-Position 5:	0.11017060066261486
+</code></pre></div><pre><code>Position 1:	0.3812779766825847
+Position 3:	0.18420900510810445
+Position 5:	0.13649810947501684
 </code></pre><p>We can &ldquo;read&rdquo; this snippet (a <em>snippet</em> is the affectionate name given to a
 litle chunk of code; a <em>chunk</em> is a much uglier name for &ldquo;a piece&rdquo;) as</p><pre><code>there is a variable i
 it will take every value between 1 and the length of the ranom_numbers array
@@ -317,7 +317,7 @@ run it for a while (<em>GET IT?</em>) to get a sample with an average of about 0
 <span class=k>end</span>
 
 <span class=n>println</span><span class=p>(</span><span class=s>&#34;μ: </span><span class=si>$</span><span class=p>(</span><span class=n>round</span><span class=p>(</span><span class=n>mean</span><span class=p>(</span><span class=n>my_collection</span><span class=p>);</span> <span class=n>digits</span><span class=o>=</span><span class=mi>4</span><span class=p>))</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>μ: 0.5003
+</code></pre></div><pre><code>μ: 0.4995
 </code></pre><p>The instruction just after <code>while</code>, <em>i.e.</em></p><pre><code>!(0.499 ≤ mean(my_collection) ≤ 0.501)
 </code></pre><p>is worth thinking about. It is a very compact way of running multiple tests at
 once: the mean needs to be larger than 0.499, yet smaller than 0.501, and we

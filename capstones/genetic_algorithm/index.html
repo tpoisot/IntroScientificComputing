@@ -153,19 +153,8 @@ the log10 of the mass and FMR earlier):</p><div class=highlight><pre class=chrom
   <span class=n>sum_of_errors_sq</span> <span class=o>=</span> <span class=n>sum</span><span class=p>(</span><span class=n>errors</span><span class=o>.^</span><span class=mf>2.0</span><span class=p>)</span><span class=o>/</span><span class=n>length</span><span class=p>(</span><span class=n>log10fmr</span><span class=p>)</span>
   <span class=k>return</span> <span class=mf>1.0</span><span class=o>/</span><span class=n>sum_of_errors_sq</span>
 <span class=k>end</span>
-</code></pre></div><pre><code>Error: MethodError: no method matching getindex(::DataFrames.DataFrame, ::S
-ymbol)
-Closest candidates are:
-  getindex(::DataFrames.DataFrame, !Matched::Integer, !Matched::Union{Signe
-d, Unsigned}) at /home/runner/.julia/packages/DataFrames/X0xNW/src/datafram
-e/dataframe.jl:388
-  getindex(::DataFrames.DataFrame, !Matched::Integer, !Matched::Union{Abstr
-actString, Symbol}) at /home/runner/.julia/packages/DataFrames/X0xNW/src/da
-taframe/dataframe.jl:403
-  getindex(::DataFrames.DataFrame, !Matched::AbstractArray{T,1} where T, !M
-atched::Union{AbstractString, Signed, Symbol, Unsigned}) at /home/runner/.j
-ulia/packages/DataFrames/X0xNW/src/dataframe/dataframe.jl:413
-  ...
+</code></pre></div><pre><code>Error: ArgumentError: syntax df[column] is not supported use df[!, column] 
+instead
 </code></pre><p>The first thing we do is &ldquo;extract&rdquo; the $\text{log}_{10}$ of the FMR and mass,
 and turn them into vectors. Then we define a function which uses these vectors,
 and does the linear prediction. You may notice that this function uses elements
@@ -213,17 +202,6 @@ $\mathcal{N}(\mu=0.75, \sigma=0.2)$:</p><div class=highlight><pre class=chroma><
 <span class=n>plot!</span><span class=p>(</span><span class=n>pred</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>ŷ</span><span class=p>(</span><span class=n>population</span><span class=p>[</span><span class=n>mostfit</span><span class=p>],</span> <span class=n>log10</span><span class=o>.</span><span class=p>(</span><span class=n>pred</span><span class=p>)),</span> <span class=n>c</span><span class=o>=:</span><span class=n>orange</span><span class=p>,</span> <span class=n>lw</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>ls</span><span class=o>=:</span><span class=n>dash</span><span class=p>)</span>
 <span class=n>xaxis!</span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=p>,</span> <span class=s>&#34;Mass (kg)&#34;</span><span class=p>)</span>
 <span class=n>yaxis!</span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=p>,</span> <span class=s>&#34;Field Metabolic Rate (kj per day)&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>Error: MethodError: no method matching getindex(::DataFrames.DataFrame, ::S
-ymbol)
-Closest candidates are:
-  getindex(::DataFrames.DataFrame, !Matched::Integer, !Matched::Union{Signe
-d, Unsigned}) at /home/runner/.julia/packages/DataFrames/X0xNW/src/datafram
-e/dataframe.jl:388
-  getindex(::DataFrames.DataFrame, !Matched::Integer, !Matched::Union{Abstr
-actString, Symbol}) at /home/runner/.julia/packages/DataFrames/X0xNW/src/da
-taframe/dataframe.jl:403
-  getindex(::DataFrames.DataFrame, !Matched::AbstractArray{T,1} where T, !M
-atched::Union{AbstractString, Signed, Symbol, Unsigned}) at /home/runner/.j
-ulia/packages/DataFrames/X0xNW/src/dataframe/dataframe.jl:413
-  ...
+</code></pre></div><pre><code>Error: ArgumentError: syntax df[column] is not supported use df[!, column] 
+instead
 </code></pre><p>We can also look at the equation for the most fit genome: Error: UndefVarError: mostfit not defined.</p></section></section><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
