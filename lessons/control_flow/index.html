@@ -1,4 +1,4 @@
-<!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=https://sciencecomputing.io/configuration.f07adc66523bfb9376331df4a987ad0ee3a4168825f9727b79b19c0c9f42c034.css><link rel=stylesheet href=https://sciencecomputing.io/index.335b9da42905703c77c41fdd28e417e23f615f8497939b4133f857fd41559ea6.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>The flow of execution · Scientific computing</title></head><body><nav id=main class=sidebar><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class="sidebar-nav-item active" href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class=sidebar-nav-item href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class=sidebar-nav-item href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><h2 id=programming-really-is-a-language>Programming really <em>is</em> a language</h2><p>But if you understand three words, you will be able to hold a good conversation
+<!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=https://sciencecomputing.io/configuration.3f624b39616217ce894cfbc7c681faa5c3287234e401161b5d830595888d8a0f.css><link rel=stylesheet href=https://sciencecomputing.io/index.b5d7af4aaf50f86cc4e1232bfbc8cd98a64f22aec70358c9b0ff54cc009efc49.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>The flow of execution · Scientific computing</title></head><body><nav id=main class=sidebar><img src=/logo.png alt style=position:absolute;left:50%;width:56px;margin-left:-28px;margin-top:5px><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class="sidebar-nav-item active" href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class=sidebar-nav-item href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class=sidebar-nav-item href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><h2 id=programming-really-is-a-language>Programming really <em>is</em> a language</h2><p>But if you understand three words, you will be able to hold a good conversation
 with your computer! These three words are <em>if</em>, <em>for</em>, and <em>while</em>. If you have
 some previous experience with writing code, you can skim through this lesson.</p><p>One great way to make your code robust is to keep it very simple, and one great
 way to keep your code very simple is to recognize that often, we want to do one
@@ -42,7 +42,7 @@ telling us to walk. But we know that the time by foot is <em>not</em> shorter, a
 does the computer. And for this reason, whatever is between <code>if</code> and <code>end</code> is
 <em>not</em> executed. Testing that conditions are met are one way to save time &ndash; we
 do not want to run operations that are not useful.</p><p>In the above example, we gave no alternative to the computer. To decide between
-two (or more) things to do, we need to use <code>if</code>&rsquo;s frequent partner: <code>else</code>.
+two (or more) things to do, we need to use <code>if</code>'s frequent partner: <code>else</code>.
 Let&rsquo;s try again:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>time_by_foot</span> <span class=o>=</span> <span class=mi>13</span>
 <span class=n>time_by_bike</span> <span class=o>=</span> <span class=mi>4</span>
 <span class=k>if</span> <span class=n>time_by_foot</span> <span class=o>&lt;</span> <span class=n>time_by_bike</span>
@@ -105,11 +105,10 @@ bike, as a function of the weather. Run the cell below: what do you expect?</p><
 <span class=k>end</span>
 </code></pre></div><pre><code>You should take the subway
 </code></pre><p>Because it rains (<code>rain = true</code>), our code is correctly telling us to take the
-subway.</p><p>Now, what would you change to make it stop raining? And what do you expect to
+subway.</p><div class=question id=stopraining><h1><i class="fa fa-question-circle" aria-hidden=true></i>Who'll stop the rain?</h1><div class=text>Now, what would you change to make it stop raining? And what do you expect to
 see as an output?
-{: .question}</p><p>Correct! If you change the <code>rain = true</code> to <code>rain = false</code>, and re-run this
-example, the code will tell us to bike, because it is faster.
-{: .answer}</p><p>At this point, it is important to note that there are many, many ways to write
+<button type=button onclick="document.getElementById('answer-stopraining').classList.toggle('hidden');">See the answer</button></div><div class="answer hidden" id=answer-stopraining>Correct! If you change the <code>rain = true</code> to <code>rain = false</code>, and re-run this
+example, the code will tell us to bike, because it is faster.</div></div><p>At this point, it is important to note that there are many, many ways to write
 the same code. Maybe you would like to ask the question &ldquo;Is it <em>not</em> raining?&rdquo;
 instead, or decide which mode of transporation takes the longest time. As long
 as they give the correct answer, all of these formulations are valid. The
@@ -154,9 +153,9 @@ we will use the far more dignified <em>smol</em> and <em>chonky</em>:</p><div cl
 <span class=k>end</span>
 </code></pre></div><pre><code>smol
 smol
+smol
 chonky
-chonky
-chonky
+smol
 </code></pre><p>There is quite a lot happening here, so we will go line by line.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span> <span class=o>=</span> <span class=n>rand</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span>
 </code></pre></div><p>First, we generate 5 random numbers, and put them in a variable called
 <code>random_numbers</code>. It is always a good idea to give very explicit names to
@@ -179,15 +178,32 @@ else
 end
 </code></pre><p>These lines should be familiar to you now &ndash; your computer will evaluate the
 statement &ldquo;<code>random_number</code> is lower than or equal to 0.5&rdquo;, and depending on the
-truthiness of it, will print either <em>foo</em> or <em>bar</em>.</p><h2 id=navigating-arrays>Navigating arrays</h2><p>Before we move on to a more interesting use of iteration, it is worth
+truthiness of it, will print either <em>foo</em> or <em>bar</em>.</p><div class=question id=isodd><h1><i class="fa fa-question-circle" aria-hidden=true></i>We don't get tired, we get even.</h1><div class=text><p>Let&rsquo;s practice with an exercice. We want to print all numbers between 1
+and 12 that are <em>even</em>. Julia has an <code>iseven</code> function to do this, and we
+will get you started with a block of code that is only missing a few
+instruction &ndash; complete it to solve the problem!</p><pre><code>numbers = collect(1:12)
+
+for ___ in numbers
+    if ___
+        println(___)
+    end
+end
+</code></pre><button type=button onclick="document.getElementById('answer-isodd').classList.toggle('hidden');">See the answer</button></div><div class="answer hidden" id=answer-isodd><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>numbers</span> <span class=o>=</span> <span class=n>collect</span><span class=p>(</span><span class=mi>1</span><span class=o>:</span><span class=mi>12</span><span class=p>)</span>
+
+<span class=k>for</span> <span class=n>number</span> <span class=kp>in</span> <span class=n>numbers</span>
+    <span class=k>if</span> <span class=n>iseven</span><span class=p>(</span><span class=n>number</span><span class=p>)</span>
+        <span class=n>println</span><span class=p>(</span><span class=n>number</span><span class=p>)</span>
+    <span class=k>end</span>
+<span class=k>end</span>
+</code></pre></div></div></div><h2 id=navigating-arrays>Navigating arrays</h2><p>Before we move on to a more interesting use of iteration, it is worth
 understanding what exactly is in the <code>random_numbers</code> object. Let&rsquo;s display it
 again:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span>
 </code></pre></div><pre><code>5-element Array{Float64,1}:
- 0.2540902643286975
- 0.1802624213510391
- 0.5135404156706942
- 0.7136041975338618
- 0.9313078052620891
+ 0.3056627921652795
+ 0.06891570686187354
+ 0.23130722801781545
+ 0.6775039487589418
+ 0.11017060066261486
 </code></pre><p>This type of object is an <em>array</em>; it may help to think of an array as a shelf,
 in which every compartment can store one thing. You can have shelves with a
 single row, a single column, or both rows and columns. In <em>Julia</em>, arrays are by
@@ -203,50 +219,52 @@ has 5 positions in its first <em>dimension</em>, and no positions in its second
 dimension: this is a column with five rows. We can also access any <em>position</em> we
 like; this is akin to asking &ldquo;computer, give me the content of the 1st
 compartment&rdquo;:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
-</code></pre></div><pre><code>0.2540902643286975
+</code></pre></div><pre><code>0.3056627921652795
 </code></pre><p>Some languages, like <em>Julia</em>, <em>R</em>, and <em>MatLab</em>, start counting from 1, but
 <em>python</em> and <em>C</em> start counting from 0. These are conventions that each language
 adopted. Everyone thinks the other camp is wrong, and it&rsquo;s one of these
 surprisingly bitter (considering how utterly unimportant they are) divides in
 the computer science world.</p><p>We can *also ask what the <em>last</em> position contains:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=p>[</span><span class=n>length</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)]</span>
-</code></pre></div><pre><code>0.9313078052620891
+</code></pre></div><pre><code>0.11017060066261486
 </code></pre><p>The way to read this instruction is as follows: get me the element at position
 <code>length(random_numbers)</code>. We know that the length of <code>random_numbers</code> is <code>5</code>, so
 this will return the 5th position. <em>Julia</em> has a quite pretty way of getting the
 last element of most collections:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=p>[</span><span class=k>end</span><span class=p>]</span>
-</code></pre></div><pre><code>0.9313078052620891
+</code></pre></div><pre><code>0.11017060066261486
 </code></pre><p>An extra bit of <a href=https://en.wikipedia.org/wiki/Syntactic_sugar>syntactic sugar</a> in <em>Julia</em> are the two following
 functions:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>first</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)</span>
-</code></pre></div><pre><code>0.2540902643286975
+</code></pre></div><pre><code>0.3056627921652795
 </code></pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>last</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)</span>
-</code></pre></div><pre><code>0.9313078052620891
+</code></pre></div><pre><code>0.11017060066261486
 </code></pre><p>Being able to access elements by their position can be very useful. Our
 <code>random_numbers</code> array has five elements, and we only want to print the
 odd-numbered ones. One way to do this would be to call then individually:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>println</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>[</span><span class=mi>1</span><span class=p>])</span>
 <span class=n>println</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>[</span><span class=mi>3</span><span class=p>])</span>
 <span class=n>println</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>[</span><span class=mi>5</span><span class=p>])</span>
-</code></pre></div><pre><code>0.2540902643286975
-0.5135404156706942
-0.9313078052620891
+</code></pre></div><pre><code>0.3056627921652795
+0.23130722801781545
+0.11017060066261486
 </code></pre><p>Of course, this is only reasonable if we have a very small number of things to
 do. But what if we want to iterate over hundreds, or thousands of values? We
 need a more efficient strategy.</p><h2 id=iterating-over-values>Iterating over values</h2><p>We know that a number is even if the statement <code>x % 2 == 0</code>, where <code>%</code> is
 integer division. We can also say that a number is even if the remainder of its
-integer division by two is <em>not</em> 0: <code>x % 2 != 0</code>.</p><p>Let&rsquo;s go:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>for</span> <span class=n>i</span> <span class=kp>in</span> <span class=mi>1</span><span class=o>:</span><span class=n>length</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)</span> <span class=c># We could also write `in eachindex(random_numbers)`</span>
+integer division by two is <em>not</em> 0: <code>x % 2 != 0</code>.</p><p>Let&rsquo;s go:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>for</span> <span class=n>i</span> <span class=kp>in</span> <span class=n>eachindex</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)</span>
   <span class=k>if</span> <span class=n>i</span> <span class=o>%</span> <span class=mi>2</span> <span class=o>!=</span> <span class=mi>0</span>
     <span class=n>println</span><span class=p>(</span><span class=s>&#34;Position </span><span class=si>$i</span><span class=s>:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>random_numbers</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
   <span class=k>end</span>
 <span class=k>end</span>
-</code></pre></div><pre><code>Position 1:	0.2540902643286975
-Position 3:	0.5135404156706942
-Position 5:	0.9313078052620891
+</code></pre></div><pre><code>Position 1:	0.3056627921652795
+Position 3:	0.23130722801781545
+Position 5:	0.11017060066261486
 </code></pre><p>We can &ldquo;read&rdquo; this snippet (a <em>snippet</em> is the affectionate name given to a
 litle chunk of code; a <em>chunk</em> is a much uglier name for &ldquo;a piece&rdquo;) as</p><pre><code>there is a variable i
 it will take every value between 1 and the length of the ranom_numbers array
 for every value
 look if it is odd
 if it is, print the random number at this position
-</code></pre><p>All <code>for</code> loops will share this structure:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>for</span> <span class=n>element</span> <span class=kp>in</span> <span class=n>collection</span>
+</code></pre><p>The <code>eachindex</code> function is a very powerful way to get, well, every position in
+an array; it is the same thing as writing <code>for i in 1:length(random_numbers)</code>,
+but in a more expressive way.</p><p>All <code>for</code> loops will share the following structure:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>for</span> <span class=n>element</span> <span class=kp>in</span> <span class=n>collection</span>
     <span class=c># this bit can be as complex as we like -- but not too complex!</span>
     <span class=n>do_things</span><span class=p>(</span><span class=n>element</span><span class=p>)</span>
 <span class=k>end</span>
@@ -299,14 +317,44 @@ run it for a while (<em>GET IT?</em>) to get a sample with an average of about 0
 <span class=k>end</span>
 
 <span class=n>println</span><span class=p>(</span><span class=s>&#34;μ: </span><span class=si>$</span><span class=p>(</span><span class=n>round</span><span class=p>(</span><span class=n>mean</span><span class=p>(</span><span class=n>my_collection</span><span class=p>);</span> <span class=n>digits</span><span class=o>=</span><span class=mi>4</span><span class=p>))</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>μ: 0.5009
+</code></pre></div><pre><code>μ: 0.5003
 </code></pre><p>The instruction just after <code>while</code>, <em>i.e.</em></p><pre><code>!(0.499 ≤ mean(my_collection) ≤ 0.501)
 </code></pre><p>is worth thinking about. It is a very compact way of running multiple tests at
 once: the mean needs to be larger than 0.499, yet smaller than 0.501, and we
 need to continue <em>until</em> this is true (but there is not <em>until</em> statement, so we
-use the awkward &ldquo;while not&rdquo;).</p><div class="callout danger">If we are particularly unlucky, we would never get a
-sequence of random numbers that would match this condition! In this case, our
-computer would stubbornly keep running until the heat death of the universe (or
-until it breaks, which in all likelihood will happen earlier). Writing <code>while</code>
-loops can be a complex exercice, and it is always good to think about &ldquo;exit
-strategies&rdquo;. These will be discussed in the <a href=https://sciencecomputing.io/primers/advanced_control_flow/>&ldquo;Advanced control flow&rdquo;</a> primer.</div></section></section><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
+use the awkward &ldquo;while not&rdquo;).</p><div class="callout danger">If we are particularly unlucky, we would never get a sequence of random numbers
+that would match this condition! In this case, our computer would stubbornly
+keep running until the heat death of the universe (or until it breaks, which in
+all likelihood will happen earlier). Writing <code>while</code> loops can be a complex
+exercice, and it is always good to think about &ldquo;exit strategies&rdquo;. These will be
+discussed in the <a href=https://sciencecomputing.io/primers/advanced_control_flow/>&ldquo;Advanced control flow&rdquo;</a> primer.</div><p>This concludes the lesson on the flow of execution. These concepts are very
+important to understand in depth, as everything else we do is built on them. Now
+would be a good time to get back to the questions, or to try and change the
+examples, to make sure you are familiar with the material.</p><div class=question id=extrema><h1><i class="fa fa-question-circle" aria-hidden=true></i>Generating a diverse enough sample of numbers.</h1><div class=text><p>For this question, we want to take the k first numbers from a series
+of random numbers, so that the difference between the largest and the
+smallest is <em>at least</em> some arbitrary threshold. By looking at the
+documentation for the <code>extrema</code> function, and by remembering what the
+<code>first</code> and <code>last</code> functions do, complete the following code:</p><pre><code>numbers = rand(10000);
+threshold = 0.5
+
+for k in ___(numbers)
+    series = ___[1:k]
+    extremas = ___(___)
+    if (___(___) - ___(___)) ≥ threshold
+        println(___)
+        break
+    end
+end
+</code></pre><p>The <code>break</code> keyword is here to stop our loop when we have found the
+correct value of k.</p><button type=button onclick="document.getElementById('answer-extrema').classList.toggle('hidden');">See the answer</button></div><div class="answer hidden" id=answer-extrema><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>numbers</span> <span class=o>=</span> <span class=n>rand</span><span class=p>(</span><span class=mi>10000</span><span class=p>);</span>
+<span class=n>threshold</span> <span class=o>=</span> <span class=mf>0.5</span>
+
+<span class=k>for</span> <span class=n>k</span> <span class=kp>in</span> <span class=n>eachindex</span><span class=p>(</span><span class=n>numbers</span><span class=p>)</span>
+    <span class=n>series</span> <span class=o>=</span> <span class=n>numbers</span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=n>k</span><span class=p>]</span>
+    <span class=n>extremas</span> <span class=o>=</span> <span class=n>extrema</span><span class=p>(</span><span class=n>series</span><span class=p>)</span>
+    <span class=k>if</span> <span class=p>(</span><span class=n>last</span><span class=p>(</span><span class=n>extremas</span><span class=p>)</span> <span class=o>-</span> <span class=n>first</span><span class=p>(</span><span class=n>extremas</span><span class=p>))</span> <span class=o>≥</span> <span class=n>threshold</span>
+        <span class=n>println</span><span class=p>(</span><span class=n>k</span><span class=p>)</span>
+        <span class=k>break</span>
+    <span class=k>end</span>
+<span class=k>end</span>
+</code></pre></div></div></div></section></section><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>

@@ -1,4 +1,4 @@
-<!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=https://sciencecomputing.io/configuration.f07adc66523bfb9376331df4a987ad0ee3a4168825f9727b79b19c0c9f42c034.css><link rel=stylesheet href=https://sciencecomputing.io/index.335b9da42905703c77c41fdd28e417e23f615f8497939b4133f857fd41559ea6.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>Genetic algorithm · Scientific computing</title></head><body><nav id=main class=sidebar><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class=sidebar-nav-item href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class=sidebar-nav-item href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class="sidebar-nav-item active" href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><p>Genetic algorithm is a heuristic that takes heavy inspiration from evolutionary
+<!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=https://sciencecomputing.io/configuration.3f624b39616217ce894cfbc7c681faa5c3287234e401161b5d830595888d8a0f.css><link rel=stylesheet href=https://sciencecomputing.io/index.b5d7af4aaf50f86cc4e1232bfbc8cd98a64f22aec70358c9b0ff54cc009efc49.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>Genetic algorithm · Scientific computing</title></head><body><nav id=main class=sidebar><img src=/logo.png alt style=position:absolute;left:50%;width:56px;margin-left:-28px;margin-top:5px><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class=sidebar-nav-item href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class=sidebar-nav-item href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class="sidebar-nav-item active" href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><p>Genetic algorithm is a heuristic that takes heavy inspiration from evolutionary
 biology, to explore a space of parameters rapidly and converge to an optimum.
 Every solution is a &ldquo;genome&rdquo;, and the combinations can undergo mutation and
 recombination. By simulating a process of reproduction, over sufficiently many
@@ -17,25 +17,66 @@ can be downloaded as follows:</p><div class=highlight><pre class=chroma><code cl
 <span class=k>using</span> <span class=n>StatsBase</span>
 <span class=k>import</span> <span class=n>CSV</span>
 <span class=k>using</span> <span class=n>StatsPlots</span>
-<span class=n>url</span> <span class=o>=</span> <span class=s>&#34;http://sciencecomputing.io/data/metabolicrates.csv&#34;</span>
-<span class=n>tmp</span> <span class=o>=</span> <span class=n>download</span><span class=p>(</span><span class=n>url</span><span class=p>)</span>
-<span class=n>rates</span> <span class=o>=</span> <span class=n>CSV</span><span class=o>.</span><span class=n>read</span><span class=p>(</span><span class=n>tmp</span><span class=p>)</span>
+<span class=n>tmp</span> <span class=o>=</span> <span class=n>download</span><span class=p>(</span><span class=s>&#34;http://sciencecomputing.io/data/metabolicrates.csv&#34;</span><span class=p>)</span>
+<span class=n>rates</span> <span class=o>=</span> <span class=n>DataFrame</span><span class=p>(</span><span class=n>CSV</span><span class=o>.</span><span class=n>File</span><span class=p>(</span><span class=n>tmp</span><span class=p>))</span>
 <span class=n>rates</span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
-</code></pre></div><pre><code>Error: ArgumentError: Package StatsBase not found in current path:
-- Run `import Pkg; Pkg.add(&quot;StatsBase&quot;)` to install the StatsBase package.
+</code></pre></div><pre><code>5×8 DataFrame
+ Row │ Class     Order              Family       Genus     Species   Study 
+    ⋯
+     │ String    String             String       String    String    String
+    ⋯
+─────┼─────────────────────────────────────────────────────────────────────
+─────
+   1 │ Mammalia  Carnivora          Odobenidae   Odobenus  rosmarus  Acquar
+one ⋯
+   2 │ Mammalia  Carnivora          Odobenidae   Odobenus  rosmarus  Acquar
+one
+   3 │ Aves      Procellariiformes  Diomedeidae  Diomedea  exulans   Adams 
+et
+   4 │ Aves      Procellariiformes  Diomedeidae  Diomedea  exulans   Adams 
+et
+   5 │ Aves      Procellariiformes  Diomedeidae  Diomedea  exulans   Adams 
+et  ⋯
+                                                               3 columns om
+itted
 </code></pre><p>Let&rsquo;s have a look at the names of the columns:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>names</span><span class=p>(</span><span class=n>rates</span><span class=p>)</span>
-</code></pre></div><pre><code>Error: UndefVarError: rates not defined
+</code></pre></div><pre><code>8-element Array{String,1}:
+ &quot;Class&quot;
+ &quot;Order&quot;
+ &quot;Family&quot;
+ &quot;Genus&quot;
+ &quot;Species&quot;
+ &quot;Study&quot;
+ &quot;M (kg)&quot;
+ &quot;FMR (kJ / day)&quot;
 </code></pre><p>We will replace the last two names, as they are not easy to work with:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rename!</span><span class=p>(</span><span class=n>rates</span><span class=p>,</span> <span class=n>names</span><span class=p>(</span><span class=n>rates</span><span class=p>)[</span><span class=k>end</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=o>:</span><span class=n>mass</span><span class=p>)</span>
 <span class=n>rename!</span><span class=p>(</span><span class=n>rates</span><span class=p>,</span> <span class=n>names</span><span class=p>(</span><span class=n>rates</span><span class=p>)[</span><span class=k>end</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=o>:</span><span class=n>fmr</span><span class=p>)</span>
-<span class=n>rates</span> <span class=o>=</span> <span class=n>rates</span><span class=p>[</span><span class=n>rates</span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=p>]</span><span class=o>.&lt;</span><span class=mf>1e3</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
+<span class=n>rates</span> <span class=o>=</span> <span class=n>rates</span><span class=p>[</span><span class=n>rates</span><span class=o>.</span><span class=n>mass</span><span class=o>.&lt;</span><span class=mf>1e3</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
 <span class=n>rates</span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
-</code></pre></div><pre><code>Error: UndefVarError: rates not defined
+</code></pre></div><pre><code>5×8 DataFrame
+ Row │ Class   Order              Family       Genus     Species  Study    
+    ⋯
+     │ String  String             String       String    String   String   
+    ⋯
+─────┼─────────────────────────────────────────────────────────────────────
+─────
+   1 │ Aves    Procellariiformes  Diomedeidae  Diomedea  exulans  Adams et 
+al  ⋯
+   2 │ Aves    Procellariiformes  Diomedeidae  Diomedea  exulans  Adams et 
+al
+   3 │ Aves    Procellariiformes  Diomedeidae  Diomedea  exulans  Adams et 
+al
+   4 │ Aves    Procellariiformes  Diomedeidae  Diomedea  exulans  Adams et 
+al
+   5 │ Aves    Procellariiformes  Diomedeidae  Diomedea  exulans  Adams et 
+al  ⋯
+                                                               3 columns om
+itted
 </code></pre><p>Much better! Now let&rsquo;s try to figure out the relationship between the last two
-variables:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>scatter</span><span class=p>(</span><span class=n>rates</span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=p>],</span> <span class=n>rates</span><span class=p>[</span><span class=o>:</span><span class=n>fmr</span><span class=p>],</span> <span class=n>c</span><span class=o>=:</span><span class=n>teal</span><span class=p>,</span> <span class=n>leg</span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>msc</span><span class=o>=:</span><span class=n>transparent</span><span class=p>)</span>
+variables:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=nd>@df</span> <span class=n>rates</span> <span class=n>scatter</span><span class=p>(</span><span class=o>:</span><span class=n>mass</span><span class=p>,</span> <span class=o>:</span><span class=n>fmr</span><span class=p>,</span> <span class=n>c</span><span class=o>=:</span><span class=n>teal</span><span class=p>,</span> <span class=n>leg</span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>msc</span><span class=o>=:</span><span class=n>transparent</span><span class=p>)</span>
 <span class=n>xaxis!</span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=p>,</span> <span class=s>&#34;Mass (kg)&#34;</span><span class=p>)</span>
 <span class=n>yaxis!</span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=p>,</span> <span class=s>&#34;Field Metabolic Rate (kj per day)&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>Error: UndefVarError: rates not defined
-</code></pre><p>Neat! This is a log-log relationship, so we can represent this problem as:</p><p>$$\text{log}{10}(\text{FMR}) \propto m\times\text{log}_{10}(\text{M})+b$$</p><p>To simplify the problem a little bit, we will average the values within species;
+</code></pre></div><p><img src=figures/_index_4_1.png alt="Relationship between field metabolic rate and mass - this is a neat log-log relationship, and so linear regression will give us the exponent."></p><p>Neat! This is a log-log relationship, so we can represent this problem as:</p><p>$$\text{log}{10}(\text{FMR}) \propto m\times\text{log}_{10}(\text{M})+b$$</p><p>To simplify the problem a little bit, we will average the values within species;
 because the relation is log-log, we will average the log of the value (as
 opposed to taking the log of the averages).</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>rates</span> <span class=o>=</span> <span class=n>by</span><span class=p>(</span>
   <span class=n>rates</span><span class=p>,</span>
@@ -47,12 +88,12 @@ opposed to taking the log of the averages).</p><div class=highlight><pre class=c
     <span class=p>)</span>
   <span class=p>)</span>
 <span class=n>rates</span><span class=p>[</span><span class=mi>1</span><span class=o>:</span><span class=mi>5</span><span class=p>,</span><span class=o>:</span><span class=p>]</span>
-</code></pre></div><pre><code>Error: UndefVarError: rates not defined
-</code></pre><p>We can look at the simplified data:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>scatter</span><span class=p>(</span><span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=p>[</span><span class=o>:</span><span class=n>mass</span><span class=p>],</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=p>[</span><span class=o>:</span><span class=n>fmr</span><span class=p>],</span> <span class=n>c</span><span class=o>=:</span><span class=n>teal</span><span class=p>,</span> <span class=n>leg</span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>msc</span><span class=o>=:</span><span class=n>transparent</span><span class=p>)</span>
+</code></pre></div><pre><code>Error: ArgumentError: by function was removed from DataFrames.jl. Use the `
+combine(groupby(...), ...)` or `combine(f, groupby(...))` instead.
+</code></pre><p>We can look at the simplified data:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>scatter</span><span class=p>(</span><span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o>.</span><span class=n>mass</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>rates</span><span class=o>.</span><span class=n>fmr</span><span class=p>,</span> <span class=n>c</span><span class=o>=:</span><span class=n>teal</span><span class=p>,</span> <span class=n>leg</span><span class=o>=</span><span class=kc>false</span><span class=p>,</span> <span class=n>msc</span><span class=o>=:</span><span class=n>transparent</span><span class=p>)</span>
 <span class=n>xaxis!</span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=p>,</span> <span class=s>&#34;Mass (kg)&#34;</span><span class=p>)</span>
 <span class=n>yaxis!</span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=p>,</span> <span class=s>&#34;Field Metabolic Rate (kj per day)&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>Error: UndefVarError: rates not defined
-</code></pre><div class="callout information">In this capstone, we will try to write a very general code for genetic
+</code></pre></div><p><img src=figures/_index_6_1.png alt="Same data, but a little bit fewer points. In addition, aggregating by species doesn&rsquo;t increase the impact that well sampled species will have on the regression output."></p><div class="callout information">In this capstone, we will try to write a very general code for genetic
 algorithms. It is possible to come up with a more specific code, but spending
 time to think about making code general is almost always wise, since it means we
 can seamlessly re-use already written code.</div><p>Genetic algorithms represent the state of the problem as &ldquo;genomes&rdquo;, which here
@@ -67,7 +108,7 @@ some interesting features of Julia.</div><p>This means that our population will 
 will <em>add methods</em> to some of Julia&rsquo;s existing function, so we can write code
 that will read exactly like native code would:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>import</span> <span class=n>Base</span><span class=o>:</span> <span class=n>zero</span>
 <span class=n>zero</span><span class=p>(</span><span class=o>::</span><span class=kt>Type</span><span class=p>{</span><span class=n>Genome</span><span class=p>})</span> <span class=o>=</span> <span class=n>Genome</span><span class=p>(</span><span class=mf>0.0</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>)</span>
-</code></pre></div><pre><code>zero (generic function with 24 methods)
+</code></pre></div><pre><code>zero (generic function with 38 methods)
 </code></pre><p>Because we have created a <code>zero</code> method for the <code>Genome</code> type, we can create our
 population:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>population_size</span> <span class=o>=</span> <span class=mi>1_000</span>
 <span class=n>population</span> <span class=o>=</span> <span class=n>zeros</span><span class=p>(</span><span class=n>Genome</span><span class=p>,</span> <span class=n>population_size</span><span class=p>)</span>
@@ -112,7 +153,19 @@ the log10 of the mass and FMR earlier):</p><div class=highlight><pre class=chrom
   <span class=n>sum_of_errors_sq</span> <span class=o>=</span> <span class=n>sum</span><span class=p>(</span><span class=n>errors</span><span class=o>.^</span><span class=mf>2.0</span><span class=p>)</span><span class=o>/</span><span class=n>length</span><span class=p>(</span><span class=n>log10fmr</span><span class=p>)</span>
   <span class=k>return</span> <span class=mf>1.0</span><span class=o>/</span><span class=n>sum_of_errors_sq</span>
 <span class=k>end</span>
-</code></pre></div><pre><code>Error: UndefVarError: rates not defined
+</code></pre></div><pre><code>Error: MethodError: no method matching getindex(::DataFrames.DataFrame, ::S
+ymbol)
+Closest candidates are:
+  getindex(::DataFrames.DataFrame, !Matched::Integer, !Matched::Union{Signe
+d, Unsigned}) at /home/runner/.julia/packages/DataFrames/X0xNW/src/datafram
+e/dataframe.jl:388
+  getindex(::DataFrames.DataFrame, !Matched::Integer, !Matched::Union{Abstr
+actString, Symbol}) at /home/runner/.julia/packages/DataFrames/X0xNW/src/da
+taframe/dataframe.jl:403
+  getindex(::DataFrames.DataFrame, !Matched::AbstractArray{T,1} where T, !M
+atched::Union{AbstractString, Signed, Symbol, Unsigned}) at /home/runner/.j
+ulia/packages/DataFrames/X0xNW/src/dataframe/dataframe.jl:413
+  ...
 </code></pre><p>The first thing we do is &ldquo;extract&rdquo; the $\text{log}_{10}$ of the FMR and mass,
 and turn them into vectors. Then we define a function which uses these vectors,
 and does the linear prediction. You may notice that this function uses elements
@@ -160,5 +213,17 @@ $\mathcal{N}(\mu=0.75, \sigma=0.2)$:</p><div class=highlight><pre class=chroma><
 <span class=n>plot!</span><span class=p>(</span><span class=n>pred</span><span class=p>,</span> <span class=mf>10.0</span><span class=o>.^</span><span class=n>ŷ</span><span class=p>(</span><span class=n>population</span><span class=p>[</span><span class=n>mostfit</span><span class=p>],</span> <span class=n>log10</span><span class=o>.</span><span class=p>(</span><span class=n>pred</span><span class=p>)),</span> <span class=n>c</span><span class=o>=:</span><span class=n>orange</span><span class=p>,</span> <span class=n>lw</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>ls</span><span class=o>=:</span><span class=n>dash</span><span class=p>)</span>
 <span class=n>xaxis!</span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=p>,</span> <span class=s>&#34;Mass (kg)&#34;</span><span class=p>)</span>
 <span class=n>yaxis!</span><span class=p>(</span><span class=o>:</span><span class=n>log10</span><span class=p>,</span> <span class=s>&#34;Field Metabolic Rate (kj per day)&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>Error: UndefVarError: rates not defined
+</code></pre></div><pre><code>Error: MethodError: no method matching getindex(::DataFrames.DataFrame, ::S
+ymbol)
+Closest candidates are:
+  getindex(::DataFrames.DataFrame, !Matched::Integer, !Matched::Union{Signe
+d, Unsigned}) at /home/runner/.julia/packages/DataFrames/X0xNW/src/datafram
+e/dataframe.jl:388
+  getindex(::DataFrames.DataFrame, !Matched::Integer, !Matched::Union{Abstr
+actString, Symbol}) at /home/runner/.julia/packages/DataFrames/X0xNW/src/da
+taframe/dataframe.jl:403
+  getindex(::DataFrames.DataFrame, !Matched::AbstractArray{T,1} where T, !M
+atched::Union{AbstractString, Signed, Symbol, Unsigned}) at /home/runner/.j
+ulia/packages/DataFrames/X0xNW/src/dataframe/dataframe.jl:413
+  ...
 </code></pre><p>We can also look at the equation for the most fit genome: Error: UndefVarError: mostfit not defined.</p></section></section><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
