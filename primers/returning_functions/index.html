@@ -1,0 +1,34 @@
+<!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=https://sciencecomputing.io/configuration.e1a586f12c5d659d35ded04f30bd11509694fd26671ab0bf05940315ca701bc9.css><link rel=stylesheet href=https://sciencecomputing.io/index.adfd3a1f1be564d6cd68f502c94cb524145e12ad379bb59bbcdf7ad62498ee36.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>Returning functions · Scientific computing</title></head><body><nav id=main class=sidebar><img src=/logo.png alt style=position:absolute;left:50%;width:56px;margin-left:-28px;margin-top:5px><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class=sidebar-nav-item href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class="sidebar-nav-item active" href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class=sidebar-nav-item href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><p>In <em>Julia</em>, functions are objects like any other. This offers a number of
+interesting mechanisms, such as for example the ability for a function to return
+another function. Let&rsquo;s use a simple example: the logistic map. It is defined by
+$x_{n+1} = a\times x_n\times(1-x_n)$, and $x_0 \in [0;1]$.</p><p>If we wanted to do this calculation, we could write a function that takes two
+arguments, <code>a</code> and <code>x</code>, and return <code>a*x*(1.0-x)</code>. But there is no reason to
+expect that $a$ (a parameter) will change, so what we might want to do instead
+is return a function with <code>a</code> &ldquo;built-in&rdquo;.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>f</span><span class=p>(</span><span class=n>x</span><span class=o>::</span><span class=kt>Number</span><span class=p>)</span>
+  <span class=k>return</span> <span class=n>a</span> <span class=o>*</span> <span class=n>x</span> <span class=o>*</span> <span class=p>(</span><span class=mf>1.0</span> <span class=o>-</span> <span class=n>x</span><span class=p>)</span>
+<span class=k>end</span>
+</code></pre></div><pre><code>f (generic function with 1 method)
+</code></pre><p>Of course this function will <em>not</em> work, because <code>a</code> is currently not defined.
+And we do not want to hard-code the value of <code>a</code>, since we might want to change
+this parameter. So ideally, we would like to have a function to write the
+function <code>f</code> on our behalf.</p><p>Because functions are objects like any other, they can actually be returned. So
+we can write a function that accepts <code>a</code> as its argument, and then returns a
+function that accepts <code>x</code> as an argument:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>function</span> <span class=n>logistic</span><span class=p>(</span><span class=n>a</span><span class=o>::</span><span class=kt>Number</span><span class=p>)</span>
+  <span class=k>return</span> <span class=k>function</span> <span class=n>f</span><span class=p>(</span><span class=n>x</span><span class=o>::</span><span class=kt>Number</span><span class=p>)</span>
+    <span class=k>return</span> <span class=n>a</span> <span class=o>*</span> <span class=n>x</span> <span class=o>*</span> <span class=p>(</span><span class=mf>1.0</span> <span class=o>-</span> <span class=n>x</span><span class=p>)</span>
+  <span class=k>end</span>
+<span class=k>end</span>
+</code></pre></div><pre><code>logistic (generic function with 1 method)
+</code></pre><p>Now, if we call this function, we can see that it does indeed return a function:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>logistic</span><span class=p>(</span><span class=mf>1.2</span><span class=p>)</span>
+</code></pre></div><pre><code>(::Main.##WeaveSandBox#253.var&quot;#f#1&quot;{Float64}) (generic function with 1 met
+hod)
+</code></pre><p>We can now use this function to run our model:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>m</span> <span class=o>=</span> <span class=n>logistic</span><span class=p>(</span><span class=mf>1.4</span><span class=p>)</span>
+<span class=n>x0</span> <span class=o>=</span> <span class=mf>0.5</span>
+<span class=n>m</span><span class=p>(</span><span class=n>x0</span><span class=p>)</span>
+</code></pre></div><pre><code>0.35
+</code></pre><p>This specific design pattern shows up in a bunch of <em>Julia</em> functions:
+<code>isequal</code>, for example, constructs a function that tests for equality:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>istwo</span> <span class=o>=</span> <span class=n>isequal</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+<span class=n>istwo</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+</code></pre></div><pre><code>true
+</code></pre><p>Sometimes, thinking about returning a function with &ldquo;built-in&rdquo; arguments can
+simplify your high-level code a lot!</p></section></section><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
