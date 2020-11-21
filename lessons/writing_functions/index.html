@@ -1,4 +1,4 @@
-<!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=https://sciencecomputing.io/configuration.3f624b39616217ce894cfbc7c681faa5c3287234e401161b5d830595888d8a0f.css><link rel=stylesheet href=https://sciencecomputing.io/index.b5d7af4aaf50f86cc4e1232bfbc8cd98a64f22aec70358c9b0ff54cc009efc49.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>Writing functions · Scientific computing</title></head><body><nav id=main class=sidebar><img src=/logo.png alt style=position:absolute;left:50%;width:56px;margin-left:-28px;margin-top:5px><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class="sidebar-nav-item active" href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class=sidebar-nav-item href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class=sidebar-nav-item href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><h2 id=good-code-is-small-code>Good code is small code</h2><p>In the previous lessons, we have seen how to express problems using <code>for</code>, <code>if</code>,
+<!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=https://sciencecomputing.io/configuration.e1a586f12c5d659d35ded04f30bd11509694fd26671ab0bf05940315ca701bc9.css><link rel=stylesheet href=https://sciencecomputing.io/index.adfd3a1f1be564d6cd68f502c94cb524145e12ad379bb59bbcdf7ad62498ee36.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>Writing functions · Scientific computing</title></head><body><nav id=main class=sidebar><img src=/logo.png alt style=position:absolute;left:50%;width:56px;margin-left:-28px;margin-top:5px><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class="sidebar-nav-item active" href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class=sidebar-nav-item href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class=sidebar-nav-item href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><h2 id=good-code-is-small-code>Good code is small code</h2><p>In the previous lessons, we have seen how to express problems using <code>for</code>, <code>if</code>,
 and <code>while</code>. In this lesson, we will see how it is possible to <em>wrap</em> these
 instructions in functions. Functions allow you to write code that is modular,
 can easily be re-used, and (more importantly for us), can easily be tested,
@@ -30,16 +30,16 @@ $(0,2)$ will be save us almost four keystrokes!</p><p>After the following lesson
 <span class=k>end</span>
 <span class=n>darts</span>
 </code></pre></div><pre><code>10-element Array{Any,1}:
- (1.2533691891181582, 1.3900555692507135)
- (1.8629571631688844, 1.091124805279506)
- (1.2325468745650703, 1.1840765264579454)
- (0.6182257450512303, 0.35176413297790177)
- (0.2953580369841542, 1.6050075565254378)
- (1.5945109372860768, 1.8144533335289759)
- (1.5518593019635993, 0.03338810644446433)
- (0.9875361357311783, 0.6262423702904281)
- (0.18259950385257318, 1.1598589218168556)
- (1.3672471420106174, 1.418749534739013)
+ (0.17660334866172134, 1.117860538556981)
+ (1.9695907124096603, 0.10156537552291)
+ (1.8334201629424123, 0.9189073789919728)
+ (0.8400244715751319, 1.3225752366379218)
+ (0.6545799222099067, 1.1199537250804181)
+ (0.3568393810235051, 0.8243285790421906)
+ (0.5408929579997919, 1.4592599359531486)
+ (0.14433123518668634, 0.8681883405145197)
+ (0.5759061681079976, 1.4244973472379332)
+ (1.6040226634361536, 1.7013002037427283)
 </code></pre><p>This introduces a few new notations. The <code>darts = []</code> instruction creates an
 <em>empty</em> array. This is not the optimal way of approaching this problem, but
 remember the UNIX philosophy: we&rsquo;ll rewrite this awkard part later. Then we use
@@ -210,7 +210,7 @@ screens to see what the function does). Because we have named our functions
 explicitely, the code is also easy to understand. In the next lesson, we will
 see that modular code is easy to <em>test</em> (and to debug).</p><p>So, how good is our estimate?</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>estimate</span> <span class=o>=</span> <span class=n>estimate_pi</span><span class=p>(</span><span class=mi>100000</span><span class=p>)</span>
 <span class=n>println</span><span class=p>(</span><span class=s>&#34;Estimate: </span><span class=si>$</span><span class=p>(</span><span class=n>estimate</span><span class=p>)</span><span class=se>\t\t</span><span class=s>π: </span><span class=si>$</span><span class=p>(</span><span class=nb>π</span><span class=o>+</span><span class=mi>0</span><span class=p>)</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>Estimate: 3.13124		π: 3.141592653589793
+</code></pre></div><pre><code>Estimate: 3.14336		π: 3.141592653589793
 </code></pre><h2 id=keyword-arguments-and-default-values>Keyword arguments and default values</h2><p>In all functions thus far, we <em>had</em> to give all the values of all arguments.
 Sometimes, it make sense to have some arguments take a default value, which we
 can change when we need to, but will remain constant otherwise.</p><div class="callout warning">Giving default values can save some time, but it means you don&rsquo;t need to <em>think</em>
@@ -253,7 +253,7 @@ longer than if I has asked you what the sum of 0.0 and 1.0 is. Is it true for
 the computer?</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>time_int_and_float</span> <span class=o>=</span> <span class=nd>@elapsed</span> <span class=mi>0</span> <span class=o>+</span> <span class=mf>1.0</span>
 <span class=n>time_float_and_float</span> <span class=o>=</span> <span class=nd>@elapsed</span> <span class=mf>0.0</span> <span class=o>+</span> <span class=mf>1.0</span>
 <span class=n>println</span><span class=p>(</span><span class=s>&#34;It takes </span><span class=si>$</span><span class=p>(</span><span class=n>round</span><span class=p>(</span><span class=n>time_int_and_float</span><span class=o>/</span><span class=n>time_float_and_float</span><span class=p>;</span> <span class=n>digits</span><span class=o>=</span><span class=mi>2</span><span class=p>))</span><span class=s> times longer to work with different types!&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>It takes 0.33 times longer to work with different types!
+</code></pre></div><pre><code>It takes 1.0 times longer to work with different types!
 </code></pre><p>The exact number may vary, but on my machine, it takes about 1.5 times longer to
 do the operation with different types. Why is that?</p><p>It is because the computer needs to &ldquo;rethink&rdquo; about one of these numbers (<em>i.e.</em>
 to change <code>0</code> in <code>0.0</code>, or <code>1.0</code> in <code>1</code>), before it can do the actual operation.
