@@ -108,7 +108,7 @@ some interesting features of Julia.</div><p>This means that our population will 
 will <em>add methods</em> to some of Julia&rsquo;s existing function, so we can write code
 that will read exactly like native code would:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=k>import</span> <span class=n>Base</span><span class=o>:</span> <span class=n>zero</span>
 <span class=n>zero</span><span class=p>(</span><span class=o>::</span><span class=kt>Type</span><span class=p>{</span><span class=n>Genome</span><span class=p>})</span> <span class=o>=</span> <span class=n>Genome</span><span class=p>(</span><span class=mf>0.0</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>)</span>
-</code></pre></div><pre><code>zero (generic function with 38 methods)
+</code></pre></div><pre><code>zero (generic function with 40 methods)
 </code></pre><p>Because we have created a <code>zero</code> method for the <code>Genome</code> type, we can create our
 population:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>population_size</span> <span class=o>=</span> <span class=mi>1_000</span>
 <span class=n>population</span> <span class=o>=</span> <span class=n>zeros</span><span class=p>(</span><span class=n>Genome</span><span class=p>,</span> <span class=n>population_size</span><span class=p>)</span>
