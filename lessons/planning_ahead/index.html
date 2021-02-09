@@ -1,16 +1,17 @@
 <!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=https://sciencecomputing.io/configuration.e1a586f12c5d659d35ded04f30bd11509694fd26671ab0bf05940315ca701bc9.css><link rel=stylesheet href=https://sciencecomputing.io/index.adfd3a1f1be564d6cd68f502c94cb524145e12ad379bb59bbcdf7ad62498ee36.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>Before we start... · Scientific computing</title></head><body><nav id=main class=sidebar><img src=/logo.png alt style=position:absolute;left:50%;width:56px;margin-left:-28px;margin-top:5px><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class="sidebar-nav-item active" href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class=sidebar-nav-item href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class=sidebar-nav-item href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><h2 id=programming-is-intimidating>Programming is intimidating</h2><p>If your working environment looks anything like mine, the first thing you may
-see on a new project will look like this:</p><pre><code>tpoisot@pop-os:~/Work/Teaching/ScientificComputingForTheRestOfUs$ julia
+see on a new project will look like this:</p><pre><code>tpoisot@x1:~$ julia
                _
    _       _ _(_)_     |  Documentation: https://docs.julialang.org
   (_)     | (_) (_)    |
    _ _   _| |_  __ _   |  Type &quot;?&quot; for help, &quot;]?&quot; for Pkg help.
   | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 1.5.2 (2020-09-23)
+  | | |_| | | | (_| |  |  Version 1.5.3 (2020-11-09)
  _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
 |__/                   |
 
 julia&gt; 
-</code></pre><p>This is highly intimidating.</p><p>Facing an empty text editor or a blinking REPL prompt at the beginning of a
+</code></pre><p>This is highly intimidating.</p><p>Facing an empty text editor or a blinking REPL (it stands for Read/Execute/Print
+Loop, and this the place where you type things) prompt at the beginning of a
 programming task is like facing an empty page at the beginning of a writing
 project. To make it easier to work through, one really good (but also really
 uncommon) approach is to walk away from the computer. Instead of trying to write
@@ -37,8 +38,9 @@ only working on <code>MyCoolProject</code> at the moment, so the <em>relative</e
 file is</p><pre><code class=language-raw data-lang=raw>data/file.txt
 </code></pre><p>Or is it? On my machine running Linux, sure. But on a Windows machine I would
 use in a computer lab? The file would be at</p><pre><code class=language-raw data-lang=raw>data\file.txt
-</code></pre><p>This difference between <code>/</code> and <code>\</code> is trivial to us, but <em>not</em> to the computer.
-So to avoid these issues, it is better to let your programming language
+</code></pre><p>This difference between <code>/</code> and <code>\</code> is trivial to us, but <em>not</em> to the computer
+(they are, actually, trivial to <em>Julia</em> which tends to parse paths well all the
+time). So to avoid these issues, it is better to let your programming language
 construct the path correclty. <em>Julia</em> has the <code>joinpath</code> function, and so we
 would refer to this file as:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>joinpath</span><span class=p>(</span><span class=s>&#34;data&#34;</span><span class=p>,</span> <span class=s>&#34;file.txt&#34;</span><span class=p>)</span>
 </code></pre></div><pre><code>&quot;data/file.txt&quot;
@@ -65,7 +67,18 @@ folders is left up to you.</p><p>With this in mind, here is a possible template 
 ├── Manifest.toml
 └── text                    # This folder can store notes and documents
     └── notes.md
-</code></pre><p><a href=readme>README</a></p><p><a href=license>LICENSE</a></p><p><a href=pkg><em>Julia</em> package manager</a></p><h2 id=flowcharts>Flowcharts</h2><p>One of the most powerful tool to plan a programming task is to draw a flochart.
+</code></pre><p>There are a few files here on which it is worth spending a little more time.
+Their names are presented below as links, to the resource that we think is the
+most informative. It is, indeed, a very good idea to read the content of these
+links as well.</p><p>The <a href=readme>README</a> is a standard file for all projects, which gives
+information about the project, how to run it, the dependencies, who is in
+charge, <em>etc</em>. Writing a good README is a difficult task, but this is going to
+be the point of entry in your project. Show it some love.</p><p><a href=license>LICENSE</a> is the text of a license, which gives information about
+intellectual property and your own liability regarding the use of your project.
+Picking FOSS (Free and Open Source Software) licenses is recommended, and there
+are a lot of the to accomodate different use cases.</p><p>Finally, and these are language-specific, the <a href=pkg><em>Julia</em> package manager</a>
+will create files to track the dependencies of your project. Check out the
+documentation.</p><h2 id=flowcharts>Flowcharts</h2><p>One of the most powerful tool to plan a programming task is to draw a flochart.
 In simple terms, a flowchart will let you map the different steps that the
 program will have to follow, and see what is required for each of them. To
 illustrate, we will use a flowchart not of a program, but of a pancake recipe.</p><p>At the beginning, it can be useful to break the task down into coarse steps:</p><div class=mermaid align=center>graph LR
@@ -111,4 +124,4 @@ heat --> cook
 cook --> flip{flip}
 flip --> cook2{cook}
 cook2 --> pancake
-pancake --> eat{eat}</div><h2 id=pseudo-code>Pseudo-code</h2><ul><li>&mldr;</li></ul><h2 id=use-cases>Use cases</h2><h2 id=basic-tests>Basic tests</h2></section></section><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
+pancake --> eat{eat}</div><h2 id=pseudo-code>Pseudo-code</h2></section></section><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
