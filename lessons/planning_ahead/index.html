@@ -124,4 +124,24 @@ heat --> cook
 cook --> flip{flip}
 flip --> cook2{cook}
 cook2 --> pancake
-pancake --> eat{eat}</div><h2 id=pseudo-code>Pseudo-code</h2></section></section><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>
+pancake --> eat{eat}</div><p>See how a simple task (&ldquo;make crepes!") can be broken down into dozens of litle
+steps, each representing a single well-defined action? Programming is,
+essentially, that. We are going to need to specificy things as unambiguously as
+possible, and breaking the big tasks down is going to be immensely helpful.</p><h2 id=pseudo-code>Pseudo-code</h2><p>To facilitate the transition between diagram and code, one important step is to
+write <em>pseudo-code</em>, <em>i.e.</em> text that looks reasonably like code, but is not.</p><div class="callout opinion">Pseudo-code is mostly useful when it comes to working on a single function. The
+overall structure of the project can be done as a flowchart, and then each
+function can be written as pseudo-code. This is, in fact, a really good exercise
+to try with your own projects.</div><p>Let us try with an example - we want to sort numbers. We will write pseudo-code
+for a very, <em>veru</em> inefficient algorithm:</p><pre><code>take a list of numbers X
+create an empty list Y
+
+as long as X still has elements in it
+    find the minimum of X
+    add it to Y
+    remove it from X
+
+return Y
+</code></pre><p>This is, essentially, what <em>pseudo-code</em> is: a way to explain in your own words
+what the function should do. This can be translated line-by-line into code:</p><table><thead><tr><th>Pseudo-code</th><th>Code</th></tr></thead><tbody><tr><td><code>take a list of numbers X</code></td><td><code>function badsort(X::Vector{T}) where {T &lt;: Number}</code></td></tr><tr><td><code>create an empty list Y</code></td><td><code>Y = eltype(X)[]</code></td></tr><tr><td><code>as long as X still has elements in it</code></td><td><code>while length(X) > 0</code></td></tr><tr><td><code>find the minimum of X</code></td><td><code>m, i = findmin(X)</code></td></tr><tr><td><code>add it to Y</code></td><td><code>push!(Y, m)</code></td></tr><tr><td><code>remove it from X</code></td><td><code>deleteat!(X, i)</code></td></tr><tr><td></td><td><code>end</code></td></tr><tr><td><code>return Y</code></td><td><code>return Y</code></td></tr><tr><td></td><td><code>end</code></td></tr></tbody></table><p>The right column is <em>actual</em> code! In practice, we rarely (never!) convert
+pseudo-code to code literally. But when you are writing your first functions, it
+may be a good idea.</p></section></section><script>mermaid.initialize({startOnLoad:true,theme:"neutral",curve:"basis"});</script></body></html>

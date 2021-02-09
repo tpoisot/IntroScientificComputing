@@ -1,135 +1,4 @@
-<!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=https://sciencecomputing.io/configuration.e1a586f12c5d659d35ded04f30bd11509694fd26671ab0bf05940315ca701bc9.css><link rel=stylesheet href=https://sciencecomputing.io/index.adfd3a1f1be564d6cd68f502c94cb524145e12ad379bb59bbcdf7ad62498ee36.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>The flow of execution · Scientific computing</title></head><body><nav id=main class=sidebar><img src=/logo.png alt style=position:absolute;left:50%;width:56px;margin-left:-28px;margin-top:5px><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class="sidebar-nav-item active" href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class=sidebar-nav-item href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class=sidebar-nav-item href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><h2 id=programming-really-is-a-language>Programming really <em>is</em> a language</h2><p>But if you understand three words, you will be able to hold a good conversation
-with your computer! These three words are <em>if</em>, <em>for</em>, and <em>while</em>. If you have
-some previous experience with writing code, you can skim through this lesson.</p><p>One great way to make your code robust is to keep it very simple, and one great
-way to keep your code very simple is to recognize that often, we want to do one
-of three things: do one thing if something happens (<code>if</code>), do one thing to a
-series of things (<code>for</code>), or do one thing until something happens (<code>while</code>).
-These three possibilities define what we call the <em>control flow</em>, or the <em>flow
-of execution</em>.</p><h2 id=after-this-lesson-you-will-be-able-to->After this lesson, you will be able to &mldr;</h2><ul><li>&mldr; express your problems in Boolean terms (true/false)</li><li>&mldr; create loops and conditionals</li><li>&mldr; navigate in arrays</li><li>&mldr; understand the difference between <code>for</code> and <code>while</code></li></ul><h2 id=tossing-coins-and-planning-trips>Tossing coins and planning trips</h2><p>Let&rsquo;s imagine a situation where we have a coin, and we can toss this coin. One
-output of this observation is whether the coin landed on its head, or on its
-tail. We can express the outcome of coin toss as a <em>statement</em>: &ldquo;it is true that
-the coin landed on its head&rdquo;, or &ldquo;it is not true that the coin landed on its
-head&rdquo;.</p><p>This is not how we would think about the outcome as humans. It would be more
-natural to say &ldquo;head&rdquo; or &ldquo;tail&rdquo;. But expressing things as <em>true</em> or not true
-(which we call <em>false</em>) is much more easier for computers to understand. A great
-deal of programming is finding out ways to reduce the outcomes to <em>true</em>/<em>false</em>
-statements.</p><p>In fact, there is a name for this type of data: Boolean. In the Boolean world,
-things are either <em>true</em>, or <em>false</em>, and we decide accordingly. Very often, we
-think in Boolean terms without noticing it! For example, when wondering if it is
-faster to go to work by bus, or by bike, we are expressing in our own way the
-question of &ldquo;going to work by bus is faster than by bike, true or false?&rdquo;.</p><p>And then, we will of course take a decision based on the outcome of this
-question. &ldquo;If it is faster to go by bike, then I will go by bike&rdquo;.</p><p>Have you noticed that the word <em>if</em> appeared a lot in the past few sentences? It
-is because <code>if</code> is the first way to control the flow of execution. It is one of
-the words that many programming languages already know (we call these
-<em>keywords</em>), and it lets us decide what to do when confronted with alternative
-choices.</p><p>Let&rsquo;s say I am sitting in my office, and I need to attend a meeting on the other
-side of campus. After looking at the itinerary, I can either bike (4 minutes) or
-walk (13 minutes). To decide what to do, I can ask the following question to my
-computer:</p><pre><code>walking takes 13 minutes
-biking takes 4 minutes
-if (walking is faster than biking)
-    tell me to walk
-</code></pre><p>This block above is called <em>pseudocode</em>. It is a way to start expressing our
-ideas in a language we can understand, but that resembles what the computer
-speaks. We will write quite a lot of it.</p><p>Now, let&rsquo;s give this a try - before you do, what do you think will happen?</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>time_by_foot</span> <span class=o>=</span> <span class=mi>13</span>
-<span class=n>time_by_bike</span> <span class=o>=</span> <span class=mi>4</span>
-<span class=k>if</span> <span class=n>time_by_foot</span> <span class=o>&lt;</span> <span class=n>time_by_bike</span>
-    <span class=n>println</span><span class=p>(</span><span class=s>&#34;You should walk&#34;</span><span class=p>)</span>
-<span class=k>end</span>
-</code></pre></div><p>Uh, weird! Nothing happened.</p><p>Let&rsquo;s think about why. We asked the computer to compare the time by foot and the
-time by bike; if the time by foot is shorter, then we print a line (<code>println</code>)
-telling us to walk. But we know that the time by foot is <em>not</em> shorter, and so
-does the computer. And for this reason, whatever is between <code>if</code> and <code>end</code> is
-<em>not</em> executed. Testing that conditions are met are one way to save time &ndash; we
-do not want to run operations that are not useful.</p><p>In the above example, we gave no alternative to the computer. To decide between
-two (or more) things to do, we need to use <code>if</code>'s frequent partner: <code>else</code>.
-Let&rsquo;s try again:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>time_by_foot</span> <span class=o>=</span> <span class=mi>13</span>
-<span class=n>time_by_bike</span> <span class=o>=</span> <span class=mi>4</span>
-<span class=k>if</span> <span class=n>time_by_foot</span> <span class=o>&lt;</span> <span class=n>time_by_bike</span>
-    <span class=n>println</span><span class=p>(</span><span class=s>&#34;You should walk&#34;</span><span class=p>)</span>
-<span class=k>else</span>
-    <span class=n>println</span><span class=p>(</span><span class=s>&#34;You should bike&#34;</span><span class=p>)</span>
-<span class=k>end</span>
-</code></pre></div><pre><code>You should bike
-</code></pre><p>This time, we get the right output: <code>You should bike</code>. This brings a very
-important point: we need to be <em>explicit</em>; when talking with humans, we can
-understand (or guess) what the alternative choice is. Computers have no such
-abilities: everything that happens is the outcome of things we (or others) have
-written in the code.</p><p>In practice, we will want to make decisions based on several factors. This is a
-thing at which Boolean values excel: we can perform <em>operations</em> on them. The
-most common ones are <em>not</em>, <em>or</em>, and <em>and</em>.</p><p>The <em>not</em> operation is, quite literaly, the opposite of a statement. For
-example, if we state &ldquo;it is true that the coin landed on its head&rdquo;, then <em>not</em>
-this statement is &ldquo;it is <em>not</em> true that the coin landed on its head&rdquo;, which is
-the same thing as &ldquo;it is false than the coin landed on its head&rdquo;.</p><p>Most programming languages use <code>!x</code> to mean <em>not x</em>. If we run the code below,
-what you do think will happen?</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>println</span><span class=p>(</span><span class=o>!</span><span class=kc>true</span><span class=p>)</span>
-<span class=n>println</span><span class=p>(</span><span class=o>!</span><span class=kc>false</span><span class=p>)</span>
-</code></pre></div><pre><code>false
-true
-</code></pre><p>Adding <code>!</code> in front of a statement will return the <em>other</em> Boolean value.</p><p>Boolean values can also be <em>combined</em>. Coming back to deciding on a mode of
-transportation: the same trip by subway would take 8 minutes. Biking is still
-faster, but what if it is raining? We can add a rule, to say:</p><pre><code>if it rains
-    take the subway
-else
-    if the subway is faster than biking
-        take the subway
-    else
-        take the bike
-</code></pre><p>This block above is called a <em>nested</em> statement. We start with an <code>if</code>, and then
-<em>within it</em>, have another <code>if</code>. This is not <em>too</em> bad, but increasing the
-nestedness of statements is a very effective way of having too much complexity!
-And too much complexity is, in turn, a great way to introduce mistakes that are
-hard to understand. This is, generally, the opposite of what we want to do.</p><p>So we can re-word this expression slightly:</p><pre><code>if (the subway is faster than the bike) or (it rains)
-    take the subway
-else
-    take the bike
-</code></pre><p>There is a new word here: <em>or</em>. The <em>or</em> operator will look at both statements
-(Is the subway faster? Is it raining?), and return <code>true</code> if <em>either</em> of them is
-true. Let&rsquo;s have a look:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>println</span><span class=p>(</span><span class=s>&#34;true or false:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=kc>true</span> <span class=o>||</span> <span class=kc>false</span><span class=p>)</span>
-<span class=n>println</span><span class=p>(</span><span class=s>&#34;false or false:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=kc>false</span> <span class=o>||</span> <span class=kc>false</span><span class=p>)</span>
-<span class=n>println</span><span class=p>(</span><span class=s>&#34;false or true:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=kc>false</span> <span class=o>||</span> <span class=kc>true</span><span class=p>)</span>
-<span class=n>println</span><span class=p>(</span><span class=s>&#34;true or true:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=kc>true</span> <span class=o>||</span> <span class=kc>true</span><span class=p>)</span>
-</code></pre></div><pre><code>true or false:	true
-false or false:	false
-false or true:	true
-true or true:	true
-</code></pre><p>Most programming languages will use <code>||</code> or <code>or</code> or <code>|</code> to write the <em>or</em>
-operation. We can now fine tune our code, to decide between the subway and the
-bike, as a function of the weather. Run the cell below: what do you expect?</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>time_by_subway</span> <span class=o>=</span> <span class=mi>8</span>
-<span class=n>time_by_bike</span> <span class=o>=</span> <span class=mi>4</span>
-<span class=n>rain</span> <span class=o>=</span> <span class=kc>true</span>
-
-<span class=k>if</span> <span class=p>(</span><span class=n>time_by_subway</span> <span class=o>&lt;</span> <span class=n>time_by_bike</span><span class=p>)</span> <span class=o>|</span> <span class=n>rain</span>
-    <span class=n>println</span><span class=p>(</span><span class=s>&#34;You should take the subway&#34;</span><span class=p>)</span>
-<span class=k>else</span>
-    <span class=n>println</span><span class=p>(</span><span class=s>&#34;You should bike&#34;</span><span class=p>)</span>
-<span class=k>end</span>
-</code></pre></div><pre><code>You should take the subway
-</code></pre><p>Because it rains (<code>rain = true</code>), our code is correctly telling us to take the
-subway.</p><div class=question id=stopraining><h1><i class="fa fa-question-circle" aria-hidden=true></i>Who'll stop the rain?</h1><div class=text>Now, what would you change to make it stop raining? And what do you expect to
-see as an output?
-<button type=button onclick="document.getElementById('answer-stopraining').classList.toggle('hidden');">See the answer</button></div><div class="answer hidden" id=answer-stopraining>Correct! If you change the <code>rain = true</code> to <code>rain = false</code>, and re-run this
-example, the code will tell us to bike, because it is faster.</div></div><p>At this point, it is important to note that there are many, many ways to write
-the same code. Maybe you would like to ask the question &ldquo;Is it <em>not</em> raining?&rdquo;
-instead, or decide which mode of transporation takes the longest time. As long
-as they give the correct answer, all of these formulations are valid. The
-important thing is that they let you write code that is easy to read, and easy
-to understand.</p><p>What if nested statements are easier to understand for you? Well, this is fine.
-The most important thing is to write code that prevents you from making
-mistakes. If you are more confident in your nested statements, then use them!</p><p>Before we move on, there is a final operation on Booleans we need to discuss:
-<em>and</em>. Most programming languages will use <code>&</code> or <code>&&</code> or <code>and</code> to describe it.
-The <em>and</em> operation will look at both statements, and return <em>true</em> only if both
-are <em>true</em>:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>println</span><span class=p>(</span><span class=s>&#34;true and false:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=kc>true</span> <span class=o>&amp;&amp;</span> <span class=kc>false</span><span class=p>)</span>
-<span class=n>println</span><span class=p>(</span><span class=s>&#34;false and false:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=kc>false</span> <span class=o>&amp;&amp;</span> <span class=kc>false</span><span class=p>)</span>
-<span class=n>println</span><span class=p>(</span><span class=s>&#34;false and true:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=kc>false</span> <span class=o>&amp;&amp;</span> <span class=kc>true</span><span class=p>)</span>
-<span class=n>println</span><span class=p>(</span><span class=s>&#34;true and true:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=kc>true</span> <span class=o>&amp;&amp;</span> <span class=kc>true</span><span class=p>)</span>
-</code></pre></div><pre><code>true and false:	false
-false and false:	false
-false and true:	false
-true and true:	true
-</code></pre><p><strong>So far</strong>, we have learned about Boolean values, and the <em>if</em> operation. Using
-<em>if</em> is a way to look at a statement, and do different things when it is true
-or false. In a lot of cases, we want to also perform operations on a large
-number of elements. To do so, we will use the second word: <em>for</em>.</p><h2 id=introducing-iteration>Introducing iteration</h2><p>The <code>for</code> operation is one of the most common, but also one of the most
+<!doctype html><html><head><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.6.1/css/all.css integrity=sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP crossorigin=anonymous><link rel=stylesheet href=//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.css><script src=https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.0.0/mermaid.js></script><link rel=stylesheet href=/css/normalize.css><link rel=stylesheet href=https://sciencecomputing.io/configuration.e1a586f12c5d659d35ded04f30bd11509694fd26671ab0bf05940315ca701bc9.css><link rel=stylesheet href=https://sciencecomputing.io/index.adfd3a1f1be564d6cd68f502c94cb524145e12ad379bb59bbcdf7ad62498ee36.css><meta charset=utf-8><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.css integrity=sha384-D+9gmBxUQogRLqvARvNLmA9hS2x//eK1FhVb9PiU86gmcrBrJAQT8okdJ4LMp2uv crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/katex.min.js integrity=sha384-483A6DwYfKeDa0Q52fJmxFXkcPCFfnXMoXblOkJ4JcA8zATN6Tm78UNL72AKk+0O crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.10.0-rc.1/dist/contrib/auto-render.min.js integrity=sha384-yACMu8JWxKzSp/C1YV86pzGiQ/l1YUfE8oPuahJQxzehAjEt2GiQuy/BIvl9KyeF crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"$",right:"$",display:false}]});});</script><title>Iteration and array navigation · Scientific computing</title></head><body><nav id=main class=sidebar><img src=/logo.png alt style=position:absolute;left:50%;width:56px;margin-left:-28px;margin-top:5px><div class=header><h1><a href=/>Scientific computing</a></h1><h2>(for the rest of us)</h2></div><ul class=nav><li class=lessons><i class="fas fa-fw fa-book-open"></i><a class="sidebar-nav-item active" href=/lessons/>Lessons</a></li><li class=primers><i class="fas fa-fw fa-bolt"></i><a class=sidebar-nav-item href=/primers/>Primers</a></li><li class=capstones><i class="fas fa-fw fa-star"></i><a class=sidebar-nav-item href=/capstones/>Capstones</a></li><li class=ml><i class="fas fa-fw fa-brain"></i><a class=sidebar-nav-item href=/machinelearning/>AI/ML</a></li></ul></nav><section id=content><section class=introduction><h2 id=introducing-iteration>Introducing iteration</h2><p>The <code>for</code> operation is one of the most common, but also one of the most
 confusing, ways to tell a computer what to do. This is because it requires to
 understand a lot of concepts at once; we will walk through each of them, get
 confused a little bit, then get confused a lot, then get it.</p><p>When talking about <code>for</code>, we usually talk about <em>for loops</em> or <em>iteration</em>. This
@@ -152,10 +21,10 @@ we will use the far more dignified <em>smol</em> and <em>chonky</em>:</p><div cl
   <span class=k>end</span>
 <span class=k>end</span>
 </code></pre></div><pre><code>smol
-chonky
-chonky
 smol
 smol
+chonky
+chonky
 </code></pre><p>There is quite a lot happening here, so we will go line by line.</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span> <span class=o>=</span> <span class=n>rand</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span>
 </code></pre></div><p>First, we generate 5 random numbers, and put them in a variable called
 <code>random_numbers</code>. It is always a good idea to give very explicit names to
@@ -199,11 +68,11 @@ end
 understanding what exactly is in the <code>random_numbers</code> object. Let&rsquo;s display it
 again:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span>
 </code></pre></div><pre><code>5-element Array{Float64,1}:
- 0.49715536528400683
- 0.8931071623888063
- 0.717556221950779
- 0.49175797686689093
- 0.2396232648795924
+ 0.21429206728717753
+ 0.2563389611749842
+ 0.1002934364096093
+ 0.6361009594715938
+ 0.6857995535757324
 </code></pre><p>This type of object is an <em>array</em>; it may help to think of an array as a shelf,
 in which every compartment can store one thing. You can have shelves with a
 single row, a single column, or both rows and columns. In <em>Julia</em>, arrays are by
@@ -219,31 +88,31 @@ has 5 positions in its first <em>dimension</em>, and no positions in its second
 dimension: this is a column with five rows. We can also access any <em>position</em> we
 like; this is akin to asking &ldquo;computer, give me the content of the 1st
 compartment&rdquo;:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span>
-</code></pre></div><pre><code>0.49715536528400683
+</code></pre></div><pre><code>0.21429206728717753
 </code></pre><p>Some languages, like <em>Julia</em>, <em>R</em>, and <em>MatLab</em>, start counting from 1, but
 <em>python</em> and <em>C</em> start counting from 0. These are conventions that each language
 adopted. Everyone thinks the other camp is wrong, and it&rsquo;s one of these
 surprisingly bitter (considering how utterly unimportant they are) divides in
 the computer science world.</p><p>We can *also ask what the <em>last</em> position contains:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=p>[</span><span class=n>length</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)]</span>
-</code></pre></div><pre><code>0.2396232648795924
+</code></pre></div><pre><code>0.6857995535757324
 </code></pre><p>The way to read this instruction is as follows: get me the element at position
 <code>length(random_numbers)</code>. We know that the length of <code>random_numbers</code> is <code>5</code>, so
 this will return the 5th position. <em>Julia</em> has a quite pretty way of getting the
 last element of most collections:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>random_numbers</span><span class=p>[</span><span class=k>end</span><span class=p>]</span>
-</code></pre></div><pre><code>0.2396232648795924
+</code></pre></div><pre><code>0.6857995535757324
 </code></pre><p>An extra bit of <a href=https://en.wikipedia.org/wiki/Syntactic_sugar>syntactic sugar</a> in <em>Julia</em> are the two following
 functions:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>first</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)</span>
-</code></pre></div><pre><code>0.49715536528400683
+</code></pre></div><pre><code>0.21429206728717753
 </code></pre><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>last</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>)</span>
-</code></pre></div><pre><code>0.2396232648795924
+</code></pre></div><pre><code>0.6857995535757324
 </code></pre><p>Being able to access elements by their position can be very useful. Our
 <code>random_numbers</code> array has five elements, and we only want to print the
 odd-numbered ones. One way to do this would be to call then individually:</p><div class=highlight><pre class=chroma><code class=language-julia data-lang=julia><span class=n>println</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>[</span><span class=mi>1</span><span class=p>])</span>
 <span class=n>println</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>[</span><span class=mi>3</span><span class=p>])</span>
 <span class=n>println</span><span class=p>(</span><span class=n>random_numbers</span><span class=p>[</span><span class=mi>5</span><span class=p>])</span>
-</code></pre></div><pre><code>0.49715536528400683
-0.717556221950779
-0.2396232648795924
+</code></pre></div><pre><code>0.21429206728717753
+0.1002934364096093
+0.6857995535757324
 </code></pre><p>Of course, this is only reasonable if we have a very small number of things to
 do. But what if we want to iterate over hundreds, or thousands of values? We
 need a more efficient strategy.</p><h2 id=iterating-over-values>Iterating over values</h2><p>We know that a number is even if the statement <code>x % 2 == 0</code>, where <code>%</code> is
@@ -253,9 +122,9 @@ integer division by two is <em>not</em> 0: <code>x % 2 != 0</code>.</p><p>Let&rs
     <span class=n>println</span><span class=p>(</span><span class=s>&#34;Position </span><span class=si>$i</span><span class=s>:</span><span class=se>\t</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>random_numbers</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
   <span class=k>end</span>
 <span class=k>end</span>
-</code></pre></div><pre><code>Position 1:	0.49715536528400683
-Position 3:	0.717556221950779
-Position 5:	0.2396232648795924
+</code></pre></div><pre><code>Position 1:	0.21429206728717753
+Position 3:	0.1002934364096093
+Position 5:	0.6857995535757324
 </code></pre><p>We can &ldquo;read&rdquo; this snippet (a <em>snippet</em> is the affectionate name given to a
 litle chunk of code; a <em>chunk</em> is a much uglier name for &ldquo;a piece&rdquo;) as</p><pre><code>there is a variable i
 it will take every value between 1 and the length of the ranom_numbers array
@@ -317,7 +186,7 @@ run it for a while (<em>GET IT?</em>) to get a sample with an average of about 0
 <span class=k>end</span>
 
 <span class=n>println</span><span class=p>(</span><span class=s>&#34;μ: </span><span class=si>$</span><span class=p>(</span><span class=n>round</span><span class=p>(</span><span class=n>mean</span><span class=p>(</span><span class=n>my_collection</span><span class=p>);</span> <span class=n>digits</span><span class=o>=</span><span class=mi>4</span><span class=p>))</span><span class=s>&#34;</span><span class=p>)</span>
-</code></pre></div><pre><code>μ: 0.5008
+</code></pre></div><pre><code>μ: 0.4996
 </code></pre><p>The instruction just after <code>while</code>, <em>i.e.</em></p><pre><code>!(0.499 ≤ mean(my_collection) ≤ 0.501)
 </code></pre><p>is worth thinking about. It is a very compact way of running multiple tests at
 once: the mean needs to be larger than 0.499, yet smaller than 0.501, and we
